@@ -53,6 +53,8 @@ const s = StyleSheet.create({
   homeListItem__text: {
     fontSize: 20,
     flex: 1,
+    fontFamily: "SemiBold",
+    fontWeight: "old",
   },
   homeListItem__button: {
     backgroundColor: "#3246FF",
@@ -65,6 +67,7 @@ const s = StyleSheet.create({
   },
   homeListItem__buttonText: {
     color: "#fff",
+    fontFamily: "SemiBold",
   },
   homeListItem__buttonPressed: {
     backgroundColor: "#2533b3",

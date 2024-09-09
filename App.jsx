@@ -1,12 +1,17 @@
 import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useFonts } from "expo-font";
 
 import Home from "./src/screens/Home";
 import Settings from "./src/screens/Settings";
 import Diagnosis from "./src/screens/Diagnosis";
 
 export default function App() {
+  const [fontsAreLoaded] = useFonts({
+    SemiBold: require("./assets/fonts/IBMPlexSansThai-Medium.ttf"),
+  });
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
@@ -14,7 +19,6 @@ export default function App() {
           name="home"
           component={Home}
           title="ใกล้หมอ"
-          headerTransparent={true}
           options={{
             headerTitle: () => (
               <>
@@ -22,6 +26,9 @@ export default function App() {
                 <Text style={[s.headerTitle, { color: "#3246FF" }]}>หมอ</Text>
               </>
             ),
+            headerStyle: {
+              backgroundColor: "#EFEFEF",
+            },
           }}
         />
         <Stack.Screen name="settings" component={Settings} />
@@ -34,22 +41,11 @@ export default function App() {
 const Stack = createNativeStackNavigator();
 
 const s = StyleSheet.create({
-  headerText: {
-    textAlign: "left",
-    fontSize: 40,
-    fontFamily: "IBM Plex Sans Thai",
-  },
-  headerTextHighlight: {
-    textAlign: "left",
-    fontSize: 40,
-    color: "blue",
-    fontFamily: "IBM Plex Sans Thai",
-  },
-  homeList: {
-    marginTop: 30,
-    overflow: "visible",
-  },
+  // header: {
+  //   backgroundColor: "#EFEFEF",
+  // },
   headerTitle: {
     fontSize: 20,
+    fontFamily: "SemiBold",
   },
 });
