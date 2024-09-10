@@ -1,5 +1,4 @@
 import { StyleSheet, View, Text, ImageBackground } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 
 import CustomButton from "./CustomButton";
 import { useNavigation } from "@react-navigation/native";
@@ -8,7 +7,7 @@ const HomeListItem = (props) => {
   const navigation = useNavigation();
 
   const customButtonPressHandler = () => {
-    navigation.navigate("diagnosis");
+    navigation.navigate(props.redirectTo ? props.redirectTo : "home");
   };
 
   return (
@@ -23,7 +22,11 @@ const HomeListItem = (props) => {
       <View style={s.homeListItem}>
         <ImageBackground
           style={s.homeListItem__image}
-          source={require("../../assets/images/diagnosis.png")}
+          source={
+            props.image
+              ? require("../../assets/images/diagnosis.png")
+              : require("../../assets/images/vegetables.webp")
+          }
           resizeMode="cover"
         >
           <Text style={s.homeListItem__text}>{props.text}</Text>

@@ -2,10 +2,13 @@ import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { Svg } from "react-native-svg";
 
 import Home from "./src/screens/Home";
 import Settings from "./src/screens/Settings";
 import Diagnosis from "./src/screens/Diagnosis";
+import HeaderText from "./src/components/HeaderText";
 
 export default function App() {
   const [fontsAreLoaded] = useFonts({
@@ -14,38 +17,53 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
+      <Drawer.Navigator initialRouteName="Home">
+        <Drawer.Screen
           name="home"
           component={Home}
           title="ใกล้หมอ"
           options={{
-            headerTitle: () => (
-              <>
-                <Text style={s.headerTitle}>ใกล้</Text>
-                <Text style={[s.headerTitle, { color: "#3246FF" }]}>หมอ</Text>
-              </>
-            ),
+            headerTitle: () => <HeaderText />,
+            headerStyle: {
+              backgroundColor: "#EFEFEF",
+            },
+            drawerLabel: "หน้าโฮม",
+          }}
+        />
+        <Drawer.Screen
+          name="settings"
+          component={Settings}
+          options={{
+            drawerLabel: "ตั้งค่า",
+            headerTitle: () => <HeaderText />,
             headerStyle: {
               backgroundColor: "#EFEFEF",
             },
           }}
         />
-        <Stack.Screen name="settings" component={Settings} />
-        <Stack.Screen name="diagnosis" component={Diagnosis} />
-      </Stack.Navigator>
+        <Drawer.Screen
+          name="diagnosis"
+          component={Diagnosis}
+          options={{
+            drawerLabel: "การประเมินโรค",
+            headerTitle: () => <HeaderText />,
+            headerStyle: {
+              backgroundColor: "#EFEFEF",
+            },
+          }}
+        />
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 }
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
 const s = StyleSheet.create({
   // header: {
   //   backgroundColor: "#EFEFEF",
   // },
-  headerTitle: {
-    fontSize: 20,
-    fontFamily: "SemiBold",
-  },
+  headerTitle: {},
+  headerTextWrapper: {},
 });

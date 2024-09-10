@@ -1,23 +1,47 @@
-import { StyleSheet, View, ScrollView, Text } from "react-native";
+import { StyleSheet, View, ScrollView, Text, Image } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import HomeListItem from "../components/HomeListItem";
 
 const Home = (props) => {
-  const username = "จิรัฏฐ์";
+  const username = "น้องกรซิ่ง";
 
   return (
     <View style={[s.home, s.rootContainer]}>
+      <Image
+        blurRadius={70}
+        source={require("../../assets/images/homeBackground.png")}
+        style={{ position: "absolute" }}
+      />
       <View style={s.headerView}>
         <Text style={s.headerText}>สวัสดีคุณ</Text>
         <Text style={s.headerTextHighlight}>{username}</Text>
       </View>
       <ScrollView style={s.homeList} alwaysBounceVertical={false}>
-        <HomeListItem text="ตรวจเช็คโรคเบื้องต้น 🧑‍⚕️" button="เริ่มเลย!" />
         <HomeListItem
-          text="Your previous diagnosis: Check them out!"
+          text="ตรวจเช็คโรคเบื้องต้น 🧑‍⚕️"
           button="เริ่มเลย!"
+          image
+          redirectTo="diagnosis"
         />
+        {/* <HomeListItem
+          text="ทดสอบ"
+          button="ทดสอบ"
+          image
+          redirectTo="diagnosis"
+        />
+        <HomeListItem
+          text="ทดสอบ"
+          button="ทดสอบ"
+          image
+          redirectTo="diagnosis"
+        />
+        <HomeListItem
+          text="ทดสอบ"
+          button="ทดสอบ"
+          image
+          redirectTo="diagnosis"
+        /> */}
       </ScrollView>
       <StatusBar style="auto" />
     </View>
