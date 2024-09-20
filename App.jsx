@@ -18,11 +18,11 @@ export default function App() {
     <>
       {fontsAreLoaded && (
         <NavigationContainer>
-          <Drawer.Navigator
+          <Stack.Navigator
             initialRouteName="Home"
             options={{ drawerActiveTintColor: "#FB6E90" }}
           >
-            <Drawer.Screen
+            <Stack.Screen
               name="home"
               component={Home}
               title="ใกล้หมอ"
@@ -35,7 +35,7 @@ export default function App() {
                 drawerActiveTintColor: "#FB6E90",
               }}
             />
-            <Drawer.Screen
+            <Stack.Screen
               name="settings"
               component={Settings}
               options={{
@@ -46,7 +46,7 @@ export default function App() {
                 },
               }}
             />
-            <Drawer.Screen
+            <Stack.Screen
               name="diagnosis"
               component={Diagnosis}
               options={{
@@ -57,7 +57,7 @@ export default function App() {
                 },
               }}
             />
-          </Drawer.Navigator>
+          </Stack.Navigator>
         </NavigationContainer>
       )}
     </>
@@ -65,7 +65,6 @@ export default function App() {
 }
 
 const Stack = createNativeStackNavigator();
-const Drawer = createDrawerNavigator();
 
 const s = StyleSheet.create({
   // header: {

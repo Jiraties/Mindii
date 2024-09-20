@@ -1,4 +1,11 @@
-import { StyleSheet, View, Text, ImageBackground, Modal } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  ImageBackground,
+  Modal,
+  Image,
+} from "react-native";
 
 import CustomButton from "./CustomButton";
 import { useNavigation } from "@react-navigation/native";
@@ -28,11 +35,16 @@ const HomeListItem = (props) => {
         presentationStyle="pageSheet"
       >
         <View style={s.modal}>
-          <Text style={s.headerText}>
-            ก่อนจะประเมินควรทราบว่าแอปนี้ควรใช้ในการตรวจเบื้องต้นเท่านั้น
-          </Text>
-          <Text style={s.headerTextHighlight}>อาจเกิดข้อผิดพลาดได้</Text>
-          <Text style={s.headerText}>ควรได้รับคำแนะนำจากแพทย์</Text>
+          <Image
+            source={require("../../assets/images/modal.png")}
+            style={s.modalImage}
+          />
+          <View style={s.modalTextWrapper}>
+            <Text style={s.headerText}>
+              ก่อนจะประเมินควรทราบว่าแอปนี้ควรใช้ในการตรวจเบื้องต้นเท่านั้นอาจเกิดข้อผิดพลาดได้ควรได้รับคำแนะนำจากแพทย์
+            </Text>
+          </View>
+
           {/* <CustomButton
             style={[
               s.homeListItem__button,
@@ -63,9 +75,7 @@ const HomeListItem = (props) => {
         <ImageBackground
           style={s.homeListItem__image}
           source={
-            props.image
-              ? require("../../assets/images/diagnosis.png")
-              : require("../../assets/images/vegetables.webp")
+            props.image ? require("../../assets/images/diagnosis.png") : ""
           }
           resizeMode="cover"
         >
@@ -86,8 +96,7 @@ const HomeListItem = (props) => {
 const s = StyleSheet.create({
   homeListItem: {
     width: "100%",
-    backgroundColor: "#fff",
-
+    backgroundColor: "#b8eaff",
     borderRadius: 20,
     marginBottom: 20,
     height: 175,
@@ -135,20 +144,29 @@ const s = StyleSheet.create({
     borderTopRightRadius: 30,
     flex: 1,
     padding: 20,
-    paddingTop: 150,
-    // paddingBottom: "auto",
+    gap: 30,
+    alignItems: "center",
+    paddingTop: "20%",
+    paddingBottom: "10%",
+  },
+  modalTextWrapper: {
+    flex: 1,
+  },
+  modalImage: {
+    width: 300,
+    height: 300,
   },
   headerText: {
     textAlign: "left",
-    fontSize: 30,
+    fontSize: 20,
     fontFamily: "SemiBold",
     fontWeight: 800,
     overflow: "visible",
+    flex: 1,
   },
   headerTextHighlight: {
     textAlign: "left",
-    fontSize: 30,
-    backgroundColor: "#fcd4de",
+    fontSize: 20,
     color: "#FB6E90",
     fontFamily: "SemiBold",
     overflow: "visible",

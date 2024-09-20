@@ -1,11 +1,87 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  FlatList,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
 import CustomButton from "../components/CustomButton";
-import { ScrollView } from "react-native";
 
 const Diagnosis = (props) => {
   const navigation = useNavigation();
+  const [searchFieldValue, setSearchFieldValue] = useState("");
+  const [originalSymptomList] = useState([
+    {
+      id: "fever",
+      name: "🤒 ไข้",
+      description:
+        "ภาวะที่อุณหภูมิของร่างกายสูงกว่าปกติ บ่งบอกถึงการติดเชื้อหรืออาการอื่นๆ",
+    },
+    {
+      id: "runny_nose",
+      name: "🤧 น้ำมูกไหล",
+      description: "เกิดจากการอักเสบของเยื่อบุจมูก มักเกิดจากการแพ้หรือหวัด",
+    },
+    {
+      id: "cough",
+      name: "😷 ไอ",
+      description: "การตอบสนองของร่างกายต่อสิ่งแปลกปลอมในทางเดินหายใจ",
+    },
+    {
+      id: "headache",
+      name: "🤕 ปวดหัว",
+      description:
+        "รู้สึกปวดบริเวณศีรษะ อาจเกิดจากความเครียด ไมเกรน หรือภาวะอื่นๆ",
+    },
+    {
+      id: "chills",
+      name: "🤒 หนาวสั่น",
+      description: "อาการที่รู้สึกหนาวและสั่น ร่วมกับมีไข้สูง",
+    },
+    {
+      id: "nausea",
+      name: "🤢 คลื่นไส้",
+      description: "ความรู้สึกไม่สบายในกระเพาะอาหาร ที่อาจนำไปสู่อาเจียน",
+    },
+    {
+      id: "stomach_pain",
+      name: "🤕 ปวดท้อง",
+      description: "อาการปวดหรือไม่สบายในช่องท้อง อาจเกิดจากปัญหาทางเดินอาหาร",
+    },
+    {
+      id: "fatigue",
+      name: "😴 อ่อนเพลีย",
+      description:
+        "รู้สึกเหนื่อยล้า ไม่มีพลังงาน อาจเกิดจากการนอนน้อยหรือความเครียด",
+    },
+    {
+      id: "sore_throat",
+      name: "🤒 เจ็บคอ",
+      description: "รู้สึกเจ็บหรือแสบคอ มักเป็นอาการของการติดเชื้อในลำคอ",
+    },
+    {
+      id: "ear_congestion",
+      name: "👂 หูอื้อ",
+      description:
+        "ความรู้สึกเหมือนมีสิ่งอุดกั้นในหู อาจเกิดจากการติดเชื้อหรือเปลี่ยนความดันอากาศ",
+    },
+  ]);
+  const [symptomList, setSymptionList] = useState(originalSymptomList);
+
+  const searchFieldHandler = (text) => {
+    setSearchFieldValue(text); // Update the search field value
+    const filteredSymptomList = originalSymptomList.filter((symptom) => {
+      return symptom.name.includes(text); // Use the 'text' parameter directly here
+    });
+    setSymptionList(filteredSymptomList); // Update the displayed list
+  };
+
+  const selectedSymptomHandler = (a) => {
+    console.log(a);
+  };
 
   return (
     <View style={[s.home, s.rootContainer]}>
@@ -14,59 +90,43 @@ const Diagnosis = (props) => {
         source={require("../../assets/images/homeBackground.png")}
         style={{ position: "absolute" }}
       />
-      <Text style={s.headerText}>
-        {/* เริ่มจากอาการที่คุณรู้สึกว่ากระทบคุณมากที่สุด */}
-        มาประเมินโรคกัน
+      <Text style={s.headerText}>มาประเมินโรคกัน</Text>
+      <Text style={s.headerDescriptionText}>
+        เริ่มจากการเลือกอาการที่กระทบที่สุด
       </Text>
-      <ScrollView style={s.diagnosisList}>
-        <View style={s.diagnosisListItem}>
-          <Text style={s.diagnosisListItem__titleText}>🌡️ ไข้ขึ้น</Text>
-          <Text style={s.diagnosisListItem__descriptionText}>
-            ไข้เป็นสิ่งบ่งบอกว่ามีสิ่งผิดปกติเกิดขึ้นในร่างกาย
+      <TextInput
+        placeholder="ค้นหาอาการที่ต้องการ..."
+        style={s.searchField}
+        value={searchFieldValue}
+        onChangeText={searchFieldHandler} // Call the handler with each change
+      />
+      {symptomList.length === 0 && (
+        <View style={s.diagnosisListItem__notFound}>
+          <Text style={s.diagnosisListItem__notFoundText}>
+            ไม่พบอาการที่คุณค้นหา ⛓️‍💥
           </Text>
-          <CustomButton>
-            <Text>Next</Text>
-          </CustomButton>
         </View>
-        <View style={s.diagnosisListItem}>
-          <Text style={s.diagnosisListItem__titleText}>😵‍💫 ปวดหัว</Text>
-          <Text style={s.diagnosisListItem__descriptionText}>
-            อาการปวดหัวมีหลายรูปแบบทั้งปวดหัวแบบถูกกดบีบ ปวดหัวแปล๊บ ๆ
-            ปวดหัวจี๊ด ๆ ปวดหัวตุบ ๆ หรือปวดหัวตื้อ ๆ
-          </Text>
-          <CustomButton>
-            <Text>Next</Text>
-          </CustomButton>
-        </View>
-        <View style={s.diagnosisListItem}>
-          <Text style={s.diagnosisListItem__titleText}>🤧 ไอ</Text>
-          <Text style={s.diagnosisListItem__descriptionText}>
-            เป็นการตอบสนองของร่างกาย
-            เมื่อมีสิ่งแปลกปลอมที่ทำให้เกิดการระคายเคืองในทางเดินหายใจ
-          </Text>
-          <CustomButton>
-            <Text>Next</Text>
-          </CustomButton>
-        </View>
-        <View style={s.diagnosisListItem}>
-          <Text style={s.diagnosisListItem__titleText}>🤮 อาเจียน</Text>
-          <Text style={s.diagnosisListItem__descriptionText}>
-            เป็นการตอบสนองของร่างกาย
-            เมื่อมีสิ่งแปลกปลอมที่ทำให้เกิดการระคายเคืองในทางเดินหายใจ
-          </Text>
-          <CustomButton>
-            <Text>Next</Text>
-          </CustomButton>
-        </View>
-      </ScrollView>
-
-      <CustomButton
-        style={s.homeListItem__button}
-        pressedStyle={s.homeListItem__buttonPressed}
-        onPress={() => navigation.navigate("home")}
-      >
-        <Text style={s.homeListItem__buttonText}>กลับหน้่าโฮม</Text>
-      </CustomButton>
+      )}
+      <FlatList
+        data={symptomList}
+        keyExtractor={(symptom) => symptom.id}
+        renderItem={({ item: symptom }) => {
+          return (
+            <View style={s.diagnosisListItem}>
+              <Text style={s.diagnosisListItem__titleText}>{symptom.name}</Text>
+              <Text style={s.diagnosisListItem__descriptionText}>
+                {symptom.description}
+              </Text>
+              <CustomButton
+                onPress={() => selectedSymptomHandler(symptom.id)}
+                style={s.diagnosisListItem__button}
+              >
+                <Text style={s.diagnosisListItem__buttonText}>{">"}</Text>
+              </CustomButton>
+            </View>
+          );
+        }}
+      />
     </View>
   );
 };
@@ -75,25 +135,71 @@ const s = StyleSheet.create({
   rootContainer: {
     flex: 1,
     backgroundColor: "#EFEFEF",
-    padding: 20,
-    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
   headerText: {
-    textAlign: "left",
     fontSize: 40,
     fontFamily: "SemiBold",
-    fontWeight: 800,
+  },
+  headerDescriptionText: {
+    fontSize: 15,
+    fontFamily: "SemiBold",
+    marginBottom: 10,
+  },
+  diagnosisListItem: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    marginBottom: 20,
+    padding: 20,
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center",
     overflow: "visible",
   },
-  headerTextHighlight: {
-    textAlign: "left",
-    fontSize: 40,
-    color: "blue",
+  diagnosisListItem__notFound: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+  },
+  diagnosisListItem__notFoundText: {
+    textAlign: "center",
     fontFamily: "SemiBold",
-    lineHeight: 55,
-    overflow: "visible",
+  },
+  diagnosisListItem__titleText: {
+    fontSize: 20,
+    fontFamily: "SemiBold",
+    flex: 1,
+  },
+  diagnosisListItem__descriptionText: {
+    flex: 1,
+    fontFamily: "SemiBold",
+  },
+  diagnosisListItem__button: {
+    flex: 0.3,
+    backgroundColor: "#3246FF",
+    paddingVertical: 30,
+    borderRadius: 100,
+    justifyContent: "center",
+  },
+  diagnosisListItem__buttonText: {
+    textAlign: "center",
+    color: "#fff",
+    fontWeight: 800,
+  },
+  searchField: {
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 100,
+    marginBottom: 20,
+    fontFamily: "SemiBold",
   },
   homeListItem__button: {
+    position: "absolute",
+    bottom: 40,
+    right: 40,
     backgroundColor: "#3246FF",
     width: "40%",
     height: 40,
@@ -106,29 +212,13 @@ const s = StyleSheet.create({
     color: "#fff",
     fontFamily: "SemiBold",
   },
-  diagnosisList: {
-    marginTop: 20,
-    height: "50%",
-  },
-  diagnosisListItem: {
-    width: "100%",
-    backgroundColor: "#fff",
-
-    borderRadius: 20,
-    marginBottom: 20,
-    padding: 20,
-    flexDirection: "row",
-    gap: 10,
-    alignItems: "center",
-  },
-  diagnosisListItem__titleText: {
-    fontSize: 20,
-    fontFamily: "SemiBold",
-    flex: 1,
-  },
-  diagnosisListItem__descriptionText: {
-    flex: 1.5,
-    fontFamily: "SemiBold",
+  homeListItem__buttonPressed: {
+    backgroundColor: "#2533b3",
+    elevation: 1,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    shadowOpacity: 0.25,
   },
 });
 
