@@ -4,7 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import HomeListItem from "../components/HomeListItem";
 
 const Home = (props) => {
-  const username = "น้องกรซิ่ง";
+  const username = "กรรมการ AC Innovation";
 
   return (
     <View style={[s.home, s.rootContainer]}>
@@ -14,7 +14,7 @@ const Home = (props) => {
         style={{ position: "absolute" }}
       />
       <View style={s.headerView}>
-        <Text style={s.headerText}>สวัสดีคุณ</Text>
+        <Text style={s.headerText}>สวัสดีครับ</Text>
         <Text style={s.headerTextHighlight}>{username}</Text>
       </View>
       <ScrollView style={s.homeList} alwaysBounceVertical={false}>

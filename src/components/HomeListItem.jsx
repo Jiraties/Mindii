@@ -1,13 +1,16 @@
-import { StyleSheet, View, Text, ImageBackground } from "react-native";
+import { StyleSheet, View, Text, ImageBackground, Modal } from "react-native";
 
 import CustomButton from "./CustomButton";
 import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 
 const HomeListItem = (props) => {
+  const [modalIsVisible, setModalIsVisible] = useState(false);
   const navigation = useNavigation();
 
   const customButtonPressHandler = () => {
-    navigation.navigate(props.redirectTo ? props.redirectTo : "home");
+    setModalIsVisible(true);
+    // navigation.navigate(props.redirectTo ? props.redirectTo : "home");
   };
 
   return (
@@ -19,6 +22,43 @@ const HomeListItem = (props) => {
         shadowOpacity: 0.2,
       }}
     >
+      <Modal
+        visible={modalIsVisible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+      >
+        <View style={s.modal}>
+          <Text style={s.headerText}>
+            ก่อนจะประเมินควรทราบว่าแอปนี้ควรใช้ในการตรวจเบื้องต้นเท่านั้น
+          </Text>
+          <Text style={s.headerTextHighlight}>อาจเกิดข้อผิดพลาดได้</Text>
+          <Text style={s.headerText}>ควรได้รับคำแนะนำจากแพทย์</Text>
+          {/* <CustomButton
+            style={[
+              s.homeListItem__button,
+              { width: "100%", marginBottom: 20 },
+            ]}
+            pressedStyle={s.homeListItem__buttonPressed}
+            onPress={() => setModalIsVisible(false)}
+          >
+            <Text style={s.homeListItem__buttonText}>Back</Text>
+          </CustomButton> */}
+          <CustomButton
+            style={[
+              s.homeListItem__button,
+              { width: "100%", height: 50, marginTop: 30 },
+            ]}
+            pressedStyle={s.homeListItem__buttonPressed}
+            onPress={() => {
+              navigation.navigate(props.redirectTo ? props.redirectTo : "home");
+              setModalIsVisible(false);
+              return "a";
+            }}
+          >
+            <Text style={s.homeListItem__buttonText}>รับทราบ</Text>
+          </CustomButton>
+        </View>
+      </Modal>
       <View style={s.homeListItem}>
         <ImageBackground
           style={s.homeListItem__image}
@@ -86,6 +126,32 @@ const s = StyleSheet.create({
     height: 175,
     padding: 20,
     // opacity: 0.5,
+  },
+  modal: {
+    backgroundColor: "#efefef",
+    borderRadius: 20,
+    // marginTop: 200,
+    // height: "100%",
+    borderTopRightRadius: 30,
+    flex: 1,
+    padding: 20,
+    paddingTop: 150,
+    // paddingBottom: "auto",
+  },
+  headerText: {
+    textAlign: "left",
+    fontSize: 30,
+    fontFamily: "SemiBold",
+    fontWeight: 800,
+    overflow: "visible",
+  },
+  headerTextHighlight: {
+    textAlign: "left",
+    fontSize: 30,
+    backgroundColor: "#fcd4de",
+    color: "#FB6E90",
+    fontFamily: "SemiBold",
+    overflow: "visible",
   },
 });
 

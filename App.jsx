@@ -3,7 +3,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { Svg } from "react-native-svg";
 
 import Home from "./src/screens/Home";
 import Settings from "./src/screens/Settings";
@@ -16,44 +15,52 @@ export default function App() {
   });
 
   return (
-    <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Home">
-        <Drawer.Screen
-          name="home"
-          component={Home}
-          title="ใกล้หมอ"
-          options={{
-            headerTitle: () => <HeaderText />,
-            headerStyle: {
-              backgroundColor: "#EFEFEF",
-            },
-            drawerLabel: "หน้าโฮม",
-          }}
-        />
-        <Drawer.Screen
-          name="settings"
-          component={Settings}
-          options={{
-            drawerLabel: "ตั้งค่า",
-            headerTitle: () => <HeaderText />,
-            headerStyle: {
-              backgroundColor: "#EFEFEF",
-            },
-          }}
-        />
-        <Drawer.Screen
-          name="diagnosis"
-          component={Diagnosis}
-          options={{
-            drawerLabel: "การประเมินโรค",
-            headerTitle: () => <HeaderText />,
-            headerStyle: {
-              backgroundColor: "#EFEFEF",
-            },
-          }}
-        />
-      </Drawer.Navigator>
-    </NavigationContainer>
+    <>
+      {fontsAreLoaded && (
+        <NavigationContainer>
+          <Drawer.Navigator
+            initialRouteName="Home"
+            options={{ drawerActiveTintColor: "#FB6E90" }}
+          >
+            <Drawer.Screen
+              name="home"
+              component={Home}
+              title="ใกล้หมอ"
+              options={{
+                headerTitle: () => <HeaderText />,
+                headerStyle: {
+                  backgroundColor: "#EFEFEF",
+                },
+                drawerLabel: "หน้าโฮม",
+                drawerActiveTintColor: "#FB6E90",
+              }}
+            />
+            <Drawer.Screen
+              name="settings"
+              component={Settings}
+              options={{
+                drawerLabel: "ตั้งค่า",
+                headerTitle: () => <HeaderText />,
+                headerStyle: {
+                  backgroundColor: "#EFEFEF",
+                },
+              }}
+            />
+            <Drawer.Screen
+              name="diagnosis"
+              component={Diagnosis}
+              options={{
+                drawerLabel: "การประเมินโรค",
+                headerTitle: () => <HeaderText />,
+                headerStyle: {
+                  backgroundColor: "#EFEFEF",
+                },
+              }}
+            />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      )}
+    </>
   );
 }
 
