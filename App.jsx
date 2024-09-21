@@ -1,13 +1,13 @@
-import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import Home from "./src/screens/Home";
 import Settings from "./src/screens/Settings";
 import Diagnosis from "./src/screens/Diagnosis";
 import HeaderText from "./src/components/HeaderText";
+import CustomButton from "./src/components/CustomButton";
 
 export default function App() {
   const [fontsAreLoaded] = useFonts({
@@ -50,7 +50,8 @@ export default function App() {
               name="diagnosis"
               component={Diagnosis}
               options={{
-                drawerLabel: "การประเมินโรค",
+                gestureEnabled: false,
+                headerBackTitle: "กลับ",
                 headerTitle: () => <HeaderText />,
                 headerStyle: {
                   backgroundColor: "#EFEFEF",

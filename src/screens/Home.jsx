@@ -4,33 +4,23 @@ import {
   ScrollView,
   Text,
   Image,
-  Dimensions,
+  useWindowDimensions,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import HomeListItem from "../components/HomeListItem";
-
-const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
+import RootContainer from "../components/RootContainer";
 
 const Home = (props) => {
   const username = "กรรมการ AC Innovation";
-  const isIpad = screenWidth >= 1100 && screenHeight >= 800;
 
   return (
-    <View style={[s.home, s.rootContainer]}>
-      <Image
-        blurRadius={70}
-        source={require("../../assets/images/homeBackground.png")}
-        style={isIpad ? s.imageBackground__ipad : s.imageBackground}
-      />
+    <RootContainer>
       <View style={s.headerView}>
         <Text style={s.headerText}>สวัสดีครับ</Text>
         <Text style={s.headerTextHighlight}>{username}</Text>
       </View>
-      <ScrollView
-        style={isIpad ? s.homeList__ipad : s.homeList}
-        alwaysBounceVertical={false}
-      >
+      <ScrollView style={s.homeList} alwaysBounceVertical={false}>
         <HomeListItem
           text="ตรวจเช็คโรคเบื้องต้น 🧑‍⚕️"
           button="เริ่มเลย!"
@@ -63,7 +53,7 @@ const Home = (props) => {
         /> */}
       </ScrollView>
       <StatusBar style="auto" />
-    </View>
+    </RootContainer>
   );
 };
 
@@ -102,13 +92,6 @@ const s = StyleSheet.create({
   },
   headerView: {
     overflow: "visible",
-  },
-  imageBackground: {
-    position: "absolute",
-  },
-  imageBackground__ipad: {
-    position: "absolute",
-    width: screenWidth,
   },
 });
 

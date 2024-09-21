@@ -6,9 +6,14 @@ import {
   Image,
   TextInput,
   FlatList,
+  Dimensions,
 } from "react-native";
+import { BlurView } from "expo-blur";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../components/CustomButton";
+import RootContainer from "../components/RootContainer";
+
+const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
 
 const Diagnosis = (props) => {
   const navigation = useNavigation();
@@ -69,7 +74,12 @@ const Diagnosis = (props) => {
         "ความรู้สึกเหมือนมีสิ่งอุดกั้นในหู อาจเกิดจากการติดเชื้อหรือเปลี่ยนความดันอากาศ",
     },
   ]);
+  const [listType, setListType] = useState("symptomList");
   const [symptomList, setSymptionList] = useState(originalSymptomList);
+  const [pageValues, setPageValues] = useState({
+    header: "มาประเมินโรคกัน",
+    subheader: "เริ่มจากการเลือกอาการที่กระทบที่สุด",
+  });
 
   const searchFieldHandler = (text) => {
     setSearchFieldValue(text); // Update the search field value
@@ -79,65 +89,69 @@ const Diagnosis = (props) => {
     setSymptionList(filteredSymptomList); // Update the displayed list
   };
 
-  const selectedSymptomHandler = (a) => {
-    console.log(a);
+  const selectedSymptomHandler = (symptomName) => {
+    setPageValues({ header: symptomName, subheader: symptomName });
+    setListType("temperature");
   };
 
   return (
-    <View style={[s.home, s.rootContainer]}>
-      <Image
-        blurRadius={70}
-        source={require("../../assets/images/homeBackground.png")}
-        style={{ position: "absolute" }}
-      />
-      <Text style={s.headerText}>มาประเมินโรคกัน</Text>
-      <Text style={s.headerDescriptionText}>
-        เริ่มจากการเลือกอาการที่กระทบที่สุด
-      </Text>
-      <TextInput
-        placeholder="ค้นหาอาการที่ต้องการ..."
-        style={s.searchField}
-        value={searchFieldValue}
-        onChangeText={searchFieldHandler} // Call the handler with each change
-      />
-      {symptomList.length === 0 && (
-        <View style={s.diagnosisListItem__notFound}>
-          <Text style={s.diagnosisListItem__notFoundText}>
-            ไม่พบอาการที่คุณค้นหา ⛓️‍💥
-          </Text>
-        </View>
-      )}
-      <FlatList
-        data={symptomList}
-        keyExtractor={(symptom) => symptom.id}
-        renderItem={({ item: symptom }) => {
-          return (
-            <View style={s.diagnosisListItem}>
-              <Text style={s.diagnosisListItem__titleText}>{symptom.name}</Text>
-              <Text style={s.diagnosisListItem__descriptionText}>
-                {symptom.description}
+    <RootContainer>
+      <Text style={s.headerText}>{pageValues.header}</Text>
+      <Text style={s.headerDescriptionText}>{pageValues.subheader}</Text>
+      {listType === "symptomList" && (
+        <>
+          <TextInput
+            placeholder="ค้นหาอาการที่ต้องการ..."
+            style={s.searchField}
+            value={searchFieldValue}
+            onChangeText={searchFieldHandler} // Call the handler with each change
+          />
+          {symptomList.length === 0 && (
+            <View style={s.symptomListItem__notFound}>
+              <Text style={s.symptomListItem__notFoundText}>
+                ไม่พบอาการที่คุณค้นหา ⛓️‍💥
               </Text>
-              <CustomButton
-                onPress={() => selectedSymptomHandler(symptom.id)}
-                style={s.diagnosisListItem__button}
-              >
-                <Text style={s.diagnosisListItem__buttonText}>{">"}</Text>
-              </CustomButton>
             </View>
-          );
-        }}
-      />
-    </View>
+          )}
+          <FlatList
+            data={symptomList}
+            keyExtractor={(symptom) => symptom.id}
+            style={s.symptomList}
+            renderItem={({ item: symptom, index }) => {
+              return (
+                <View
+                  style={[
+                    s.symptomListItem,
+                    index === symptomList.length - 1 && { marginBottom: 100 },
+                  ]}
+                >
+                  <Text style={s.symptomListItem__titleText}>
+                    {symptom.name}
+                  </Text>
+                  <Text style={s.symptomListItem__descriptionText}>
+                    {symptom.description}
+                  </Text>
+                  <CustomButton
+                    onPress={() => selectedSymptomHandler(symptom.id)}
+                    style={s.symptomListItem__button}
+                    pressedStyle={s.homeListItem__buttonPressed}
+                  >
+                    <Text style={s.symptomListItem__buttonText}>{">"}</Text>
+                  </CustomButton>
+                </View>
+              );
+            }}
+          />
+        </>
+      )}
+      <BlurView style={s.bottomBar} intensity={100}>
+        <Text>Hello</Text>
+      </BlurView>
+    </RootContainer>
   );
 };
 
 const s = StyleSheet.create({
-  rootContainer: {
-    flex: 1,
-    backgroundColor: "#EFEFEF",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-  },
   headerText: {
     fontSize: 40,
     fontFamily: "SemiBold",
@@ -147,7 +161,10 @@ const s = StyleSheet.create({
     fontFamily: "SemiBold",
     marginBottom: 10,
   },
-  diagnosisListItem: {
+  symptomList: {
+    borderRadius: 20,
+  },
+  symptomListItem: {
     width: "100%",
     backgroundColor: "#fff",
     borderRadius: 20,
@@ -158,33 +175,33 @@ const s = StyleSheet.create({
     alignItems: "center",
     overflow: "visible",
   },
-  diagnosisListItem__notFound: {
+  symptomListItem__notFound: {
     width: "100%",
     backgroundColor: "#fff",
     borderRadius: 20,
     padding: 20,
   },
-  diagnosisListItem__notFoundText: {
+  symptomListItem__notFoundText: {
     textAlign: "center",
     fontFamily: "SemiBold",
   },
-  diagnosisListItem__titleText: {
+  symptomListItem__titleText: {
     fontSize: 20,
     fontFamily: "SemiBold",
     flex: 1,
   },
-  diagnosisListItem__descriptionText: {
+  symptomListItem__descriptionText: {
     flex: 1,
     fontFamily: "SemiBold",
   },
-  diagnosisListItem__button: {
+  symptomListItem__button: {
     flex: 0.3,
     backgroundColor: "#3246FF",
     paddingVertical: 30,
     borderRadius: 100,
     justifyContent: "center",
   },
-  diagnosisListItem__buttonText: {
+  symptomListItem__buttonText: {
     textAlign: "center",
     color: "#fff",
     fontWeight: 800,
@@ -219,6 +236,13 @@ const s = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     shadowOpacity: 0.25,
+  },
+  bottomBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: screenWidth,
+    padding: 30,
   },
 });
 
