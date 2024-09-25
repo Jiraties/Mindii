@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Alert } from "react-native";
+import { StyleSheet, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
@@ -7,7 +7,6 @@ import Home from "./src/screens/Home";
 import Settings from "./src/screens/Settings";
 import Diagnosis from "./src/screens/Diagnosis";
 import HeaderText from "./src/components/HeaderText";
-import CustomButton from "./src/components/CustomButton";
 
 export default function App() {
   const [fontsAreLoaded] = useFonts({
@@ -52,6 +51,7 @@ export default function App() {
               options={{
                 gestureEnabled: false,
                 headerBackTitle: "กลับ",
+                headerBackButtonMenuEnabled: true,
                 headerTitle: () => <HeaderText />,
                 headerStyle: {
                   backgroundColor: "#EFEFEF",

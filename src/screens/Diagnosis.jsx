@@ -8,12 +8,31 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
-import { BlurView } from "expo-blur";
+import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
 import { useNavigation } from "@react-navigation/native";
+
 import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
 
 const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
+
+const diagnosisData = {
+  screenIndex: 0,
+  screenType: ["selectSymptom"],
+  symptomList: [],
+};
+
+const addSymptom = (symptom, nextScreenType) => {
+  diagnosisData.symptomList.push(symptom);
+  diagnosisData.screenType.push(nextScreenType);
+  diagnosisData.screenIndex++;
+};
+
+const rewindSymptom = () => {
+  diagnosisData.symptomList.splice(-1);
+  diagnosisData.screenType.splice(-1);
+  diagnosisData.screenIndex--;
+};
 
 const Diagnosis = (props) => {
   const navigation = useNavigation();
@@ -74,12 +93,13 @@ const Diagnosis = (props) => {
         "ความรู้สึกเหมือนมีสิ่งอุดกั้นในหู อาจเกิดจากการติดเชื้อหรือเปลี่ยนความดันอากาศ",
     },
   ]);
-  const [listType, setListType] = useState("symptomList");
   const [symptomList, setSymptionList] = useState(originalSymptomList);
   const [pageValues, setPageValues] = useState({
     header: "มาประเมินโรคกัน",
     subheader: "เริ่มจากการเลือกอาการที่กระทบที่สุด",
   });
+  const screenIndex = diagnosisData.screenIndex;
+  const screenType = diagnosisData.screenType[screenIndex];
 
   const searchFieldHandler = (text) => {
     setSearchFieldValue(text); // Update the search field value
@@ -90,16 +110,16 @@ const Diagnosis = (props) => {
   };
 
   const selectedSymptomHandler = (symptomName) => {
-    setPageValues({ header: symptomName, subheader: symptomName });
-    setListType("temperature");
+    addSymptom(symptomName, "symptomLength");
+    navigation.push("diagnosis");
   };
 
   return (
     <RootContainer>
-      <Text style={s.headerText}>{pageValues.header}</Text>
-      <Text style={s.headerDescriptionText}>{pageValues.subheader}</Text>
-      {listType === "symptomList" && (
+      {screenType === "selectSymptom" && (
         <>
+          <Text style={s.headerText}>{pageValues.header}</Text>
+          <Text style={s.headerDescriptionText}>{pageValues.subheader}</Text>
           <TextInput
             placeholder="ค้นหาอาการที่ต้องการ..."
             style={s.searchField}
@@ -144,9 +164,18 @@ const Diagnosis = (props) => {
           />
         </>
       )}
-      <BlurView style={s.bottomBar} intensity={100}>
-        <Text>Hello</Text>
-      </BlurView>
+      {screenType === "symptomLength" && (
+        <>
+          <Text style={s.headerText}>
+            How long has {diagnosisData.symptomList[screenIndex - 1]} been
+            bothering you?
+          </Text>
+          <Text style={s.headerDescriptionText}>{pageValues.subheader}</Text>
+        </>
+      )}
+      {/* <BlurView style={s.bottomBar} intensity={100}>
+        <Text>Progress</Text>
+      </BlurView> */}
     </RootContainer>
   );
 };
