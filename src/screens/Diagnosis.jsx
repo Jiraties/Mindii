@@ -21,14 +21,6 @@ const diagnosisData = {
   symptomList: [],
 };
 
-const rewindSymptom = () => {
-  if (diagnosisData.screenIndex > 0) {
-    diagnosisData.symptomList.splice(-1);
-    diagnosisData.screenType.splice(-1);
-    diagnosisData.screenIndex--;
-  }
-};
-
 const symptomLengthList = [
   {
     value: "1",
@@ -112,7 +104,9 @@ const Diagnosis = (props) => {
   const [symptomList, setSymptionList] = useState(originalSymptomList);
   const screenIndex = diagnosisData.screenIndex;
   const screenType = diagnosisData.screenType[screenIndex];
+  const previousScreenType = diagnosisData.screenType[screenIndex - 1];
 
+  console.log(`--------------------`);
   console.log(diagnosisData);
 
   const addSymptom = (symptom, nextScreenType) => {
@@ -125,6 +119,15 @@ const Diagnosis = (props) => {
     diagnosisData["symptomList"][screenIndex - 1]["length"] = length;
     diagnosisData.screenType.push(nextScreenType);
     diagnosisData.screenIndex++;
+  };
+
+  const rewindSymptom = () => {
+    if (previousScreenType !== "symptomLength")
+      if (diagnosisData.screenIndex > 0) {
+        diagnosisData.symptomList.splice(-1);
+        diagnosisData.screenType.splice(-1);
+        diagnosisData.screenIndex--;
+      }
   };
 
   const searchFieldHandler = (text) => {
@@ -213,7 +216,13 @@ const Diagnosis = (props) => {
             {originalSymptomList.find(
               (symptom) =>
                 symptom["id"] ===
-                diagnosisData.symptomList[screenIndex - 1]["name"].substring(3)
+                (previousScreenType === "symptomLength"
+                  ? diagnosisData.symptomList[screenIndex - 1][
+                      "name"
+                    ].substring(3)
+                  : diagnosisData.symptomList[screenIndex - 1][
+                      "name"
+                    ].substring(3))
             )}
             มานานแค่ไหนแล้ว?
           </Text>
