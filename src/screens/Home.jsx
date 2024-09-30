@@ -12,7 +12,7 @@ import HomeListItem from "../components/HomeListItem";
 import RootContainer from "../components/RootContainer";
 
 const Home = (props) => {
-  const username = "กรรมการ AC Innovation";
+  const username = "จิรัฏฐ์ ชูตระกูล";
 
   return (
     <RootContainer>
@@ -33,24 +33,6 @@ const Home = (props) => {
           image={false}
           redirectTo="home"
         />
-        {/* <HomeListItem
-          text="ทดสอบ"
-          button="ทดสอบ"
-          image
-          redirectTo="diagnosis"
-        />
-        <HomeListItem
-          text="ทดสอบ"
-          button="ทดสอบ"
-          image
-          redirectTo="diagnosis"
-        />
-        <HomeListItem
-          text="ทดสอบ"
-          button="ทดสอบ"
-          image
-          redirectTo="diagnosis"
-        /> */}
       </ScrollView>
       <StatusBar style="auto" />
     </RootContainer>
@@ -65,19 +47,14 @@ const s = StyleSheet.create({
     paddingTop: 20,
   },
   headerText: {
-    textAlign: "left",
     fontSize: 40,
     fontFamily: "SemiBold",
-    fontWeight: 800,
-    overflow: "visible",
   },
   headerTextHighlight: {
-    textAlign: "left",
     fontSize: 40,
     color: "blue",
     fontFamily: "SemiBold",
     lineHeight: 55,
-    overflow: "visible",
   },
   homeList: {
     marginTop: 30,

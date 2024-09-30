@@ -8,7 +8,6 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
-import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
 import { useNavigation } from "@react-navigation/native";
 
 import CustomButton from "../components/CustomButton";
@@ -22,17 +21,28 @@ const diagnosisData = {
   symptomList: [],
 };
 
-const addSymptom = (symptom, nextScreenType) => {
-  diagnosisData.symptomList.push(symptom);
-  diagnosisData.screenType.push(nextScreenType);
-  diagnosisData.screenIndex++;
+const rewindSymptom = () => {
+  if (diagnosisData.screenIndex > 0) {
+    diagnosisData.symptomList.splice(-1);
+    diagnosisData.screenType.splice(-1);
+    diagnosisData.screenIndex--;
+  }
 };
 
-const rewindSymptom = () => {
-  diagnosisData.symptomList.splice(-1);
-  diagnosisData.screenType.splice(-1);
-  diagnosisData.screenIndex--;
-};
+const symptomLengthList = [
+  {
+    value: "1",
+    name: "1 วัน",
+  },
+  {
+    value: "2-3",
+    name: "2-3 วัน",
+  },
+  {
+    value: "7",
+    name: "1 สัปดาห์",
+  },
+];
 
 const Diagnosis = (props) => {
   const navigation = useNavigation();
@@ -92,14 +102,30 @@ const Diagnosis = (props) => {
       description:
         "ความรู้สึกเหมือนมีสิ่งอุดกั้นในหู อาจเกิดจากการติดเชื้อหรือเปลี่ยนความดันอากาศ",
     },
+    // {
+    //   id: "a",
+    //   name: "🍆 โดนถู!!!",
+    //   description:
+    //     "ความรู้สึกเหมือนมีสิ่งอุดกั้นในหู อาจเกิดจากการติดเชื้อหรือเปลี่ยนความดันอากาศ",
+    // },
   ]);
   const [symptomList, setSymptionList] = useState(originalSymptomList);
-  const [pageValues, setPageValues] = useState({
-    header: "มาประเมินโรคกัน",
-    subheader: "เริ่มจากการเลือกอาการที่กระทบที่สุด",
-  });
   const screenIndex = diagnosisData.screenIndex;
   const screenType = diagnosisData.screenType[screenIndex];
+
+  console.log(diagnosisData);
+
+  const addSymptom = (symptom, nextScreenType) => {
+    diagnosisData.symptomList.push(symptom);
+    diagnosisData.screenType.push(nextScreenType);
+    diagnosisData.screenIndex++;
+  };
+
+  const addSymptomLength = (length, nextScreenType) => {
+    diagnosisData["symptomList"][screenIndex - 1]["length"] = length;
+    diagnosisData.screenType.push(nextScreenType);
+    diagnosisData.screenIndex++;
+  };
 
   const searchFieldHandler = (text) => {
     setSearchFieldValue(text); // Update the search field value
@@ -109,8 +135,18 @@ const Diagnosis = (props) => {
     setSymptionList(filteredSymptomList); // Update the displayed list
   };
 
-  const selectedSymptomHandler = (symptomName) => {
-    addSymptom(symptomName, "symptomLength");
+  const selectedSymptomHandler = (symptom) => {
+    if (symptom.id === "fever") {
+      addSymptom(symptom, "symptomLength");
+    } else {
+      addSymptom(symptom, "selectSymptom");
+    }
+
+    navigation.push("diagnosis");
+  };
+
+  const selectedSymptomLengthHandler = (symptomLengthValue) => {
+    addSymptomLength(symptomLengthValue, "selectSymptom");
     navigation.push("diagnosis");
   };
 
@@ -118,8 +154,14 @@ const Diagnosis = (props) => {
     <RootContainer>
       {screenType === "selectSymptom" && (
         <>
-          <Text style={s.headerText}>{pageValues.header}</Text>
-          <Text style={s.headerDescriptionText}>{pageValues.subheader}</Text>
+          <Text style={s.headerText}>
+            {diagnosisData.screenIndex === 0
+              ? "มาประเมินโรคกัน"
+              : "มีอาการเพิ่มเติมหรือไม่?"}
+          </Text>
+          <Text style={s.headerDescriptionText}>
+            {"เริ่มจากการเลือกอาการที่กระทบที่สุด"}
+          </Text>
           <TextInput
             placeholder="ค้นหาอาการที่ต้องการ..."
             style={s.searchField}
@@ -152,7 +194,7 @@ const Diagnosis = (props) => {
                     {symptom.description}
                   </Text>
                   <CustomButton
-                    onPress={() => selectedSymptomHandler(symptom.id)}
+                    onPress={() => selectedSymptomHandler(symptom)}
                     style={s.symptomListItem__button}
                     pressedStyle={s.homeListItem__buttonPressed}
                   >
@@ -167,15 +209,42 @@ const Diagnosis = (props) => {
       {screenType === "symptomLength" && (
         <>
           <Text style={s.headerText}>
-            How long has {diagnosisData.symptomList[screenIndex - 1]} been
-            bothering you?
+            คุณมีอาการ
+            {originalSymptomList.find(
+              (symptom) =>
+                symptom["id"] ===
+                diagnosisData.symptomList[screenIndex - 1]["name"].substring(3)
+            )}
+            มานานแค่ไหนแล้ว?
           </Text>
-          <Text style={s.headerDescriptionText}>{pageValues.subheader}</Text>
+
+          <View style={s.optionList}>
+            {symptomLengthList.map((symptomLength) => (
+              <CustomButton
+                style={s.optionItem}
+                onPress={() =>
+                  selectedSymptomLengthHandler(symptomLength.value)
+                }
+                key={symptomLength.value}
+              >
+                <Text>{symptomLength.name}</Text>
+              </CustomButton>
+            ))}
+          </View>
         </>
       )}
       {/* <BlurView style={s.bottomBar} intensity={100}>
         <Text>Progress</Text>
       </BlurView> */}
+      <CustomButton
+        style={[s.backButton]}
+        onPress={() => {
+          rewindSymptom();
+          navigation.goBack();
+        }}
+      >
+        <Text>กลับ</Text>
+      </CustomButton>
     </RootContainer>
   );
 };
@@ -203,6 +272,10 @@ const s = StyleSheet.create({
     gap: 10,
     alignItems: "center",
     overflow: "visible",
+    shadowColor: "black",
+    shadowOffset: { width: 2, height: 2 },
+    shadowRadius: 10,
+    shadowOpacity: 0.1,
   },
   symptomListItem__notFound: {
     width: "100%",
@@ -241,6 +314,10 @@ const s = StyleSheet.create({
     borderRadius: 100,
     marginBottom: 20,
     fontFamily: "SemiBold",
+    shadowColor: "black",
+    shadowOffset: { width: 2, height: 2 },
+    shadowRadius: 10,
+    shadowOpacity: 0.1,
   },
   homeListItem__button: {
     position: "absolute",
@@ -272,6 +349,31 @@ const s = StyleSheet.create({
     left: 0,
     width: screenWidth,
     padding: 30,
+  },
+  backButton: {
+    position: "absolute",
+    bottom: 30,
+    left: 30,
+    backgroundColor: "#fdfdfd",
+    padding: 20,
+    borderRadius: 20,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    shadowOpacity: 0.25,
+  },
+  optionList: {
+    borderRadius: 20,
+  },
+  optionItem: {
+    padding: 20,
+    backgroundColor: "#fdfdfd",
+    borderRadius: 20,
+    shadowColor: "black",
+    shadowOffset: { width: 2, height: 2 },
+    shadowRadius: 10,
+    shadowOpacity: 0.1,
+    marginBottom: 20,
   },
 });
 
