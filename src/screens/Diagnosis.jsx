@@ -1,13 +1,5 @@
 import { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TextInput,
-  FlatList,
-  Dimensions,
-} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import CustomButton from "../components/CustomButton";
@@ -20,7 +12,9 @@ import SelectOptions from "../components/diagnosisPages/SelectOptions";
 const diagnosisData = {
   screenIndex: 0,
   screenType: ["selectSymptom"],
+  options: [],
   symptomList: [],
+  selectedOptionList: [],
 };
 
 const symptomLengthList = [
@@ -34,11 +28,25 @@ const symptomLengthList = [
   },
 ];
 
+const logDiagnosisData = () => {
+  console.log(
+    `
+    --------------------------
+    screenIndex: ${diagnosisData.screenIndex},
+    screenType: ${diagnosisData.screenType},
+    options: ${JSON.stringify(diagnosisData.options)},
+    optionsHeader: ${diagnosisData.optionsHeader},
+    symptomList: ${JSON.stringify(diagnosisData.symptomList)},
+    selectedOptionList: ${JSON.stringify(diagnosisData.selectedOptionList)}
+    --------------------------
+    `
+  );
+};
+
 const Diagnosis = (props) => {
   const navigation = useNavigation();
   const screenIndex = diagnosisData.screenIndex;
   const screenType = diagnosisData.screenType[screenIndex];
-  const previousScreenType = diagnosisData.screenType[screenIndex - 1];
   const [symptomList, setSymptomList] = useState([
     {
       id: "heavy_diarrhea",
@@ -47,156 +55,151 @@ const Diagnosis = (props) => {
       description:
         "การถ่ายอุจจาระเหลว หรือถ่ายเป็นน้ำ 4-5 ครั้งขึ้นไปภายใน 24ชม",
     },
-    {
-      id: "fever",
-      name: "ไข้",
-      emoji: "🤒",
-      description:
-        "ภาวะที่อุณหภูมิของร่างกายสูงกว่าปกติ บ่งบอกถึงการติดเชื้อหรืออาการอื่นๆ",
-    },
-    {
-      id: "runny_nose",
-      name: "น้ำมูกไหล",
-      emoji: "🤧",
-      description: "เกิดจากการอักเสบของเยื่อบุจมูก มักเกิดจากการแพ้หรือหวัด",
-    },
-    {
-      id: "cough",
-      name: "ไอ",
-      emoji: "😷",
-      description: "การตอบสนองของร่างกายต่อสิ่งแปลกปลอมในทางเดินหายใจ",
-    },
-    {
-      id: "headache",
-      name: "ปวดหัว",
-      emoji: "🤕",
-      description:
-        "รู้สึกปวดบริเวณศีรษะ อาจเกิดจากความเครียด ไมเกรน หรือภาวะอื่นๆ",
-    },
-    {
-      id: "chills",
-      name: "หนาวสั่น",
-      emoji: "🤒",
-      description: "อาการที่รู้สึกหนาวและสั่น ร่วมกับมีไข้สูง",
-    },
-    {
-      id: "nausea",
-      name: "คลื่นไส้",
-      emoji: "🤢",
-      description: "ความรู้สึกไม่สบายในกระเพาะอาหาร ที่อาจนำไปสู่อาเจียน",
-    },
-    {
-      id: "stomach_pain",
-      name: "ปวดท้อง",
-      emoji: "🤕",
-      description: "อาการปวดหรือไม่สบายในช่องท้อง อาจเกิดจากปัญหาทางเดินอาหาร",
-    },
-    {
-      id: "fatigue",
-      name: "อ่อนเพลีย",
-      emoji: "😴",
-      description:
-        "รู้สึกเหนื่อยล้า ไม่มีพลังงาน อาจเกิดจากการนอนน้อยหรือความเครียด",
-    },
-    {
-      id: "sore_throat",
-      name: "เจ็บคอ",
-      emoji: "🤒",
-      description: "รู้สึกเจ็บหรือแสบคอ มักเป็นอาการของการติดเชื้อในลำคอ",
-    },
-    {
-      id: "ear_congestion",
-      name: "หูอื้อ",
-      emoji: "👂",
-      description:
-        "ความรู้สึกเหมือนมีสิ่งอุดกั้นในหู อาจเกิดจากการติดเชื้อหรือเปลี่ยนความดันอากาศ",
-    },
   ]);
 
-  console.log(`--------------------`);
-  console.log(diagnosisData);
+  logDiagnosisData();
 
-  const addSymptom = (symptom, nextScreenType) => {
-    diagnosisData.symptomList.push(symptom);
+  const nextScreen = (nextScreenType) => {
     diagnosisData.screenType.push(nextScreenType);
     diagnosisData.screenIndex++;
 
     navigation.push("diagnosis");
   };
 
-  const addSymptomLength = (length, nextScreenType) => {
-    diagnosisData["symptomList"][screenIndex - 1]["length"] = length; // FIX ERROR
-    diagnosisData.screenType.push(nextScreenType);
-    diagnosisData.screenIndex++;
+  const addSymptom = (symptom, nextScreenType) => {
+    diagnosisData.symptomList.push(symptom);
+    nextScreen(nextScreenType);
+  };
 
-    // if (previousScreenType === "selectSymptom") symptomList.filter(
-    //   (symptomListSymptom) => symptomListSymptom["id"] === symptom["id"]
-    // )
+  const addSymptomLength = (length, nextScreenType) => {
+    diagnosisData["symptomList"][screenIndex - 1]["length"] = length;
+    nextScreen(nextScreenType);
   };
 
   const rewindSymptom = () => {
-    const lastScreenIsSymptomLength =
-      diagnosisData["screenType"][screenIndex - 1] === "symptomLength";
-
-    if (lastScreenIsSymptomLength) {
-      delete diagnosisData.symptomList[diagnosisData.symptomList.length - 1]
-        .length;
-
-      diagnosisData.screenType.splice(-1);
-      diagnosisData.screenIndex--;
-      console.log(diagnosisData);
+    if (screenIndex === 0) {
       navigation.goBack();
+      diagnosisData = {
+        screenIndex: 0,
+        screenType: ["selectSymptom"],
+        options: [],
+        optionsHeader: "",
+        symptomList: [],
+        selectedOptionList: [],
+      };
       return;
     }
-    if (diagnosisData.screenIndex > 0 && !lastScreenIsSymptomLength) {
-      diagnosisData.symptomList.splice(-1);
-      diagnosisData.screenType.splice(-1);
-      diagnosisData.screenIndex--;
-    }
 
-    console.log(diagnosisData);
+    const lastScreenType = diagnosisData["screenType"].at(-1);
+
+    // Determine which screen type and remove previous information added
+    switch (lastScreenType) {
+      case "selectSymptom":
+        diagnosisData.symptomList.splice(-1);
+      case "symptomLength":
+        delete diagnosisData.symptomList[diagnosisData.symptomList.length - 1]
+          .length;
+      case "customOptions":
+        diagnosisData.selectedOptionList.pop();
+      // NOT SPLICING SCREENTYPE
+    }
+    logDiagnosisData();
+
+    diagnosisData.screenType.splice(-1);
+    diagnosisData.screenIndex--;
     navigation.goBack();
   };
 
-  const selectedSymptomHandler = (symptom) => {
+  const createCustomOptions = ({
+    header,
+    subheader,
+    options,
+    nextDiagnosisPage,
+  }) => {
+    diagnosisData.options = options;
+    options.at(-1).question = header;
+
+    if (nextDiagnosisPage) nextScreen("customOptions");
+  };
+
+  const handleSelectSymtomPress = (symptom) => {
     const id = symptom.id;
 
     if (id === "heavy_diarrhea") {
-      addSymptom(symptom, "symptomLength");
+      addSymptom(symptom, "customOptions");
+      createCustomOptions({
+        header: "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?",
+        options: [{ name: "ใช่", value: "yes" }],
+      });
     } else {
       addSymptom(symptom, "symptomLength");
     }
   };
 
-  const selectedSymptomLengthHandler = (symptomLengthValue) => {
-    addSymptomLength(symptomLengthValue, "selectSymptom");
-    navigation.push("diagnosis");
+  const handleSymptomLengthPress = (symptomLength) => {
+    addSymptomLength(symptomLength.value, "selectSymptom");
+  };
+
+  const handleCustomOptionPress = (option, headerText) => {
+    option.question = headerText;
+    diagnosisData.selectedOptionList.push(option);
+
+    if (
+      diagnosisData.symptomList.some(
+        (symptom) => (symptom.id = "heavy_diarreah")
+      ) &&
+      diagnosisData.selectedOptionList.some(
+        (selectedOption) =>
+          selectedOption.question === "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?" &&
+          selectedOption.value === "yes"
+      )
+    ) {
+      createCustomOptions({
+        header: "มีอาการเหนื่อยง่าย มือสั่น คอพอก ตาโปน หัวใจเต้นเร็วกว่าปกติ",
+        options: [{ name: "ใช่", value: "yes" }],
+        nextDiagnosisPage: true,
+      });
+    }
+  };
+
+  const displayScreenType = (type) => {
+    switch (type) {
+      case "selectSymptom":
+        return (
+          <SelectSymptom
+            symptomList={symptomList}
+            selectedSymptomHandler={handleSelectSymtomPress}
+            diagnosisData={diagnosisData}
+          />
+        );
+      case "symptomLength":
+        return (
+          <SelectOptions
+            headerText={`คุ��มีอา��าร${
+              symptomList.find(
+                (symptom) =>
+                  symptom["id"] === diagnosisData.symptomList.slice(-1)[0]["id"]
+              ).name
+            }มานานแค่ไหนแล้ว?`}
+            optionsList={symptomLengthList}
+            onOptionPress={handleSymptomLengthPress}
+          />
+        );
+      case "customOptions":
+        return (
+          <SelectOptions
+            headerText={diagnosisData.options.at(-1).question}
+            optionsList={diagnosisData.options}
+            onOptionPress={handleCustomOptionPress}
+          />
+        );
+      default:
+    }
   };
 
   return (
     <RootContainer>
-      {screenType === "selectSymptom" && (
-        <SelectSymptom
-          symptomList={symptomList}
-          selectedSymptomHandler={selectedSymptomHandler}
-          diagnosisData={diagnosisData}
-        />
-      )}
-      {screenType === "symptomLength" && (
-        <SelectOptions
-          headerText={`คุณมีอาการ${
-            symptomList.find(
-              (symptom) =>
-                symptom["id"] === diagnosisData.symptomList.slice(-1)[0]["id"]
-            ).name
-          }มานานแค่ไหนแล้ว?`}
-          optionsList={symptomLengthList}
-          onOptionPress={selectedSymptomLengthHandler}
-        />
-      )}
-      {/* <BlurView style={s.bottomBar} intensity={100}>
-        <Text>Progress</Text>
-      </BlurView> */}
+      {displayScreenType(screenType)}
       <CustomButton style={s.backButton} onPress={rewindSymptom}>
         <Text>กลับ</Text>
       </CustomButton>
@@ -214,13 +217,7 @@ const s = StyleSheet.create({
     fontFamily: "SemiBold",
     marginBottom: 10,
   },
-  // bottomBar: {
-  //   position: "absolute",
-  //   bottom: 0,
-  //   left: 0,
-  //   width: screenWidth,
-  //   padding: 30,
-  // },
+
   backButton: {
     position: "absolute",
     bottom: 30,

@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Text,
-  Image,
-  useWindowDimensions,
-} from "react-native";
+import { StyleSheet, View, ScrollView, Text, Appearance } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import HomeListItem from "../components/HomeListItem";

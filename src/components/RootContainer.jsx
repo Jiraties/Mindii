@@ -4,7 +4,10 @@ import {
   Dimensions,
   StyleSheet,
   useWindowDimensions,
+  Appearance,
 } from "react-native";
+
+const colorScheme = Appearance.getColorScheme();
 
 const RootContainer = (props) => {
   const { height: screenHeight, width: screenWidth } = useWindowDimensions();
@@ -35,7 +38,7 @@ const RootContainer = (props) => {
 const s = StyleSheet.create({
   rootContainer: {
     flex: 1,
-    backgroundColor: "#EFEFEF",
+    backgroundColor: colorScheme === "light" ? "#EFEFEF" : "#000",
     paddingHorizontal: 20,
     paddingTop: 20,
   },

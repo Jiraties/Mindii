@@ -9,13 +9,13 @@ const SelectOptions = (props) => {
       {/* <Text style={s.headerDescriptionText}>{props.headerDescriptionText}</Text> */}
 
       <View style={s.optionList}>
-        {props.optionsList.map((symptomLength) => (
+        {props.optionsList.map((option) => (
           <CustomButton
             style={s.optionItem}
-            onPress={() => props.onOptionPress(symptomLength.value)}
-            key={symptomLength.value}
+            onPress={() => props.onOptionPress(option, props.headerText)}
+            key={option.value}
           >
-            <Text>{symptomLength.name}</Text>
+            <Text>{option.name}</Text>
           </CustomButton>
         ))}
       </View>
