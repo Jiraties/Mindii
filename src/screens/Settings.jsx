@@ -1,4 +1,4 @@
-import { Text, StyleSheet, ScrollView } from "react-native";
+import { Text, StyleSheet, ScrollView, View } from "react-native";
 
 import RootContainer from "../components/RootContainer";
 
@@ -7,7 +7,9 @@ const Settings = () => {
     <RootContainer>
       <Text style={s.headerText}>ตั้งค่า</Text>
       <ScrollView style={s.settingsList}>
-        <View style={s.settingsItem}></View>
+        <View style={s.settingsItem}>
+          <Text>Hello</Text>
+        </View>
       </ScrollView>
     </RootContainer>
   );
@@ -21,7 +23,11 @@ const s = StyleSheet.create({
   settingsList: {
     flex: 1,
   },
-  settingsItem: {},
+  settingsItem: {
+    padding: 20,
+    backgroundColor: "#fdfdfd",
+    borderRadius: 20,
+  },
 });
 
 export default Settings;

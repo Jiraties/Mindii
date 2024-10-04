@@ -42,6 +42,9 @@ const SelectSymptom = (props) => {
           </Text>
         </View>
       )}
+      {/* <View style={s.symptomListItem}>
+        <Text>ผมมีอาการแค่นี้</Text>
+      </View> */}
       <FlatList
         data={symptomList}
         keyExtractor={(symptom) => symptom.id}
@@ -54,10 +57,14 @@ const SelectSymptom = (props) => {
                 index === symptomList.length - 1 && { marginBottom: 100 },
               ]}
             >
-              <Text style={s.symptomListItem__titleText}>{symptom.name}</Text>
-              <Text style={s.symptomListItem__descriptionText}>
-                {symptom.description}
-              </Text>
+              <View style={s.symptomListItem__textWrapper}>
+                <Text
+                  style={s.symptomListItem__titleText}
+                >{`${symptom.emoji} ${symptom.name}`}</Text>
+                <Text style={s.symptomListItem__descriptionText}>
+                  {symptom.description}
+                </Text>
+              </View>
               <CustomButton
                 onPress={() => props.selectedSymptomHandler(symptom)}
                 style={s.symptomListItem__button}
@@ -93,13 +100,12 @@ const s = StyleSheet.create({
     marginBottom: 20,
     padding: 20,
     flexDirection: "row",
-    gap: 10,
-    alignItems: "center",
     overflow: "visible",
     shadowColor: "black",
     shadowOffset: { width: 2, height: 2 },
     shadowRadius: 10,
     shadowOpacity: 0.1,
+    gap: 10,
   },
   symptomListItem__notFound: {
     width: "100%",
@@ -111,6 +117,10 @@ const s = StyleSheet.create({
     textAlign: "center",
     fontFamily: "SemiBold",
   },
+  symptomListItem__textWrapper: {
+    flex: 1,
+    gap: 15,
+  },
   symptomListItem__titleText: {
     fontSize: 20,
     fontFamily: "SemiBold",
@@ -121,11 +131,11 @@ const s = StyleSheet.create({
     fontFamily: "SemiBold",
   },
   symptomListItem__button: {
-    flex: 0.3,
+    flex: 0.2,
     backgroundColor: "#3246FF",
-    paddingVertical: 30,
     borderRadius: 100,
     justifyContent: "center",
+    height: "50",
   },
   symptomListItem__buttonText: {
     textAlign: "center",

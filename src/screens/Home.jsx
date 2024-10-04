@@ -22,16 +22,22 @@ const Home = (props) => {
       </View>
       <ScrollView style={s.homeList} alwaysBounceVertical={false}>
         <HomeListItem
-          text="ตรวจเช็คโรคเบื้องต้น 🧑‍⚕️"
+          text="ประเมินความเสี่ยงโรคเบื้องต้น 🧑‍⚕️"
           button="เริ่มเลย!"
           image
           redirectTo="diagnosis"
         />
-        <HomeListItem
+        {/* <HomeListItem
           text="ประเมินความเสี่ยงเป็นโรคซึมเศร้า 🌧️"
           button="เริ่มเลย!"
           image={false}
           redirectTo="home"
+        /> */}
+        <HomeListItem
+          text="Conclusions TEST!!!"
+          button="เริ่มเลย!"
+          image={false}
+          redirectTo="conclusions"
         />
       </ScrollView>
       <StatusBar style="auto" />

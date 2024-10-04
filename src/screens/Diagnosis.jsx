@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
 import SelectSymptom from "../components/diagnosisPages/SelectSymptom";
+import SelectOptions from "../components/diagnosisPages/SelectOptions";
 
 // const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
 
@@ -32,74 +33,85 @@ const symptomLengthList = [
     name: "1 สัปดาห์",
   },
 ];
-const symptomList = [
-  {
-    id: "fever",
-    name: "🤒 ไข้",
-    description:
-      "ภาวะที่อุณหภูมิของร่างกายสูงกว่าปกติ บ่งบอกถึงการติดเชื้อหรืออาการอื่นๆ",
-  },
-  {
-    id: "runny_nose",
-    name: "🤧 น้ำมูกไหล",
-    description: "เกิดจากการอักเสบของเยื่อบุจมูก มักเกิดจากการแพ้หรือหวัด",
-  },
-  {
-    id: "cough",
-    name: "😷 ไอ",
-    description: "การตอบสนองของร่างกายต่อสิ่งแปลกปลอมในทางเดินหายใจ",
-  },
-  {
-    id: "headache",
-    name: "🤕 ปวดหัว",
-    description:
-      "รู้สึกปวดบริเวณศีรษะ อาจเกิดจากความเครียด ไมเกรน หรือภาวะอื่นๆ",
-  },
-  {
-    id: "chills",
-    name: "🤒 หนาวสั่น",
-    description: "อาการที่รู้สึกหนาวและสั่น ร่วมกับมีไข้สูง",
-  },
-  {
-    id: "nausea",
-    name: "🤢 คลื่นไส้",
-    description: "ความรู้สึกไม่สบายในกระเพาะอาหาร ที่อาจนำไปสู่อาเจียน",
-  },
-  {
-    id: "stomach_pain",
-    name: "🤕 ปวดท้อง",
-    description: "อาการปวดหรือไม่สบายในช่องท้อง อาจเกิดจากปัญหาทางเดินอาหาร",
-  },
-  {
-    id: "fatigue",
-    name: "😴 อ่อนเพลีย",
-    description:
-      "รู้สึกเหนื่อยล้า ไม่มีพลังงาน อาจเกิดจากการนอนน้อยหรือความเครียด",
-  },
-  {
-    id: "sore_throat",
-    name: "🤒 เจ็บคอ",
-    description: "รู้สึกเจ็บหรือแสบคอ มักเป็นอาการของการติดเชื้อในลำคอ",
-  },
-  {
-    id: "ear_congestion",
-    name: "👂 หูอื้อ",
-    description:
-      "ความรู้สึกเหมือนมีสิ่งอุดกั้นในหู อาจเกิดจากการติดเชื้อหรือเปลี่ยนความดันอากาศ",
-  },
-  // {
-  //   id: "a",
-  //   name: "🍆 โดนถู!!!",
-  //   description:
-  //     "ความรู้สึกเหมือนมีสิ่งอุดกั้นในหู อาจเกิดจากการติดเชื้อหรือเปลี่ยนความดันอากาศ",
-  // },
-];
 
 const Diagnosis = (props) => {
   const navigation = useNavigation();
   const screenIndex = diagnosisData.screenIndex;
   const screenType = diagnosisData.screenType[screenIndex];
   const previousScreenType = diagnosisData.screenType[screenIndex - 1];
+  const [symptomList, setSymptomList] = useState([
+    {
+      id: "heavy_diarrhea",
+      name: "ท้องเสียหนัก",
+      emoji: "💩",
+      description:
+        "การถ่ายอุจจาระเหลว หรือถ่ายเป็นน้ำ 4-5 ครั้งขึ้นไปภายใน 24ชม",
+    },
+    {
+      id: "fever",
+      name: "ไข้",
+      emoji: "🤒",
+      description:
+        "ภาวะที่อุณหภูมิของร่างกายสูงกว่าปกติ บ่งบอกถึงการติดเชื้อหรืออาการอื่นๆ",
+    },
+    {
+      id: "runny_nose",
+      name: "น้ำมูกไหล",
+      emoji: "🤧",
+      description: "เกิดจากการอักเสบของเยื่อบุจมูก มักเกิดจากการแพ้หรือหวัด",
+    },
+    {
+      id: "cough",
+      name: "ไอ",
+      emoji: "😷",
+      description: "การตอบสนองของร่างกายต่อสิ่งแปลกปลอมในทางเดินหายใจ",
+    },
+    {
+      id: "headache",
+      name: "ปวดหัว",
+      emoji: "🤕",
+      description:
+        "รู้สึกปวดบริเวณศีรษะ อาจเกิดจากความเครียด ไมเกรน หรือภาวะอื่นๆ",
+    },
+    {
+      id: "chills",
+      name: "หนาวสั่น",
+      emoji: "🤒",
+      description: "อาการที่รู้สึกหนาวและสั่น ร่วมกับมีไข้สูง",
+    },
+    {
+      id: "nausea",
+      name: "คลื่นไส้",
+      emoji: "🤢",
+      description: "ความรู้สึกไม่สบายในกระเพาะอาหาร ที่อาจนำไปสู่อาเจียน",
+    },
+    {
+      id: "stomach_pain",
+      name: "ปวดท้อง",
+      emoji: "🤕",
+      description: "อาการปวดหรือไม่สบายในช่องท้อง อาจเกิดจากปัญหาทางเดินอาหาร",
+    },
+    {
+      id: "fatigue",
+      name: "อ่อนเพลีย",
+      emoji: "😴",
+      description:
+        "รู้สึกเหนื่อยล้า ไม่มีพลังงาน อาจเกิดจากการนอนน้อยหรือความเครียด",
+    },
+    {
+      id: "sore_throat",
+      name: "เจ็บคอ",
+      emoji: "🤒",
+      description: "รู้สึกเจ็บหรือแสบคอ มักเป็นอาการของการติดเชื้อในลำคอ",
+    },
+    {
+      id: "ear_congestion",
+      name: "หูอื้อ",
+      emoji: "👂",
+      description:
+        "ความรู้สึกเหมือนมีสิ่งอุดกั้นในหู อาจเกิดจากการติดเชื้อหรือเปลี่ยนความดันอากาศ",
+    },
+  ]);
 
   console.log(`--------------------`);
   console.log(diagnosisData);
@@ -108,12 +120,18 @@ const Diagnosis = (props) => {
     diagnosisData.symptomList.push(symptom);
     diagnosisData.screenType.push(nextScreenType);
     diagnosisData.screenIndex++;
+
+    navigation.push("diagnosis");
   };
 
   const addSymptomLength = (length, nextScreenType) => {
     diagnosisData["symptomList"][screenIndex - 1]["length"] = length; // FIX ERROR
     diagnosisData.screenType.push(nextScreenType);
     diagnosisData.screenIndex++;
+
+    // if (previousScreenType === "selectSymptom") symptomList.filter(
+    //   (symptomListSymptom) => symptomListSymptom["id"] === symptom["id"]
+    // )
   };
 
   const rewindSymptom = () => {
@@ -141,13 +159,13 @@ const Diagnosis = (props) => {
   };
 
   const selectedSymptomHandler = (symptom) => {
-    if (symptom.id === "fever") {
+    const id = symptom.id;
+
+    if (id === "heavy_diarrhea") {
       addSymptom(symptom, "symptomLength");
     } else {
-      addSymptom(symptom, "selectSymptom");
+      addSymptom(symptom, "symptomLength");
     }
-
-    navigation.push("diagnosis");
   };
 
   const selectedSymptomLengthHandler = (symptomLengthValue) => {
@@ -165,37 +183,16 @@ const Diagnosis = (props) => {
         />
       )}
       {screenType === "symptomLength" && (
-        <>
-          <Text style={s.headerText}>
-            คุณมีอาการ
-            {symptomList.find(
+        <SelectOptions
+          headerText={`คุณมีอาการ${
+            symptomList.find(
               (symptom) =>
-                symptom["id"] ===
-                (previousScreenType === "symptomLength"
-                  ? diagnosisData.symptomList[screenIndex - 1][
-                      "name"
-                    ].substring(3)
-                  : diagnosisData.symptomList[screenIndex - 1][
-                      "name"
-                    ].substring(3))
-            )}
-            มานานแค่ไหนแล้ว?
-          </Text>
-
-          <View style={s.optionList}>
-            {symptomLengthList.map((symptomLength) => (
-              <CustomButton
-                style={s.optionItem}
-                onPress={() =>
-                  selectedSymptomLengthHandler(symptomLength.value)
-                }
-                key={symptomLength.value}
-              >
-                <Text>{symptomLength.name}</Text>
-              </CustomButton>
-            ))}
-          </View>
-        </>
+                symptom["id"] === diagnosisData.symptomList.slice(-1)[0]["id"]
+            ).name
+          }มานานแค่ไหนแล้ว?`}
+          optionsList={symptomLengthList}
+          onOptionPress={selectedSymptomLengthHandler}
+        />
       )}
       {/* <BlurView style={s.bottomBar} intensity={100}>
         <Text>Progress</Text>
@@ -235,19 +232,6 @@ const s = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     shadowOpacity: 0.25,
-  },
-  optionList: {
-    borderRadius: 20,
-  },
-  optionItem: {
-    padding: 20,
-    backgroundColor: "#fdfdfd",
-    borderRadius: 20,
-    shadowColor: "black",
-    shadowOffset: { width: 2, height: 2 },
-    shadowRadius: 10,
-    shadowOpacity: 0.1,
-    marginBottom: 20,
   },
 });
 
