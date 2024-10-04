@@ -16,7 +16,6 @@ const RootContainer = (props) => {
   return (
     <View
       style={[
-        s.home,
         s.rootContainer,
         isIpad && { paddingHorizontal: screenWidth / 3.5 },
       ]}

@@ -10,14 +10,24 @@ import {
 import CustomButton from "./CustomButton";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import type { NavigationAction } from "@react-navigation/native";
 
-const HomeListItem = (props) => {
-  const [modalIsVisible, setModalIsVisible] = useState(false);
+const HomeListItem: React.FC<{
+  text: string;
+  button: string;
+  image?: boolean;
+  redirectTo: string;
+  warningModal?: boolean;
+}> = (props) => {
   const navigation = useNavigation();
+  const [modalIsVisible, setModalIsVisible] = useState(false);
 
   const customButtonPressHandler = () => {
-    setModalIsVisible(true);
-    // navigation.navigate(props.redirectTo ? props.redirectTo : "home");
+    if (props.warningModal) {
+      setModalIsVisible(true);
+    } else {
+      navigation.navigate(props.redirectTo);
+    }
   };
 
   return (
@@ -62,9 +72,8 @@ const HomeListItem = (props) => {
             ]}
             pressedStyle={s.homeListItem__buttonPressed}
             onPress={() => {
-              navigation.navigate(props.redirectTo ? props.redirectTo : "home");
+              navigation.navigate(props.redirectTo);
               setModalIsVisible(false);
-              return "a";
             }}
           >
             <Text style={s.homeListItem__buttonText}>รับทราบ</Text>
@@ -106,7 +115,6 @@ const s = StyleSheet.create({
     fontSize: 20,
     flex: 1,
     fontFamily: "SemiBold",
-    fontWeight: "old",
   },
   homeListItem__button: {
     backgroundColor: "#3246FF",

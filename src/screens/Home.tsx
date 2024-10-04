@@ -19,6 +19,7 @@ const Home = (props) => {
           button="เริ่มเลย!"
           image
           redirectTo="diagnosis"
+          warningModal
         />
         {/* <HomeListItem
           text="ประเมินความเสี่ยงเป็นโรคซึมเศร้า 🌧️"

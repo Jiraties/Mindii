@@ -7,9 +7,15 @@ import RootContainer from "../components/RootContainer";
 import SelectSymptom from "../components/diagnosisPages/SelectSymptom";
 import SelectOptions from "../components/diagnosisPages/SelectOptions";
 
+import {
+  diagnosisDataType,
+  screenType,
+  symptom,
+} from "../models/diagnosisTypes";
+
 // const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
 
-const diagnosisData = {
+const diagnosisData: diagnosisDataType = {
   screenIndex: 0,
   screenType: ["selectSymptom"],
   options: [],
@@ -35,7 +41,6 @@ const logDiagnosisData = () => {
     screenIndex: ${diagnosisData.screenIndex},
     screenType: ${diagnosisData.screenType},
     options: ${JSON.stringify(diagnosisData.options)},
-    optionsHeader: ${diagnosisData.optionsHeader},
     symptomList: ${JSON.stringify(diagnosisData.symptomList)},
     selectedOptionList: ${JSON.stringify(diagnosisData.selectedOptionList)}
     --------------------------
@@ -45,9 +50,7 @@ const logDiagnosisData = () => {
 
 const Diagnosis = (props) => {
   const navigation = useNavigation();
-  const screenIndex = diagnosisData.screenIndex;
-  const screenType = diagnosisData.screenType[screenIndex];
-  const [symptomList, setSymptomList] = useState([
+  const [symptomList, setSymptomList] = useState<symptom[]>([
     {
       id: "heavy_diarrhea",
       name: "ท้องเสียหนัก",
@@ -56,6 +59,8 @@ const Diagnosis = (props) => {
         "การถ่ายอุจจาระเหลว หรือถ่ายเป็นน้ำ 4-5 ครั้งขึ้นไปภายใน 24ชม",
     },
   ]);
+  const screenIndex: number = diagnosisData.screenIndex;
+  const screenType: screenType = diagnosisData.screenType[screenIndex];
 
   logDiagnosisData();
 
@@ -63,7 +68,7 @@ const Diagnosis = (props) => {
     diagnosisData.screenType.push(nextScreenType);
     diagnosisData.screenIndex++;
 
-    navigation.push("diagnosis");
+    props.navigation.push("diagnosis");
   };
 
   const addSymptom = (symptom, nextScreenType) => {
@@ -79,14 +84,14 @@ const Diagnosis = (props) => {
   const rewindSymptom = () => {
     if (screenIndex === 0) {
       navigation.goBack();
-      diagnosisData = {
-        screenIndex: 0,
-        screenType: ["selectSymptom"],
-        options: [],
-        optionsHeader: "",
-        symptomList: [],
-        selectedOptionList: [],
-      };
+      // diagnosisData = {
+      //   screenIndex: 0,
+      //   screenType: ["selectSymptom"],
+      //   options: [],
+      //   optionsHeader: "",
+      //   symptomList: [],
+      //   selectedOptionList: [],
+      // };
       return;
     }
 
@@ -97,8 +102,7 @@ const Diagnosis = (props) => {
       case "selectSymptom":
         diagnosisData.symptomList.splice(-1);
       case "symptomLength":
-        delete diagnosisData.symptomList[diagnosisData.symptomList.length - 1]
-          .length;
+        delete diagnosisData.symptomList[diagnosisData.symptomList.length - 1];
       case "customOptions":
         diagnosisData.selectedOptionList.pop();
       // NOT SPLICING SCREENTYPE
@@ -110,12 +114,7 @@ const Diagnosis = (props) => {
     navigation.goBack();
   };
 
-  const createCustomOptions = ({
-    header,
-    subheader,
-    options,
-    nextDiagnosisPage,
-  }) => {
+  const createCustomOptions = ({ header, options, nextDiagnosisPage }) => {
     diagnosisData.options = options;
     options.at(-1).question = header;
 
@@ -130,6 +129,7 @@ const Diagnosis = (props) => {
       createCustomOptions({
         header: "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?",
         options: [{ name: "ใช่", value: "yes" }],
+        nextDiagnosisPage: false,
       });
     } else {
       addSymptom(symptom, "symptomLength");

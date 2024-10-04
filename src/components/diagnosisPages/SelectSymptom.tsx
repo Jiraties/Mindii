@@ -4,8 +4,6 @@ import { useState } from "react";
 import CustomButton from "../CustomButton";
 
 const SelectSymptom = (props) => {
-  console.log(props.symptomList.length);
-
   const [searchFieldValue, setSearchFieldValue] = useState("");
   const [originalSymptomList] = useState(props.symptomList);
   const [symptomList, setSymptionList] = useState(originalSymptomList);
@@ -35,7 +33,7 @@ const SelectSymptom = (props) => {
         value={searchFieldValue}
         onChangeText={searchFieldHandler} // Call the handler with each change
       />
-      {isFirstDiagnosisScreen === 0 && (
+      {symptomList.length === 0 && (
         <View style={s.symptomListItem__notFound}>
           <Text style={s.symptomListItem__notFoundText}>
             ไม่พบอาการที่คุณค้นหา ⛓️‍💥
@@ -135,7 +133,7 @@ const s = StyleSheet.create({
     backgroundColor: "#3246FF",
     borderRadius: 100,
     justifyContent: "center",
-    height: "50",
+    height: 50,
   },
   symptomListItem__buttonText: {
     textAlign: "center",

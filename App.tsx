@@ -19,14 +19,10 @@ export default function App() {
   if (fontsAreLoaded) {
     return (
       <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Home"
-          options={{ drawerActiveTintColor: "#FB6E90" }}
-        >
+        <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
             name="home"
             component={Home}
-            title="ใกล้หมอ"
             options={({ navigation }) => ({
               headerTitle: () => <HeaderText />,
               headerRight: (props) => (
@@ -48,7 +44,6 @@ export default function App() {
             name="settings"
             component={Settings}
             options={{
-              drawerLabel: "ตั้งค่า",
               headerTitle: () => <HeaderText />,
               headerStyle: {
                 backgroundColor: "#EFEFEF",
@@ -58,7 +53,6 @@ export default function App() {
           <Stack.Screen
             name="diagnosis"
             component={Diagnosis}
-            nav
             options={{
               gestureEnabled: false,
               // headerBackTitle: "กลับ",
