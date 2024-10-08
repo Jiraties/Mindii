@@ -17,6 +17,11 @@ export interface diagnosisDataType {
   screenIndex: number;
   screenType: screenType[];
   options: diagnosisOption[];
+  optionsSettings: {
+    checklist?: boolean;
+    header: string;
+    subheader?: string;
+  };
   symptomList: symptom[];
   selectedOptionList: diagnosisOption[];
 }

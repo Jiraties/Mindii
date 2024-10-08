@@ -1,19 +1,31 @@
 import { Text, TextInput, View, FlatList, StyleSheet } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import CustomButton from "../CustomButton";
 
 const SelectSymptom = (props) => {
   const [searchFieldValue, setSearchFieldValue] = useState("");
-  const [originalSymptomList] = useState(props.symptomList);
+  const [originalSymptomList] = useState(
+    // Filter previously selected symptoms
+    props.symptomList.filter((symptom, index) => {
+      return props.diagnosisData.symptomList.length !== 0 &&
+        index < props.diagnosisData.symptomList.length &&
+        props.diagnosisData.symptomList[index].id.includes(symptom.id)
+        ? false
+        : symptom;
+    })
+  );
   const [symptomList, setSymptionList] = useState(originalSymptomList);
   const isFirstDiagnosisScreen = props.diagnosisData.screenIndex === 0;
+
+  console.log(symptomList);
 
   const searchFieldHandler = (text) => {
     setSearchFieldValue(text); // Update the search field value
     const filteredSymptomList = originalSymptomList.filter((symptom) => {
       return symptom.name.includes(text); // Use the 'text' parameter directly here
     });
+
     setSymptionList(filteredSymptomList); // Update the displayed list
   };
 
@@ -25,7 +37,11 @@ const SelectSymptom = (props) => {
           : "มีอาการเพิ่มเติมหรือไม่?"}
       </Text>
       <Text style={s.headerDescriptionText}>
-        {"เริ่มจากการเลือกอาการที่กระทบที่สุด"}
+        {isFirstDiagnosisScreen
+          ? "เริ่มจากการเลือกอาการที่กระทบคุณมากที่สุด"
+          : `คุณเลือกอาการ ${props.diagnosisData.symptomList.map(
+              (symptom) => symptom.name
+            )} ไปแล้ว`}
       </Text>
       <TextInput
         placeholder="ค้นหาอาการที่ต้องการ..."
@@ -43,6 +59,7 @@ const SelectSymptom = (props) => {
       {/* <View style={s.symptomListItem}>
         <Text>ผมมีอาการแค่นี้</Text>
       </View> */}
+
       <FlatList
         data={symptomList}
         keyExtractor={(symptom) => symptom.id}
@@ -174,6 +191,17 @@ const s = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     shadowOpacity: 0.25,
+  },
+  symptomListHistory: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    marginBottom: 20,
+    padding: 20,
+    shadowColor: "black",
+    shadowOffset: { width: 2, height: 2 },
+    shadowRadius: 10,
+    shadowOpacity: 0.1,
   },
 });
 

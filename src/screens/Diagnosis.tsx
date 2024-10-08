@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import CustomButton from "../components/CustomButton";
@@ -12,6 +12,7 @@ import {
   screenType,
   symptom,
 } from "../models/diagnosisTypes";
+import { LearnMoreLinks } from "react-native/Libraries/NewAppScreen";
 
 // const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
 
@@ -19,6 +20,7 @@ const diagnosisData: diagnosisDataType = {
   screenIndex: 0,
   screenType: ["selectSymptom"],
   options: [],
+  optionsSettings: { checklist: false, header: "", subheader: "" },
   symptomList: [],
   selectedOptionList: [],
 };
@@ -41,6 +43,7 @@ const logDiagnosisData = () => {
     screenIndex: ${diagnosisData.screenIndex},
     screenType: ${diagnosisData.screenType},
     options: ${JSON.stringify(diagnosisData.options)},
+    optionsSettings: ${JSON.stringify(diagnosisData.optionsSettings)},
     symptomList: ${JSON.stringify(diagnosisData.symptomList)},
     selectedOptionList: ${JSON.stringify(diagnosisData.selectedOptionList)}
     --------------------------
@@ -57,6 +60,13 @@ const Diagnosis = (props) => {
       emoji: "💩",
       description:
         "การถ่ายอุจจาระเหลว หรือถ่ายเป็นน้ำ 4-5 ครั้งขึ้นไปภายใน 24ชม",
+    },
+    {
+      id: "fever",
+      name: "ไข้",
+      emoji: "🤒",
+      description:
+        "ภาวะที่อุณหภูมิของร่างกายสูงกว่าปกติ บ่งบอกถึงการติดเชื้อหรืออาการอื่นๆ",
     },
   ]);
   const screenIndex: number = diagnosisData.screenIndex;
@@ -83,15 +93,34 @@ const Diagnosis = (props) => {
 
   const rewindSymptom = () => {
     if (screenIndex === 0) {
-      navigation.goBack();
-      // diagnosisData = {
-      //   screenIndex: 0,
-      //   screenType: ["selectSymptom"],
-      //   options: [],
-      //   optionsHeader: "",
-      //   symptomList: [],
-      //   selectedOptionList: [],
-      // };
+      Alert.alert(
+        "คุณแน่ใจแล้วใช่ไหมว่าจะเลิกการประเมินครั้งนี้",
+        "ถ้าคุณยกเลิกการประเมินครั้งนี้ ข้อมูลที่คุณกรอกไปจะถูกลบทิ้ง",
+        [
+          {
+            text: "ยกเลิก",
+            onPress: () => {
+              navigation.goBack();
+              const d = diagnosisData;
+              d.screenIndex = 0;
+              d.screenType = ["selectSymptom"];
+              d.options = [];
+              d.optionsSettings = {
+                checklist: false,
+                header: "",
+                subheader: "",
+              };
+              d.symptomList = [];
+              d.selectedOptionList = [];
+            },
+          },
+          {
+            text: "ประเมินต่อ",
+            style: "cancel",
+          },
+        ]
+      );
+
       return;
     }
 
@@ -114,9 +143,20 @@ const Diagnosis = (props) => {
     navigation.goBack();
   };
 
-  const createCustomOptions = ({ header, options, nextDiagnosisPage }) => {
+  const createCustomOptions = ({
+    header,
+    subheader,
+    options,
+    nextDiagnosisPage,
+    checklist = false,
+  }) => {
     diagnosisData.options = options;
     options.at(-1).question = header;
+    diagnosisData.optionsSettings = {
+      checklist,
+      header,
+      subheader,
+    };
 
     if (nextDiagnosisPage) nextScreen("customOptions");
   };
@@ -124,15 +164,18 @@ const Diagnosis = (props) => {
   const handleSelectSymtomPress = (symptom) => {
     const id = symptom.id;
 
-    if (id === "heavy_diarrhea") {
-      addSymptom(symptom, "customOptions");
-      createCustomOptions({
-        header: "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?",
-        options: [{ name: "ใช่", value: "yes" }],
-        nextDiagnosisPage: false,
-      });
-    } else {
-      addSymptom(symptom, "symptomLength");
+    switch (id) {
+      case "heavy_diarrhea":
+        addSymptom(symptom, "customOptions");
+        createCustomOptions({
+          header: "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?",
+          subheader: "",
+          options: [
+            { name: "ใช่", value: "yes" },
+            { name: "ไม่", value: "no" },
+          ],
+          nextDiagnosisPage: false,
+        });
     }
   };
 
@@ -144,21 +187,84 @@ const Diagnosis = (props) => {
     option.question = headerText;
     diagnosisData.selectedOptionList.push(option);
 
+    const latestSelectedSymptom = diagnosisData.symptomList.at(-1);
+    const latestSelectedOption = diagnosisData.selectedOptionList.at(-1);
+
+    switch (latestSelectedSymptom.id) {
+      case "heavy_diarrhea":
+        if (
+          latestSelectedOption.question ===
+          "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?"
+        ) {
+          if (latestSelectedOption.value === "yes")
+            createCustomOptions({
+              header: "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม",
+              subheader: "เลือกได้หลายอาการ",
+              checklist: true,
+              options: [
+                { name: "เหนื่อยง่าย", value: "เหนื่อยง่าย" },
+                { name: "มือสั่น", value: "มือสั่น" },
+                { name: "คอพอก", value: "คอพอก" },
+                { name: "ตาโพน", value: "ตาโพน" },
+                {
+                  name: "หัวใจเต้นเร็วกว่าปกติ",
+                  value: "หัวใจเต้นเร็วกว่าปกติ",
+                },
+              ],
+              nextDiagnosisPage: true,
+            });
+          if (latestSelectedOption.value === "no") {
+            nextScreen("selectSymptom");
+          }
+        }
+        if (
+          latestSelectedOption.question ===
+          "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม"
+        ) {
+          if (latestSelectedOption.value === ">= 2") {
+            props.navigation.navigate("conclusions");
+          }
+          if (latestSelectedOption.value === "< 2") {
+            createCustomOptions({
+              header: "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่",
+              subheader: "",
+              options: [
+                { name: "ใช่", value: "yes" },
+                { name: "ไม่", value: "no" },
+              ],
+              nextDiagnosisPage: true,
+            });
+          }
+        }
+    }
     if (
-      diagnosisData.symptomList.some(
-        (symptom) => (symptom.id = "heavy_diarreah")
-      ) &&
-      diagnosisData.selectedOptionList.some(
-        (selectedOption) =>
-          selectedOption.question === "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?" &&
-          selectedOption.value === "yes"
-      )
+      latestSelectedOption.question ===
+      "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม"
     ) {
-      createCustomOptions({
-        header: "มีอาการเหนื่อยง่าย มือสั่น คอพอก ตาโปน หัวใจเต้นเร็วกว่าปกติ",
-        options: [{ name: "ใช่", value: "yes" }],
-        nextDiagnosisPage: true,
-      });
+      if (latestSelectedOption.value === "no")
+        createCustomOptions({
+          header: "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่",
+          subheader: "",
+          options: [
+            { name: "ใช่", value: "yes" },
+            { name: "ไม่", value: "no" },
+          ],
+          nextDiagnosisPage: true,
+        });
+    }
+  };
+
+  const handleChecklistCompletion = (completeCheckList, headerText) => {
+    let numberOfOptionsChecked = 0;
+    completeCheckList.forEach((option) => {
+      option.isChecked && numberOfOptionsChecked++;
+    });
+
+    console.log(numberOfOptionsChecked);
+    if (numberOfOptionsChecked >= 2) {
+      handleCustomOptionPress({ name: "2 ขึ้นไป", value: ">= 2" }, headerText);
+    } else {
+      handleCustomOptionPress({ name: "น้อยกว่า 2", value: "< 2" }, headerText);
     }
   };
 
@@ -188,9 +294,10 @@ const Diagnosis = (props) => {
       case "customOptions":
         return (
           <SelectOptions
-            headerText={diagnosisData.options.at(-1).question}
             optionsList={diagnosisData.options}
+            optionsSettings={diagnosisData.optionsSettings}
             onOptionPress={handleCustomOptionPress}
+            onChecklistCompletion={handleChecklistCompletion}
           />
         );
       default:
@@ -201,7 +308,7 @@ const Diagnosis = (props) => {
     <RootContainer>
       {displayScreenType(screenType)}
       <CustomButton style={s.backButton} onPress={rewindSymptom}>
-        <Text>กลับ</Text>
+        <Text style={{ fontFamily: "SemiBold" }}>กลับ</Text>
       </CustomButton>
     </RootContainer>
   );

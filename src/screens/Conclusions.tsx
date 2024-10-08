@@ -5,7 +5,9 @@ const Conclusions = (props) => {
   return (
     <RootContainer>
       <Text style={s.headerText}>คุณมีความเสี่ยงเป็น</Text>
-      <Text style={s.headerTextHighlight}>ท้องเสีย</Text>
+      <Text style={s.headerTextHighlight}>
+        ต่อมไทรอยด์ ทำงานเกิน คอพอกเป็นพิษ หาหมอทันที
+      </Text>
       <Image
         style={{ width: "auto", height: "auto" }}
         source={{

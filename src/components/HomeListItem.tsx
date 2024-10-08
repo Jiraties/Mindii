@@ -1,3 +1,5 @@
+import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -8,9 +10,6 @@ import {
 } from "react-native";
 
 import CustomButton from "./CustomButton";
-import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
-import type { NavigationAction } from "@react-navigation/native";
 
 const HomeListItem: React.FC<{
   text: string;
