@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { useState } from "react";
 import {
   StyleSheet,
@@ -11,14 +12,19 @@ import {
 
 import CustomButton from "./CustomButton";
 
+type RootStackParamList = {
+  Home: undefined;
+};
+type HomeListItemNavigationProp = StackNavigationProp<RootStackParamList>;
+
 const HomeListItem: React.FC<{
   text: string;
   button: string;
   image?: boolean;
-  redirectTo: string;
+  redirectTo: keyof RootStackParamList;
   warningModal?: boolean;
 }> = (props) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeListItemNavigationProp>();
   const [modalIsVisible, setModalIsVisible] = useState(false);
 
   const customButtonPressHandler = () => {
