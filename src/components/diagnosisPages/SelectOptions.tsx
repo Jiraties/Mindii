@@ -64,7 +64,10 @@ const SelectOptions = (props) => {
             return (
               <CustomButton
                 style={s.optionItem}
-                onPress={() => props.onOptionPress(option, header)}
+                onPress={() => {
+                  option.question = header;
+                  props.onOptionPress(option);
+                }}
                 key={option.value}
               >
                 <Text style={{ fontFamily: "SemiBold", fontSize: 15 }}>
