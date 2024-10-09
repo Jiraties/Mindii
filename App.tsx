@@ -64,7 +64,14 @@ export default function App() {
               },
             }}
           />
-          <Stack.Screen name="conclusions" component={Conclusions} />
+          <Stack.Screen
+            name="conclusions"
+            component={Conclusions}
+            options={{
+              headerBackVisible: false,
+              headerTitle: () => <HeaderText isDiagnosis={true} />,
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );

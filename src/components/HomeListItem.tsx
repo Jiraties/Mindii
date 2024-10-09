@@ -104,7 +104,7 @@ const HomeListItem: React.FC<{
 const s = StyleSheet.create({
   homeListItem: {
     width: "100%",
-    backgroundColor: "#b8eaff",
+    backgroundColor: "#fdfdfd",
     borderRadius: 20,
     marginBottom: 20,
     height: 175,

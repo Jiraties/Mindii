@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import CustomButton from "../components/CustomButton";
@@ -13,6 +13,7 @@ import {
   symptom,
 } from "../models/diagnosisTypes";
 import { LearnMoreLinks } from "react-native/Libraries/NewAppScreen";
+import Conclusions from "./Conclusions";
 
 // const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
 
@@ -69,6 +70,8 @@ const Diagnosis = (props) => {
         "ภาวะที่อุณหภูมิของร่างกายสูงกว่าปกติ บ่งบอกถึงการติดเชื้อหรืออาการอื่นๆ",
     },
   ]);
+  const [conclusionsVisible, setConclusionsVisible] = useState(false);
+  const [conclusion, setConclusion] = useState({});
   const screenIndex: number = diagnosisData.screenIndex;
   const screenType: screenType = diagnosisData.screenType[screenIndex];
 
@@ -91,6 +94,26 @@ const Diagnosis = (props) => {
     nextScreen(nextScreenType);
   };
 
+  const jumpToConclusions = (conclusion) => {
+    setConclusion(conclusion);
+    setConclusionsVisible(true);
+    resetDiagnosisData();
+  };
+
+  const resetDiagnosisData = () => {
+    const d = diagnosisData;
+    d.screenIndex = 0;
+    d.screenType = ["selectSymptom"];
+    d.options = [];
+    d.optionsSettings = {
+      checklist: false,
+      header: "",
+      subheader: "",
+    };
+    d.symptomList = [];
+    d.selectedOptionList = [];
+  };
+
   const rewindSymptom = () => {
     if (screenIndex === 0) {
       Alert.alert(
@@ -101,17 +124,7 @@ const Diagnosis = (props) => {
             text: "ยกเลิก",
             onPress: () => {
               navigation.goBack();
-              const d = diagnosisData;
-              d.screenIndex = 0;
-              d.screenType = ["selectSymptom"];
-              d.options = [];
-              d.optionsSettings = {
-                checklist: false,
-                header: "",
-                subheader: "",
-              };
-              d.symptomList = [];
-              d.selectedOptionList = [];
+              resetDiagnosisData();
             },
           },
           {
@@ -161,6 +174,11 @@ const Diagnosis = (props) => {
     if (nextDiagnosisPage) nextScreen("customOptions");
   };
 
+  const yesNoOptions = [
+    { name: "ใช่", value: "yes" },
+    { name: "ไม่", value: "no" },
+  ];
+
   const handleSelectSymtomPress = (symptom) => {
     const id = symptom.id;
 
@@ -170,10 +188,7 @@ const Diagnosis = (props) => {
         createCustomOptions({
           header: "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?",
           subheader: "",
-          options: [
-            { name: "ใช่", value: "yes" },
-            { name: "ไม่", value: "no" },
-          ],
+          options: yesNoOptions,
           nextDiagnosisPage: false,
         });
     }
@@ -188,15 +203,12 @@ const Diagnosis = (props) => {
     diagnosisData.selectedOptionList.push(option);
 
     const latestSelectedSymptom = diagnosisData.symptomList.at(-1);
-    const latestSelectedOption = diagnosisData.selectedOptionList.at(-1);
+    const latest = diagnosisData.selectedOptionList.at(-1);
 
     switch (latestSelectedSymptom.id) {
       case "heavy_diarrhea":
-        if (
-          latestSelectedOption.question ===
-          "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?"
-        ) {
-          if (latestSelectedOption.value === "yes")
+        if (latest.question === "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?") {
+          if (latest.value === "yes")
             createCustomOptions({
               header: "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม",
               subheader: "เลือกได้หลายอาการ",
@@ -213,44 +225,67 @@ const Diagnosis = (props) => {
               ],
               nextDiagnosisPage: true,
             });
-          if (latestSelectedOption.value === "no") {
+          if (latest.value === "no") {
             nextScreen("selectSymptom");
           }
         }
-        if (
-          latestSelectedOption.question ===
-          "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม"
-        ) {
-          if (latestSelectedOption.value === ">= 2") {
-            props.navigation.navigate("conclusions");
+        if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
+          if (latest.value === ">= 2") {
+            jumpToConclusions({
+              diseaseName: "ต่อมไทรอยด์ทำงานเกิน คอพอกเป็นพิษ",
+              description:
+                "ต่อมไทรอยด์ คือ ต่อมไร้ท่อที่อยู่บริเวณลำคอด้านหน้าต่ำกว่าลูกกระเดือกเล็กน้อยมีรูปร่างคล้ายผีเสื้อ ประกอบด้วยปีกซ้ายและขวาคอยทำหน้าที่สร้างฮอร์โมนไทรอยด์ ซึ่งออกฤทธิ์ต่อหลายอวัยวะ เช่นการทำงานของหัวใจและระบบประสาท พัฒนาการของสมองในวัยเด็กรวมถึงระบบเผาผลาญพลังงานของร่างกาย เป็นต้น",
+              flags: ["visitDoctor"],
+              imageUri:
+                "https://www.vibhavadi.com/images/healthex/4299_01639541039.jpg",
+            });
+            // console.log("ต่อมไทรอยด์ ทำงานเกิน/ คอพอกเป็นพิษ หาหมอทันที");
+            // props.navigation.navigate("conclusions");
           }
-          if (latestSelectedOption.value === "< 2") {
+          if (latest.value === "< 2") {
             createCustomOptions({
               header: "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่",
               subheader: "",
-              options: [
-                { name: "ใช่", value: "yes" },
-                { name: "ไม่", value: "no" },
-              ],
+              options: yesNoOptions,
               nextDiagnosisPage: true,
             });
           }
         }
     }
-    if (
-      latestSelectedOption.question ===
-      "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม"
-    ) {
-      if (latestSelectedOption.value === "no")
+    if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
+      if (latest.value === "no")
         createCustomOptions({
           header: "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่",
           subheader: "",
-          options: [
-            { name: "ใช่", value: "yes" },
-            { name: "ไม่", value: "no" },
-          ],
+          options: yesNoOptions,
           nextDiagnosisPage: true,
         });
+    }
+    if (latest.question === "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่") {
+      if (latest.value === "yes") {
+        createCustomOptions({
+          header:
+            "ข่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่",
+          subheader: "",
+          options: yesNoOptions,
+          nextDiagnosisPage: true,
+        });
+      }
+    }
+    if (
+      latest.question ===
+      "ข่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่"
+    ) {
+      if (latest.value === "yes") {
+        jumpToConclusions({
+          diseaseName: "ท้องเสียจากเชื้อไกอาร์เดีย",
+          description:
+            "เป็นโปรโตซัว (สัตว์เซลล์เดียว) ชนิดหนึ่งแบบเดียวกับอะมีบา สามารถเข้าไปทำให้เกิดการติดเชื้อที่ลำไส้เล็ก กลายเป็นโรคท้องเดินทั้งชนิดเฉียบพลันและเรื้อรังได้",
+          flags: [],
+          imageUri:
+            "https://cth.co.th/wp-content/uploads/2021/05/Giardiasis2.jpg",
+        });
+      }
     }
   };
 
@@ -306,6 +341,13 @@ const Diagnosis = (props) => {
 
   return (
     <RootContainer>
+      <Modal
+        visible={conclusionsVisible}
+        presentationStyle="pageSheet"
+        animationType="slide"
+      >
+        <Conclusions conclusion={conclusion} />
+      </Modal>
       {displayScreenType(screenType)}
       <CustomButton style={s.backButton} onPress={rewindSymptom}>
         <Text style={{ fontFamily: "SemiBold" }}>กลับ</Text>

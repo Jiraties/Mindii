@@ -27,9 +27,10 @@ const Home = (props) => {
           image={false}
           redirectTo="home"
         /> */}
+
         <HomeListItem
-          text="Conclusions TEST!!!"
-          button="เริ่มเลย!"
+          text="ดูประวัติการประเมินโรคของคุณ"
+          button="ไป"
           image={false}
           redirectTo="conclusions"
         />

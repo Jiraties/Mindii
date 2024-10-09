@@ -18,6 +18,7 @@ const RootContainer = (props) => {
       style={[
         s.rootContainer,
         isIpad && { paddingHorizontal: screenWidth / 3.5 },
+        props.style,
       ]}
     >
       <Image
