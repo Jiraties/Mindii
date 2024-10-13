@@ -11,9 +11,11 @@ import {
   diagnosisDataType,
   screenType,
   symptom,
+  symptomLength,
 } from "../models/diagnosisTypes";
 import { LearnMoreLinks } from "react-native/Libraries/NewAppScreen";
 import Conclusions from "./Conclusions";
+import { conclusion } from "../models/conclusionTypes";
 
 // const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
 
@@ -26,7 +28,7 @@ const diagnosisData: diagnosisDataType = {
   selectedOptionList: [],
 };
 
-const symptomLengthList = [
+const symptomLengthList: symptomLength[] = [
   {
     value: "2-3",
     name: "2-3 วัน",
@@ -70,8 +72,13 @@ const Diagnosis = (props) => {
         "ภาวะที่อุณหภูมิของร่างกายสูงกว่าปกติ บ่งบอกถึงการติดเชื้อหรืออาการอื่นๆ",
     },
   ]);
-  const [conclusionsVisible, setConclusionsVisible] = useState(false);
-  const [conclusion, setConclusion] = useState({});
+  const [conclusionsVisible, setConclusionsVisible] = useState<boolean>(false);
+  const [conclusion, setConclusion] = useState<conclusion>({
+    diseaseName: "",
+    flags: [],
+    imageUri: "",
+    description: "",
+  });
   const screenIndex: number = diagnosisData.screenIndex;
   const screenType: screenType = diagnosisData.screenType[screenIndex];
 
@@ -84,17 +91,17 @@ const Diagnosis = (props) => {
     props.navigation.push("diagnosis");
   };
 
-  const addSymptom = (symptom, nextScreenType) => {
+  const addSymptom = (symptom: symptom, nextScreenType) => {
     diagnosisData.symptomList.push(symptom);
     nextScreen(nextScreenType);
   };
 
-  const addSymptomLength = (length, nextScreenType) => {
+  const addSymptomLength = (length: symptomLength, nextScreenType) => {
     diagnosisData["symptomList"][screenIndex - 1]["length"] = length;
     nextScreen(nextScreenType);
   };
 
-  const jumpToConclusions = (conclusion) => {
+  const jumpToConclusions = (conclusion: conclusion) => {
     setConclusion(conclusion);
     setConclusionsVisible(true);
     resetDiagnosisData();

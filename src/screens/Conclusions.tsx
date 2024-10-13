@@ -1,22 +1,14 @@
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import RootContainer from "../components/RootContainer";
-import CustomButton from "../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
 
-const Conclusions = (props) => {
-  const navigation = useNavigation();
+import RootContainer from "../components/RootContainer";
+import CustomButton from "../components/CustomButton";
+import { conclusion } from "../models/conclusionTypes";
 
-  const renderFlags = (flags) => {
-    flags.map((flag) => {
-      if (flag === "visitDoctor") {
-        return (
-          <View style={s.conclusionsTag}>
-            <Text style={s.conclusionsTag__text}>ควรพบแพทย์ทันที</Text>
-          </View>
-        );
-      }
-    });
-  };
+const Conclusions: React.FC<{
+  conclusion: conclusion;
+}> = (props) => {
+  const navigation = useNavigation();
 
   return (
     <RootContainer>

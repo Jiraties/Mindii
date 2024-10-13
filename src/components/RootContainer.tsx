@@ -9,7 +9,7 @@ import {
 
 const colorScheme = Appearance.getColorScheme();
 
-const RootContainer = (props) => {
+const RootContainer = ({ image = true, style, children }) => {
   const { height: screenHeight, width: screenWidth } = useWindowDimensions();
   const isIpad = screenWidth >= 1100 && screenHeight >= 800;
 
@@ -18,19 +18,21 @@ const RootContainer = (props) => {
       style={[
         s.rootContainer,
         isIpad && { paddingHorizontal: screenWidth / 3.5 },
-        props.style,
+        style,
       ]}
     >
-      <Image
-        blurRadius={70}
-        source={require("../../assets/images/homeBackground.png")}
-        style={
-          isIpad
-            ? [s.imageBackground, { width: screenWidth }]
-            : s.imageBackground
-        }
-      />
-      {props.children}
+      {/* {image && (
+        <Image
+          blurRadius={70}
+          source={require("../../assets/images/homeBackground.png")}
+          style={
+            isIpad
+              ? [s.imageBackground, { width: screenWidth }]
+              : s.imageBackground
+          }
+        />
+      )} */}
+      {children}
     </View>
   );
 };

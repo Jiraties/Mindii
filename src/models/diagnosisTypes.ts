@@ -25,3 +25,8 @@ export interface diagnosisDataType {
   symptomList: symptom[];
   selectedOptionList: diagnosisOption[];
 }
+
+export interface symptomLength {
+  value: string;
+  name: string;
+}
