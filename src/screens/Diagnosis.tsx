@@ -6,18 +6,16 @@ import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
 import SelectSymptom from "../components/diagnosisPages/SelectSymptom";
 import SelectOptions from "../components/diagnosisPages/SelectOptions";
+import Conclusions from "./Conclusions";
 
+import { conclusion } from "../models/conclusionTypes";
 import {
   diagnosisDataType,
+  diagnosisOption,
   screenType,
   symptom,
   symptomLength,
 } from "../models/diagnosisTypes";
-import { LearnMoreLinks } from "react-native/Libraries/NewAppScreen";
-import Conclusions from "./Conclusions";
-import { conclusion } from "../models/conclusionTypes";
-
-// const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
 
 const diagnosisData: diagnosisDataType = {
   screenIndex: 0,
@@ -84,7 +82,7 @@ const Diagnosis = (props) => {
 
   logDiagnosisData();
 
-  const nextScreen = (nextScreenType) => {
+  const nextScreen = (nextScreenType: screenType) => {
     diagnosisData.screenType.push(nextScreenType);
     diagnosisData.screenIndex++;
 
@@ -205,7 +203,10 @@ const Diagnosis = (props) => {
     addSymptomLength(symptomLength.value, "selectSymptom");
   };
 
-  const handleCustomOptionPress = (option, headerText) => {
+  const handleCustomOptionPress = (
+    option: diagnosisOption,
+    headerText: string
+  ) => {
     option.question = headerText;
     diagnosisData.selectedOptionList.push(option);
 
@@ -304,9 +305,15 @@ const Diagnosis = (props) => {
 
     console.log(numberOfOptionsChecked);
     if (numberOfOptionsChecked >= 2) {
-      handleCustomOptionPress({ name: "2 ขึ้นไป", value: ">= 2" }, headerText);
+      handleCustomOptionPress(
+        { name: "2 ขึ้นไป", value: ">= 2", question: headerText },
+        headerText
+      );
     } else {
-      handleCustomOptionPress({ name: "น้อยกว่า 2", value: "< 2" }, headerText);
+      handleCustomOptionPress(
+        { name: "น้อยกว่า 2", value: "< 2", question: headerText },
+        headerText
+      );
     }
   };
 
@@ -320,19 +327,19 @@ const Diagnosis = (props) => {
             diagnosisData={diagnosisData}
           />
         );
-      case "symptomLength":
-        return (
-          <SelectOptions
-            headerText={`คุ��มีอา��าร${
-              symptomList.find(
-                (symptom) =>
-                  symptom["id"] === diagnosisData.symptomList.slice(-1)[0]["id"]
-              ).name
-            }มานานแค่ไหนแล้ว?`}
-            optionsList={symptomLengthList}
-            onOptionPress={handleSymptomLengthPress}
-          />
-        );
+      // case "symptomLength":
+      //   return (
+      //     <SelectOptions
+      //       headerText={`คุ��มีอา��าร${
+      //         symptomList.find(
+      //           (symptom) =>
+      //             symptom["id"] === diagnosisData.symptomList.slice(-1)[0]["id"]
+      //         ).name
+      //       }มานานแค่ไหนแล้ว?`}
+      //       optionsList={symptomLengthList}
+      //       onOptionPress={handleSymptomLengthPress}
+      //     />
+      //   );
       case "customOptions":
         return (
           <SelectOptions

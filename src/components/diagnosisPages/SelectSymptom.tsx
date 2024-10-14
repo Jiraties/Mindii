@@ -1,9 +1,14 @@
 import { Text, TextInput, View, FlatList, StyleSheet } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import CustomButton from "../CustomButton";
+import { diagnosisDataType, symptom } from "../../models/diagnosisTypes";
 
-const SelectSymptom = (props) => {
+const SelectSymptom: React.FC<{
+  symptomList: symptom[];
+  diagnosisData: diagnosisDataType;
+  selectedSymptomHandler: (symptom: symptom) => void;
+}> = (props) => {
   const [searchFieldValue, setSearchFieldValue] = useState("");
   const [originalSymptomList] = useState(
     // Filter previously selected symptoms

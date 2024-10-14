@@ -1,11 +1,26 @@
 import { StyleSheet, View, ScrollView, Text, Appearance } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 
 import HomeListItem from "../components/HomeListItem";
 import RootContainer from "../components/RootContainer";
 
+import CustomButton from "../components/CustomButton";
+import { collection, setDoc, doc } from "firebase/firestore";
+import { FIREBASE_FIRESTORE } from "../../FirebaseConfig";
+import { useSelector } from "react-redux";
+
 const Home = (props) => {
-  const username = "จิรัฏฐ์ ชูตระกูล";
+  const username = useSelector(
+    (state) => state.authentication.userInformation.name
+  );
+
+  async function fetchToken() {
+    const storedToken = await AsyncStorage.getItem("token");
+    console.log("The token is: ", storedToken);
+  }
+
+  fetchToken();
 
   return (
     <RootContainer>
@@ -53,7 +68,7 @@ const s = StyleSheet.create({
   },
   headerTextHighlight: {
     fontSize: 40,
-    color: "blue",
+    color: "#3246FF",
     fontFamily: "SemiBold",
     lineHeight: 55,
   },

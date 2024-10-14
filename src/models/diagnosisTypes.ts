@@ -11,17 +11,20 @@ export type diagnosisOption = {
   question: string;
   value: string;
   name: string;
+  isChecked?: boolean;
 };
+
+export interface optionsSettings {
+  checklist?: boolean;
+  header: string;
+  subheader?: string;
+}
 
 export interface diagnosisDataType {
   screenIndex: number;
   screenType: screenType[];
   options: diagnosisOption[];
-  optionsSettings: {
-    checklist?: boolean;
-    header: string;
-    subheader?: string;
-  };
+  optionsSettings: optionsSettings;
   symptomList: symptom[];
   selectedOptionList: diagnosisOption[];
 }

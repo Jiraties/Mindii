@@ -21,6 +21,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
+import Toast from "react-native-toast-message";
 
 const Signup = (props) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,13 +32,35 @@ const Signup = (props) => {
   const [birthday, setBirthday] = useState<Date>(new Date());
 
   const auth = FIREBASE_AUTH;
-  const firestore = FIREBASE_FIRESTORE;
+  const db = FIREBASE_FIRESTORE;
 
   const signup = async () => {
     setLoading(true);
-    console.log(email, name, password);
     try {
-      const user = await createUserWithEmailAndPassword(auth, email, password);
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const userUid = response.user.uid;
+
+      console.log(userUid);
+
+      const writeUserData = async () => {
+        try {
+          await setDoc(doc(db, "users", userUid), {
+            name: name,
+            email: email,
+            birthday: birthday.toISOString(),
+          });
+        } catch (error) {
+          console.log("writeUserData Error: ", error);
+        }
+      };
+      await writeUserData();
+
+      Toast.show({ type: "success", text1: "สร้างบัญชีเสร็จเรียบร้อย" });
+      props.navigation.navigate("login");
     } catch (error) {
       console.log(error);
       if (error.code === "auth/email-already-in-use") {

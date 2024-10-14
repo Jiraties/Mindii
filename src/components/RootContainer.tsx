@@ -9,7 +9,11 @@ import {
 
 const colorScheme = Appearance.getColorScheme();
 
-const RootContainer = ({ image = true, style, children }) => {
+const RootContainer: React.FC<{
+  image?: boolean;
+  style?: any;
+  children: any;
+}> = ({ image = true, style, children }) => {
   const { height: screenHeight, width: screenWidth } = useWindowDimensions();
   const isIpad = screenWidth >= 1100 && screenHeight >= 800;
 

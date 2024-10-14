@@ -1,3 +1,4 @@
+import Toast from "react-native-toast-message";
 import {
   View,
   Text,
@@ -6,26 +7,36 @@ import {
   TextInput,
   Image,
   ActivityIndicator,
+  Alert,
 } from "react-native";
-import CustomButton from "../components/CustomButton";
-import RootContainer from "../components/RootContainer";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
+
+import CustomButton from "../components/CustomButton";
+import RootContainer from "../components/RootContainer";
+import { useDispatch } from "react-redux";
+import { authenticationActions } from "../context/authenticationSlice";
 
 const Login = (props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
   const auth = FIREBASE_AUTH;
 
   const loginHandler = async () => {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response);
+      const tokenId = response._tokenResponse.idToken;
+      dispatch(authenticationActions.authenticate(tokenId));
     } catch (error) {
-      console.log(error);
+      Toast.show({
+        type: "error",
+        text1: "ไม่มีบัญชีดังกล่าวในระบบ",
+        text2: "โปรดลองอีกที",
+      });
     } finally {
       setLoading(false);
     }

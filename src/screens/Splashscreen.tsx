@@ -1,48 +1,72 @@
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Image, ScrollView } from "react-native";
+
 import RootContainer from "../components/RootContainer";
 import CustomButton from "../components/CustomButton";
 import { Colors } from "../constants/styles";
 
 const Splashscreen = (props) => {
   return (
-    <RootContainer style={s.splashscreenRootContainer} image={true}>
-      <View style={s.previewWrapper}>
-        <View style={s.preview}></View>
-        <View style={s.preview}></View>
-        <View style={s.preview}></View>
-      </View>
-      <View style={s.titleTextWrapper}>
-        <View style={s.titleTextSubwrapper}>
-          <Text style={s.titleText}>รู้ทันโรค</Text>
-          <Text style={[s.titleText, { color: Colors.blue }]}>ง่ายๆ </Text>
+    <ScrollView>
+      <RootContainer style={s.splashscreenRootContainer} image={true}>
+        <View style={s.previewWrapper}>
+          <View style={s.preview}>
+            <Image
+              style={s.preview}
+              source={require("../../assets/images/IMG_4706.png")}
+            />
+          </View>
+          <View style={s.preview}>
+            <Image
+              style={s.preview}
+              source={require("../../assets/images/IMG_4703.png")}
+            />
+          </View>
+          <View style={s.preview}>
+            <Image
+              style={s.preview}
+              source={require("../../assets/images/IMG_4705.png")}
+            />
+          </View>
         </View>
-        <Text style={s.titleText}>แค่ปลายนิ้ว</Text>
-      </View>
-      <Text style={s.subtitleText}>
-        แอปพลิเคชันใกล้หมอจะช่วยให้คุณประเมินโรคต่าง ที่อาจกระทบคุณได้
-        พร้อมกับให้คำแนะนำเกี่ยวกับโรค และอาการแบบไม่มีค่าใช้จ่ายใดๆทั้งสิ้น
-      </Text>
-      <CustomButton
-        style={s.signupButton}
-        onPress={() => props.navigation.navigate("signup")}
-      >
-        <Text style={s.signupButton__text}>สร้างบัญชีใหล้หมอ</Text>
-      </CustomButton>
-      <CustomButton
-        style={s.loginButton}
-        onPress={() => props.navigation.navigate("login")}
-      >
-        <Text style={s.loginButton__text}>มีบัญชีอยู่แล้วหรือเปล่า?</Text>
-        <Text
-          style={[
-            s.loginButton__text,
-            { color: Colors.blue, textDecorationLine: "underline" },
-          ]}
-        >
-          ล็อกอิน
+        <View style={s.titleTextWrapper}>
+          <View style={s.titleTextSubwrapper}>
+            <Text style={s.titleText}>รู้ทันโรค</Text>
+            <Text style={[s.titleText, { color: Colors.blue }]}>ง่ายๆ </Text>
+            {/* <Text style={s.titleText}>Easy </Text>
+          <Text style={[s.titleText, { color: Colors.blue }]}>Diagnosis </Text> */}
+          </View>
+          <Text style={s.titleText}>แค่ปลายนิ้ว</Text>
+        </View>
+        <Text style={s.subtitleText}>
+          แอปพลิเคชันใกล้หมอจะช่วยให้คุณประเมินโรคต่าง ที่อาจกระทบคุณได้
+          พร้อมกับให้คำแนะนำเกี่ยวกับโรค และอาการแบบไม่มีค่าใช้จ่ายใดๆทั้งสิ้น
         </Text>
-      </CustomButton>
-    </RootContainer>
+        {/* <Text style={s.subtitleText}>
+        SymptoSense will help you assess various diseases that may affect you,
+        along with providing advice about illnesses and symptoms free of charge.
+      </Text> */}
+        <CustomButton
+          style={s.signupButton}
+          onPress={() => props.navigation.navigate("signup")}
+        >
+          <Text style={s.signupButton__text}>สร้างบัญชีใหล้หมอ</Text>
+        </CustomButton>
+        <CustomButton
+          style={s.loginButton}
+          onPress={() => props.navigation.navigate("login")}
+        >
+          <Text style={s.loginButton__text}>มีบัญชีอยู่แล้วหรือเปล่า?</Text>
+          <Text
+            style={[
+              s.loginButton__text,
+              { color: Colors.blue, textDecorationLine: "underline" },
+            ]}
+          >
+            ล็อกอิน
+          </Text>
+        </CustomButton>
+      </RootContainer>
+    </ScrollView>
   );
 };
 

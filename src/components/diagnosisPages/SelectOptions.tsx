@@ -3,8 +3,14 @@ import { useState, useEffect } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import CustomButton from "../CustomButton";
+import { diagnosisOption, optionsSettings } from "../../models/diagnosisTypes";
 
-const SelectOptions = (props) => {
+const SelectOptions: React.FC<{
+  optionsList: diagnosisOption[];
+  onChecklistCompletion: (checklistState: any, header: string) => void;
+  onOptionPress: (option: diagnosisOption, header: string) => void;
+  optionsSettings: optionsSettings;
+}> = (props) => {
   const header = props.optionsSettings.header;
   const subheader = props.optionsSettings.subheader;
   const isChecklist = props.optionsSettings.checklist;
