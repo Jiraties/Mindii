@@ -6,6 +6,8 @@ import {
   Image,
   SafeAreaView,
   ActivityIndicator,
+  Text,
+  View,
 } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -23,9 +25,14 @@ import Conclusions from "./src/screens/Conclusions";
 import Login from "./src/screens/Login";
 import Signup from "./src/screens/Signup";
 import Splashscreen from "./src/screens/Splashscreen";
-import { store } from "./src/context/store";
+import { RootState, store } from "./src/context/store";
 import { authenticationActions } from "./src/context/authenticationSlice";
-import { FIREBASE_FIRESTORE } from "./FirebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_FIRESTORE } from "./FirebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+import { SymbolView } from "expo-symbols";
+import "react-native-reanimated";
+import "react-native-gesture-handler";
+import CustomToast from "./src/components/CustomToast";
 
 const AuthenticationStack = () => {
   return (
@@ -65,10 +72,11 @@ const AuthenticatedStack = () => {
           headerTitle: () => <HeaderText />,
           headerRight: (props) => (
             <CustomButton onPress={() => navigation.navigate("settings")}>
-              <Image
+              <SymbolView name="gearshape" tintColor="#000" />
+              {/* <Image
                 style={s.settingsIcon}
                 source={require("./assets/images/cog.png")}
-              />
+              /> */}
             </CustomButton>
           ),
           headerStyle: {
@@ -115,27 +123,13 @@ const AuthenticatedStack = () => {
 };
 
 const Navigation = () => {
-  const isAuthenticated = useSelector(
+  const isAuthenticated = useSelector<RootState>(
     (state) => state.authentication.isAuthenticated
   );
-  console.log("isAuthenticated is: ", isAuthenticated);
   const toastConfig = {
-    error: (props) => (
-      <ErrorToast
-        {...props}
-        style={{ borderLeftColor: "#f54254", padding: 20 }}
-        contentContainerStyle={{
-          borderRadius: 20,
-        }}
-        text1Style={{
-          fontSize: 15,
-          fontFamily: "SemiBold",
-        }}
-        text2Style={{
-          fontFamily: "SemiBold",
-        }}
-      />
-    ),
+    login: ({ text1 }) => <CustomToast type="login" text1={text1} />,
+    logout: ({ text1 }) => <CustomToast type="logout" text1={text1} />,
+    warning: ({ text1 }) => <CustomToast type="warning" text1={text1} />,
   };
 
   return (
@@ -157,18 +151,28 @@ const Root = () => {
   useEffect(() => {
     async function fetchToken() {
       const storedToken = await AsyncStorage.getItem("token");
-      console.log(storedToken);
+      const storedUid = await AsyncStorage.getItem("uid");
 
       if (storedToken) {
-        dispatch(authenticationActions.authenticate(storedToken));
+        dispatch(
+          authenticationActions.authenticate({
+            token: storedToken,
+            uid: storedUid,
+          })
+        );
 
         const getUserInformation = async () => {
-          const userRef = doc(db, "users", storedToken); // Assuming you saved it under their UID
+          const userRef = doc(db, "users", storedUid); // Assuming you saved it under their UID
           getDoc(userRef)
             .then((docSnap) => {
               if (docSnap.exists()) {
                 const userData = docSnap.data();
-                console.log("User's name from Firestore:", userData);
+                dispatch(
+                  authenticationActions.setUserInformation({
+                    name: userData.name,
+                    birthday: userData.birthday,
+                  })
+                );
               } else {
                 console.log("No such document!");
               }

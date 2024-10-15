@@ -5,4 +5,5 @@ export type conclusion = {
   flags?: flag[];
   imageUri: string;
   description: string;
+  id: string;
 };

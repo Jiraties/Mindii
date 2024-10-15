@@ -1,23 +1,30 @@
-import { StyleSheet, View, ScrollView, Text, Appearance } from "react-native";
+import AnimatedLoader from "react-native-animated-loader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  Appearance,
+  Button,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import HomeListItem from "../components/HomeListItem";
 import RootContainer from "../components/RootContainer";
-
-import CustomButton from "../components/CustomButton";
-import { collection, setDoc, doc } from "firebase/firestore";
-import { FIREBASE_FIRESTORE } from "../../FirebaseConfig";
 import { useSelector } from "react-redux";
 
+import { Skeleton } from "moti/skeleton";
+import { RootState } from "../context/store";
+import Toast from "react-native-toast-message";
+
 const Home = (props) => {
-  const username = useSelector(
+  const username: any = useSelector<RootState>(
     (state) => state.authentication.userInformation.name
   );
 
   async function fetchToken() {
     const storedToken = await AsyncStorage.getItem("token");
-    console.log("The token is: ", storedToken);
   }
 
   fetchToken();
@@ -26,7 +33,11 @@ const Home = (props) => {
     <RootContainer>
       <View style={s.headerView}>
         <Text style={s.headerText}>สวัสดีครับ</Text>
-        <Text style={s.headerTextHighlight}>{username}</Text>
+        {username === "" ? (
+          <Skeleton width={200} colorMode="light" />
+        ) : (
+          <Text style={s.headerTextHighlight}>{username}</Text>
+        )}
       </View>
       <ScrollView style={s.homeList} alwaysBounceVertical={false}>
         <HomeListItem
@@ -36,18 +47,27 @@ const Home = (props) => {
           redirectTo="diagnosis"
           warningModal
         />
-        {/* <HomeListItem
-          text="ประเมินความเสี่ยงเป็นโรคซึมเศร้า 🌧️"
-          button="เริ่มเลย!"
-          image={false}
-          redirectTo="home"
-        /> */}
 
         <HomeListItem
           text="ดูประวัติการประเมินโรคของคุณ"
           button="ไป"
           image={false}
           redirectTo="conclusions"
+        />
+        <Button
+          onPress={() =>
+            Toast.show({
+              type: "warning",
+              text1: "ลองใหม่",
+              // text2: "ยินดีต้อนรับ",
+              // text1Style: { fontFamily: "SemiBold" },
+              position: "top",
+              swipeable: true,
+              visibilityTime: 1500,
+              topOffset: 50,
+            })
+          }
+          title="Show Toast"
         />
       </ScrollView>
       <StatusBar style="auto" />

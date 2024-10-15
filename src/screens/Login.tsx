@@ -29,13 +29,27 @@ const Login = (props) => {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
+      const uid = response.user.uid;
       const tokenId = response._tokenResponse.idToken;
-      dispatch(authenticationActions.authenticate(tokenId));
+      dispatch(
+        authenticationActions.authenticate({ token: tokenId, uid: uid })
+      );
+      Toast.show({
+        type: "login",
+        text1: "เข้าสู่ระบบสำเร็จ",
+        position: "top",
+        swipeable: true,
+        visibilityTime: 1500,
+        topOffset: 50,
+      });
     } catch (error) {
       Toast.show({
-        type: "error",
-        text1: "ไม่มีบัญชีดังกล่าวในระบบ",
-        text2: "โปรดลองอีกที",
+        type: "warning",
+        text1: "ไม่มีบัญชีในระบบ โปรดลองอีกที",
+        position: "top",
+        swipeable: true,
+        visibilityTime: 1500,
+        topOffset: 50,
       });
     } finally {
       setLoading(false);

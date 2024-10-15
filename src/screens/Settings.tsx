@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import authenticationSlice, {
   authenticationActions,
 } from "../context/authenticationSlice";
+import Toast from "react-native-toast-message";
 
 const Settings = (props) => {
   const [theme, setTheme] = useState("light");
@@ -17,6 +18,14 @@ const Settings = (props) => {
 
   const logoutHandler = () => {
     dispatch(authenticationActions.logout());
+    Toast.show({
+      type: "logout",
+      text1: "ออกจากระบบสำเร็จ",
+      position: "top",
+      swipeable: true,
+      visibilityTime: 1500,
+      topOffset: 50,
+    });
     // props.navigation.navigate("splashscreen");
   };
 

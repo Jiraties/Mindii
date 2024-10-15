@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import LottieView from "lottie-react-native";
 import {
   StyleSheet,
   View,
@@ -44,9 +45,14 @@ const HomeListItem: React.FC<{
         presentationStyle="pageSheet"
       >
         <View style={s.modal}>
-          <Image
+          {/* <Image
             source={require("../../assets/images/modal.png")}
             style={s.modalImage}
+          /> */}
+          <LottieView
+            source={require("../../assets/animations/diagnosisAnimation.json")}
+            style={{ width: 300, height: 300 }}
+            autoPlay
           />
           <View style={s.modalTextWrapper}>
             <Text style={s.headerText}>

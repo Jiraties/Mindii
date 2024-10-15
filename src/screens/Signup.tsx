@@ -64,12 +64,14 @@ const Signup = (props) => {
     } catch (error) {
       console.log(error);
       if (error.code === "auth/email-already-in-use") {
-        Alert.alert("อีเมลนี้ถูกใช้ไปแล้ว", "โปรดลองใหม่อีกที", [
-          {
-            text: "ลองใหม่",
-            style: "cancel",
-          },
-        ]);
+        Toast.show({
+          type: "warning",
+          text1: "ไม่มีบัญชีในระบบ โปรดลองอีกที",
+          position: "top",
+          swipeable: true,
+          visibilityTime: 3000,
+          topOffset: 50,
+        });
         setEmail("");
       }
     } finally {

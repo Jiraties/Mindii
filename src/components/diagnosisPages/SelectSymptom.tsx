@@ -23,8 +23,6 @@ const SelectSymptom: React.FC<{
   const [symptomList, setSymptionList] = useState(originalSymptomList);
   const isFirstDiagnosisScreen = props.diagnosisData.screenIndex === 0;
 
-  console.log(symptomList);
-
   const searchFieldHandler = (text) => {
     setSearchFieldValue(text); // Update the search field value
     const filteredSymptomList = originalSymptomList.filter((symptom) => {

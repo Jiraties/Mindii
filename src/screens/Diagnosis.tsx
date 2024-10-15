@@ -54,7 +54,7 @@ const logDiagnosisData = () => {
 
 const Diagnosis = (props) => {
   const navigation = useNavigation();
-  const [symptomList, setSymptomList] = useState<symptom[]>([
+  const symptomList = [
     {
       id: "heavy_diarrhea",
       name: "ท้องเสียหนัก",
@@ -69,14 +69,15 @@ const Diagnosis = (props) => {
       description:
         "ภาวะที่อุณหภูมิของร่างกายสูงกว่าปกติ บ่งบอกถึงการติดเชื้อหรืออาการอื่นๆ",
     },
-  ]);
+    {
+      id: "no_match",
+      name: "กล่าวอาการไปหมดแล้ว",
+      emoji: "✅",
+      description: "ฉันได้กล่าวอาการไปหมดแล้ว",
+    },
+  ];
   const [conclusionsVisible, setConclusionsVisible] = useState<boolean>(false);
-  const [conclusion, setConclusion] = useState<conclusion>({
-    diseaseName: "",
-    flags: [],
-    imageUri: "",
-    description: "",
-  });
+  const [conclusion, setConclusion] = useState<string>("");
   const screenIndex: number = diagnosisData.screenIndex;
   const screenType: screenType = diagnosisData.screenType[screenIndex];
 
@@ -99,8 +100,8 @@ const Diagnosis = (props) => {
     nextScreen(nextScreenType);
   };
 
-  const jumpToConclusions = (conclusion: conclusion) => {
-    setConclusion(conclusion);
+  const jumpToConclusions = (conclusionId: string) => {
+    setConclusion(conclusionId);
     setConclusionsVisible(true);
     resetDiagnosisData();
   };
@@ -186,6 +187,7 @@ const Diagnosis = (props) => {
 
   const handleSelectSymtomPress = (symptom) => {
     const id = symptom.id;
+    const symptomList = diagnosisData.symptomList;
 
     switch (id) {
       case "heavy_diarrhea":
@@ -196,6 +198,19 @@ const Diagnosis = (props) => {
           options: yesNoOptions,
           nextDiagnosisPage: false,
         });
+
+      case "fever":
+        if (
+          symptomList[0]["id"] === "heavy_diarrhea" &&
+          symptom.id === "fever"
+        ) {
+          createCustomOptions({
+            header: "ในช่วงหลายเดือนที่ผ่านมา คุณเคยเข้าป่าที่มียุงเยอะหรือไม่",
+            subheader: "",
+            options: yesNoOptions,
+            nextDiagnosisPage: true,
+          });
+        }
     }
   };
 
@@ -212,6 +227,11 @@ const Diagnosis = (props) => {
 
     const latestSelectedSymptom = diagnosisData.symptomList.at(-1);
     const latest = diagnosisData.selectedOptionList.at(-1);
+
+    if (!latestSelectedSymptom || !latest) {
+      console.error("No symptoms or options available");
+      return;
+    }
 
     switch (latestSelectedSymptom.id) {
       case "heavy_diarrhea":
@@ -239,14 +259,7 @@ const Diagnosis = (props) => {
         }
         if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
           if (latest.value === ">= 2") {
-            jumpToConclusions({
-              diseaseName: "ต่อมไทรอยด์ทำงานเกิน คอพอกเป็นพิษ",
-              description:
-                "ต่อมไทรอยด์ คือ ต่อมไร้ท่อที่อยู่บริเวณลำคอด้านหน้าต่ำกว่าลูกกระเดือกเล็กน้อยมีรูปร่างคล้ายผีเสื้อ ประกอบด้วยปีกซ้ายและขวาคอยทำหน้าที่สร้างฮอร์โมนไทรอยด์ ซึ่งออกฤทธิ์ต่อหลายอวัยวะ เช่นการทำงานของหัวใจและระบบประสาท พัฒนาการของสมองในวัยเด็กรวมถึงระบบเผาผลาญพลังงานของร่างกาย เป็นต้น",
-              flags: ["visitDoctor"],
-              imageUri:
-                "https://www.vibhavadi.com/images/healthex/4299_01639541039.jpg",
-            });
+            jumpToConclusions("thyroid");
             // console.log("ต่อมไทรอยด์ ทำงานเกิน/ คอพอกเป็นพิษ หาหมอทันที");
             // props.navigation.navigate("conclusions");
           }
@@ -258,6 +271,13 @@ const Diagnosis = (props) => {
               nextDiagnosisPage: true,
             });
           }
+        }
+      case "fever":
+        if (
+          latest.question ===
+          "ในช่วงหลายเดือนที่ผ่านมา คุณเคยเข้าป่าที่มียุงเยอะหรือไม่"
+        ) {
+          if (latest.value === "yes") jumpToConclusions("malaria");
         }
     }
     if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
@@ -285,14 +305,7 @@ const Diagnosis = (props) => {
       "ข่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่"
     ) {
       if (latest.value === "yes") {
-        jumpToConclusions({
-          diseaseName: "ท้องเสียจากเชื้อไกอาร์เดีย",
-          description:
-            "เป็นโปรโตซัว (สัตว์เซลล์เดียว) ชนิดหนึ่งแบบเดียวกับอะมีบา สามารถเข้าไปทำให้เกิดการติดเชื้อที่ลำไส้เล็ก กลายเป็นโรคท้องเดินทั้งชนิดเฉียบพลันและเรื้อรังได้",
-          flags: [],
-          imageUri:
-            "https://cth.co.th/wp-content/uploads/2021/05/Giardiasis2.jpg",
-        });
+        jumpToConclusions("giardia");
       }
     }
   };
@@ -303,7 +316,6 @@ const Diagnosis = (props) => {
       option.isChecked && numberOfOptionsChecked++;
     });
 
-    console.log(numberOfOptionsChecked);
     if (numberOfOptionsChecked >= 2) {
       handleCustomOptionPress(
         { name: "2 ขึ้นไป", value: ">= 2", question: headerText },
@@ -360,7 +372,7 @@ const Diagnosis = (props) => {
         presentationStyle="pageSheet"
         animationType="slide"
       >
-        <Conclusions conclusion={conclusion} />
+        <Conclusions conclusionId={conclusion} />
       </Modal>
       {displayScreenType(screenType)}
       <CustomButton style={s.backButton} onPress={rewindSymptom}>
