@@ -23,6 +23,54 @@ import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
 import Toast from "react-native-toast-message";
 
+const validatePassword = (password) => {
+  const minLength = 6;
+  const maxLength = 4096;
+  const hasLowercase = /[a-z]/.test(password);
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumeric = /[0-9]/.test(password);
+  const hasNonAlphanumeric = /[^a-zA-Z0-9]/.test(password);
+  const isValidLength =
+    password.length >= minLength && password.length <= maxLength;
+
+  return (
+    hasLowercase &&
+    hasUppercase &&
+    hasNumeric &&
+    hasNonAlphanumeric &&
+    isValidLength
+  );
+};
+
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const validateInputs = (email, password, reEnterPassword, birthday, name) => {
+  if (!email || !password || !reEnterPassword || !birthday || !name) {
+    return "กรุณากรอกข้อมูลให้ครบทุกช่อง";
+  }
+
+  if (!validateEmail(email)) {
+    return "กรุณากรอกอีเมลที่ถูกต้อง";
+  }
+
+  if (name.length > 20) {
+    return "ชื่อไม่ควรยาวเกิน 20 ตัวอักษร";
+  }
+
+  if (password !== reEnterPassword) {
+    return "รหัสผ่านไม่ตรงกัน";
+  }
+
+  if (!validatePassword(password)) {
+    return "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร และประกอบไปด้วยตัวพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข และอักขระพิเศษ";
+  }
+
+  return null;
+};
+
 const Signup = (props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState("");
@@ -34,8 +82,22 @@ const Signup = (props) => {
   const auth = FIREBASE_AUTH;
   const db = FIREBASE_FIRESTORE;
 
-  const signup = async () => {
+  const handleSignup = async () => {
     setLoading(true);
+
+    const errorMessage = validateInputs(
+      email,
+      password,
+      reEnterPassword,
+      birthday,
+      name
+    );
+    if (errorMessage) {
+      Toast.show({ type: "warning", text1: errorMessage });
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await createUserWithEmailAndPassword(
         auth,
@@ -43,8 +105,6 @@ const Signup = (props) => {
         password
       );
       const userUid = response.user.uid;
-
-      console.log(userUid);
 
       const writeUserData = async () => {
         try {
@@ -59,7 +119,7 @@ const Signup = (props) => {
       };
       await writeUserData();
 
-      Toast.show({ type: "success", text1: "สร้างบัญชีเสร็จเรียบร้อย" });
+      Toast.show({ type: "login", text1: "สร้างบัญชีเสร็จเรียบร้อย" });
       props.navigation.navigate("login");
     } catch (error) {
       console.log(error);
@@ -72,16 +132,10 @@ const Signup = (props) => {
           visibilityTime: 3000,
           topOffset: 50,
         });
-        setEmail("");
       }
     } finally {
       setLoading(false);
     }
-  };
-
-  const reEnterPasswordValidator = () => {
-    // if (reEnterPassword) {
-    // }
   };
 
   return (
@@ -118,7 +172,6 @@ const Signup = (props) => {
             style={s.signupInput}
             onChangeText={(text) => setReEnterPassword(text)}
             value={reEnterPassword}
-            onBlur={reEnterPasswordValidator}
             placeholder="รหัสผ่านอีกรอบ"
             secureTextEntry={true}
           />
@@ -141,7 +194,7 @@ const Signup = (props) => {
           {loading ? (
             <ActivityIndicator />
           ) : (
-            <CustomButton style={s.submitButton} onPress={signup}>
+            <CustomButton style={s.submitButton} onPress={handleSignup}>
               <Text style={s.submitButton__text}>สร้างบัญชี</Text>
             </CustomButton>
           )}
@@ -245,7 +298,7 @@ const s = StyleSheet.create({
   },
   line: {
     borderWidth: 1,
-    borderColor: "#fff",
+    borderColor: "#d9d9d9",
     opacity: 0.5,
     marginVertical: 25,
   },

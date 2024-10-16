@@ -1,6 +1,6 @@
+import LottieView from "lottie-react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import LottieView from "lottie-react-native";
 import {
   StyleSheet,
   View,
@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import CustomButton from "./CustomButton";
+import { Shadows } from "../constants/styles";
 
 const HomeListItem: React.FC<{
   text: string;
@@ -19,7 +20,7 @@ const HomeListItem: React.FC<{
   redirectTo: string;
   warningModal?: boolean;
 }> = (props) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [modalIsVisible, setModalIsVisible] = useState(false);
 
   const customButtonPressHandler = () => {
@@ -56,7 +57,8 @@ const HomeListItem: React.FC<{
           />
           <View style={s.modalTextWrapper}>
             <Text style={s.headerText}>
-              ก่อนจะประเมินควรทราบว่าแอปนี้ควรใช้ในการประเมินเบื้องต้นเท่านั้นอาจเกิดข้อผิดพลาดได้ควรได้รับคำแนะนำจากแพทย์
+              ก่อนจะประเมินควรทราบว่าแอปนี้ควรใช้ในการประเมินเบื้องต้นเท่านั้น
+              ไม่ใช่คำวินิจฉัยอาจเกิดข้อผิดพลาดได้ควรได้รับคำแนะนำจากแพทย์
             </Text>
           </View>
 
@@ -137,10 +139,7 @@ const s = StyleSheet.create({
   homeListItem__buttonPressed: {
     backgroundColor: "#2533b3",
     elevation: 1,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    shadowOpacity: 0.25,
+    ...Shadows.default,
   },
   homeListItem__image: {
     borderRadius: 20,

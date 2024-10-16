@@ -1,20 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast, { ErrorToast } from "react-native-toast-message";
-import {
-  StyleSheet,
-  Button,
-  Image,
-  SafeAreaView,
-  ActivityIndicator,
-  Text,
-  View,
-} from "react-native";
+import Toast, { ErrorToast, ToastConfig } from "react-native-toast-message";
+import { StyleSheet } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { getDoc, doc } from "firebase/firestore";
+import { NavigationProp } from "@react-navigation/native";
 
 import Home from "./src/screens/Home";
 import Settings from "./src/screens/Settings";
@@ -33,6 +26,7 @@ import { SymbolView } from "expo-symbols";
 import "react-native-reanimated";
 import "react-native-gesture-handler";
 import CustomToast from "./src/components/CustomToast";
+import History from "./src/screens/History";
 
 const AuthenticationStack = () => {
   return (
@@ -63,20 +57,53 @@ const AuthenticationStack = () => {
 };
 
 const AuthenticatedStack = () => {
+  const dispatch = useDispatch();
+  const db = FIREBASE_FIRESTORE;
+
+  useEffect(() => {
+    async function fetchToken() {
+      const storedUid = await AsyncStorage.getItem("uid");
+
+      if (storedUid) {
+        const getUserInformation = async () => {
+          const userRef = doc(db, "users", storedUid); // Assuming you saved it under their UID
+          getDoc(userRef)
+            .then((docSnap) => {
+              if (docSnap.exists()) {
+                const userData = docSnap.data();
+                dispatch(
+                  authenticationActions.setUserInformation({
+                    name: userData.name,
+                    birthday: userData.birthday,
+                  })
+                );
+              } else {
+                console.log("No such document!");
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching user data:", error);
+            });
+        };
+
+        await getUserInformation();
+      }
+    }
+
+    fetchToken();
+  }, []);
+
   return (
     <Stack.Navigator initialRouteName="home">
       <Stack.Screen
         name="home"
         component={Home}
         options={({ navigation }) => ({
+          title: "หน้าหลัก",
           headerTitle: () => <HeaderText />,
           headerRight: (props) => (
             <CustomButton onPress={() => navigation.navigate("settings")}>
               <SymbolView name="gearshape" tintColor="#000" />
-              {/* <Image
-                style={s.settingsIcon}
-                source={require("./assets/images/cog.png")}
-              /> */}
             </CustomButton>
           ),
           headerStyle: {
@@ -115,6 +142,14 @@ const AuthenticatedStack = () => {
         component={Conclusions}
         options={{
           headerBackVisible: false,
+          gestureEnabled: false,
+          headerTitle: () => <HeaderText isDiagnosis={true} />,
+        }}
+      />
+      <Stack.Screen
+        name="history"
+        component={History}
+        options={{
           headerTitle: () => <HeaderText isDiagnosis={true} />,
         }}
       />
@@ -126,7 +161,7 @@ const Navigation = () => {
   const isAuthenticated = useSelector<RootState>(
     (state) => state.authentication.isAuthenticated
   );
-  const toastConfig = {
+  const toastConfig: ToastConfig = {
     login: ({ text1 }) => <CustomToast type="login" text1={text1} />,
     logout: ({ text1 }) => <CustomToast type="logout" text1={text1} />,
     warning: ({ text1 }) => <CustomToast type="warning" text1={text1} />,
@@ -191,11 +226,7 @@ const Root = () => {
     fetchToken();
   }, []);
 
-  if (isTryingLogin) {
-    return <ActivityIndicator />;
-  }
-
-  return <Navigation />;
+  if (!isTryingLogin) return <Navigation />;
 };
 
 export default function App() {
@@ -213,7 +244,20 @@ export default function App() {
   }
 }
 
-const Stack = createNativeStackNavigator();
+export type ScreenNames = [
+  "home",
+  "settings",
+  "diagnosis",
+  "conclusions",
+  "history",
+  "login",
+  "signup",
+  "splashscreen"
+];
+export type RootStackParamList = Record<ScreenNames[number], undefined>;
+export type StackNavigation = NavigationProp<RootStackParamList>;
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const s = StyleSheet.create({
   settingsIcon: {

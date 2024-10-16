@@ -1,4 +1,8 @@
 import Toast from "react-native-toast-message";
+import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useDispatch } from "react-redux";
 import {
   View,
   Text,
@@ -9,13 +13,9 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import { FIREBASE_AUTH } from "../../FirebaseConfig";
-import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
 
 import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
-import { useDispatch } from "react-redux";
 import { authenticationActions } from "../context/authenticationSlice";
 
 const Login = (props) => {
@@ -28,7 +28,11 @@ const Login = (props) => {
   const loginHandler = async () => {
     setLoading(true);
     try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
+      const response: any = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const uid = response.user.uid;
       const tokenId = response._tokenResponse.idToken;
       dispatch(

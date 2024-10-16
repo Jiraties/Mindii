@@ -8,6 +8,7 @@ import authenticationSlice, {
   authenticationActions,
 } from "../context/authenticationSlice";
 import Toast from "react-native-toast-message";
+import { settings } from "firebase/analytics";
 
 const Settings = (props) => {
   const [theme, setTheme] = useState("light");
@@ -33,17 +34,25 @@ const Settings = (props) => {
     <RootContainer>
       <Text style={s.headerText}>ตั้งค่า</Text>
       <ScrollView style={s.settingsList}>
-        {/* <View style={s.settingsItem}>
-          <Text>Hello</Text>
-          <Switch
-            value={theme === "light" ? false : true}
-            onChange={themeSwitchHandler}
-          />
-        </View> */}
         <View style={s.settingsItem}>
-          <Text>บัญชี</Text>
+          <Text style={s.settingsItem__text}>บัญชี</Text>
           <CustomButton style={s.button} onPress={logoutHandler}>
             <Text style={s.button__text}>ออกจากระบบ</Text>
+          </CustomButton>
+        </View>
+        <View style={s.settingsItem}>
+          <Text style={s.settingsItem__text}>Debug</Text>
+          <CustomButton
+            style={s.button}
+            onPress={() =>
+              Toast.show({
+                type: "warning",
+                text1: "TESTING TOAST",
+                text2: "successfully testing",
+              })
+            }
+          >
+            <Text style={s.button__text}>Toast</Text>
           </CustomButton>
         </View>
       </ScrollView>
@@ -58,12 +67,16 @@ const s = StyleSheet.create({
     marginBottom: 30,
   },
   settingsList: {
-    flex: 1,
+    gap: 20,
   },
   settingsItem: {
     padding: 20,
     backgroundColor: "#fdfdfd",
     borderRadius: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
   },
   button: {
     backgroundColor: "#3246FF",
@@ -75,6 +88,9 @@ const s = StyleSheet.create({
   },
   button__text: {
     color: "#fff",
+    fontFamily: "SemiBold",
+  },
+  settingsItem__text: {
     fontFamily: "SemiBold",
   },
 });

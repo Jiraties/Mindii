@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { View, Text, StyleSheet, Alert, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 
 import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
 import SelectSymptom from "../components/diagnosisPages/SelectSymptom";
 import SelectOptions from "../components/diagnosisPages/SelectOptions";
 import Conclusions from "./Conclusions";
+import { conclusionActions } from "../context/conclusionSlice";
+import LottieView from "lottie-react-native";
 
-import { conclusion } from "../models/conclusionTypes";
 import {
   diagnosisDataType,
   diagnosisOption,
@@ -16,8 +18,9 @@ import {
   symptom,
   symptomLength,
 } from "../models/diagnosisTypes";
+import { StackNavigation } from "../../App";
 
-const diagnosisData: diagnosisDataType = {
+let diagnosisData: diagnosisDataType = {
   screenIndex: 0,
   screenType: ["selectSymptom"],
   options: [],
@@ -52,8 +55,8 @@ const logDiagnosisData = () => {
   );
 };
 
-const Diagnosis = (props) => {
-  const navigation = useNavigation();
+const Diagnosis: React.FC = (props) => {
+  const navigation = useNavigation<StackNavigation>();
   const symptomList = [
     {
       id: "heavy_diarrhea",
@@ -78,8 +81,10 @@ const Diagnosis = (props) => {
   ];
   const [conclusionsVisible, setConclusionsVisible] = useState<boolean>(false);
   const [conclusion, setConclusion] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const screenIndex: number = diagnosisData.screenIndex;
   const screenType: screenType = diagnosisData.screenType[screenIndex];
+  const dispatch = useDispatch();
 
   logDiagnosisData();
 
@@ -87,37 +92,46 @@ const Diagnosis = (props) => {
     diagnosisData.screenType.push(nextScreenType);
     diagnosisData.screenIndex++;
 
-    props.navigation.push("diagnosis");
+    navigation.push("diagnosis");
   };
 
-  const addSymptom = (symptom: symptom, nextScreenType) => {
+  const addSymptom = (symptom: symptom, nextScreenType: screenType) => {
     diagnosisData.symptomList.push(symptom);
     nextScreen(nextScreenType);
   };
 
-  const addSymptomLength = (length: symptomLength, nextScreenType) => {
-    diagnosisData["symptomList"][screenIndex - 1]["length"] = length;
-    nextScreen(nextScreenType);
+  // const addSymptomLength = (length: symptomLength, nextScreenType: screenType) => {
+  //   diagnosisData["symptomList"][screenIndex - 1]["length"] = length;
+  //   nextScreen(nextScreenType);
+  // };
+
+  const resetDiagnosisData = () => {
+    diagnosisData = {
+      screenIndex: 0,
+      screenType: ["selectSymptom"],
+      options: [],
+      optionsSettings: { checklist: false, header: "", subheader: "" },
+      symptomList: [],
+      selectedOptionList: [],
+    };
   };
 
   const jumpToConclusions = (conclusionId: string) => {
-    setConclusion(conclusionId);
-    setConclusionsVisible(true);
-    resetDiagnosisData();
-  };
+    dispatch(
+      conclusionActions.setDisplayConclusion({
+        diseaseId: conclusionId,
+        diagnosisData: diagnosisData,
+      })
+    );
 
-  const resetDiagnosisData = () => {
-    const d = diagnosisData;
-    d.screenIndex = 0;
-    d.screenType = ["selectSymptom"];
-    d.options = [];
-    d.optionsSettings = {
-      checklist: false,
-      header: "",
-      subheader: "",
-    };
-    d.symptomList = [];
-    d.selectedOptionList = [];
+    resetDiagnosisData();
+    setLoading(true);
+    setTimeout(() => {
+      resetDiagnosisData();
+
+      navigation.navigate("conclusions");
+      setLoading(false);
+    }, 2000);
   };
 
   const rewindSymptom = () => {
@@ -204,19 +218,20 @@ const Diagnosis = (props) => {
           symptomList[0]["id"] === "heavy_diarrhea" &&
           symptom.id === "fever"
         ) {
+          addSymptom(symptom, "customOptions");
           createCustomOptions({
             header: "ในช่วงหลายเดือนที่ผ่านมา คุณเคยเข้าป่าที่มียุงเยอะหรือไม่",
             subheader: "",
             options: yesNoOptions,
-            nextDiagnosisPage: true,
+            nextDiagnosisPage: false,
           });
         }
     }
   };
 
-  const handleSymptomLengthPress = (symptomLength) => {
-    addSymptomLength(symptomLength.value, "selectSymptom");
-  };
+  // const handleSymptomLengthPress = (symptomLength) => {
+  //   addSymptomLength(symptomLength.value, "selectSymptom");
+  // };
 
   const handleCustomOptionPress = (
     option: diagnosisOption,
@@ -261,7 +276,7 @@ const Diagnosis = (props) => {
           if (latest.value === ">= 2") {
             jumpToConclusions("thyroid");
             // console.log("ต่อมไทรอยด์ ทำงานเกิน/ คอพอกเป็นพิษ หาหมอทันที");
-            // props.navigation.navigate("conclusions");
+            // navigation.navigate("conclusions");
           }
           if (latest.value === "< 2") {
             createCustomOptions({
@@ -310,7 +325,7 @@ const Diagnosis = (props) => {
     }
   };
 
-  const handleChecklistCompletion = (completeCheckList, headerText) => {
+  const handleChecklistCompletion = (completeCheckList, headerText: string) => {
     let numberOfOptionsChecked = 0;
     completeCheckList.forEach((option) => {
       option.isChecked && numberOfOptionsChecked++;
@@ -330,6 +345,17 @@ const Diagnosis = (props) => {
   };
 
   const displayScreenType = (type) => {
+    if (loading)
+      return (
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <LottieView
+            source={require("../../assets/animations/findingAnimation.json")}
+            style={{ width: 400, height: 400 }}
+            autoPlay
+          />
+        </View>
+      );
+
     switch (type) {
       case "selectSymptom":
         return (

@@ -6,8 +6,11 @@ import CustomButton from "../components/CustomButton";
 import { conclusion } from "../models/conclusionTypes";
 import { Skeleton } from "moti/skeleton";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../context/store";
+import { StackNavigation } from "../../App";
 
-const conclusionsList = {
+export const conclusionsList = {
   malaria: {
     diseaseName: "มาลาเรีย",
     description: " ควรกินยาลดไข้ ควรกินยารักษามาลาเรีย",
@@ -31,11 +34,15 @@ const conclusionsList = {
   },
 };
 
-const Conclusions: React.FC<{
-  conclusionId: string;
-}> = (props) => {
+const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
   const [imageIsLoading, setImageIsLoading] = useState(true);
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigation>();
+  const diseaseId = useSelector(
+    (state: RootState) => state.conclusion.displayConclusion.diseaseId
+  );
+  const diagnosisData = useSelector(
+    (state: RootState) => state.conclusion.displayConclusion.diagnosisData
+  );
 
   return (
     <RootContainer>
@@ -44,11 +51,11 @@ const Conclusions: React.FC<{
           <View>
             <Text style={s.headerText}>คุณมีความเสี่ยงเป็น</Text>
             <Text style={s.headerTextHighlight}>
-              {conclusionsList[props.conclusionId].diseaseName}
+              {conclusionsList[diseaseId].diseaseName}
             </Text>
           </View>
 
-          {conclusionsList[props.conclusionId].flags.map((flag, index) => {
+          {conclusionsList[diseaseId].flags.map((flag, index) => {
             if (flag === "visitDoctor") {
               return (
                 <View style={s.conclusionsTag} key={index}>
@@ -64,20 +71,26 @@ const Conclusions: React.FC<{
           <Image
             style={s.image}
             source={{
-              uri: conclusionsList[props.conclusionId].imageUri,
+              uri: conclusionsList[diseaseId].imageUri,
             }}
             onLoad={() => setImageIsLoading(false)}
           />
           <Text style={s.descriptionText}>
-            {conclusionsList[props.conclusionId].description}
+            {conclusionsList[diseaseId].description}
           </Text>
           <View style={s.remedies}>
             <Text style={s.remedies__text}>
-              เราแนะนำให้คุณพบแพทย์อย่างยิ่งเนื่องจากอาการคุณ
+              อาการที่คุณเลือก:{"  "}
+              {diagnosisData.symptomList.map(
+                (symptom, index) => symptom.name + " "
+              )}
             </Text>
           </View>
-          <CustomButton onPress={() => navigation.navigate("home")}>
-            <Text>กลับ</Text>
+          <CustomButton
+            style={s.returnButton}
+            onPress={() => navigation.navigate("home")}
+          >
+            <Text style={s.returnButton__text}>กลับ</Text>
           </CustomButton>
         </View>
       </ScrollView>
@@ -122,6 +135,17 @@ const s = StyleSheet.create({
     borderRadius: 20,
   },
   remedies__text: {
+    fontFamily: "SemiBold",
+  },
+  returnButton: {
+    backgroundColor: "#3246FF",
+    padding: 20,
+    marginTop: 30,
+    borderRadius: 20,
+    marginBottom: 40,
+  },
+  returnButton__text: {
+    color: "#fff",
     fontFamily: "SemiBold",
   },
 });

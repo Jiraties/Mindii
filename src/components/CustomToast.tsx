@@ -29,10 +29,13 @@ const CustomToast = (props) => {
         width: "auto",
         flexDirection: "row",
         gap: 15,
+        maxWidth: "70%",
       }}
     >
       <SymbolView name={symbolName} tintColor={symbolColor} />
-      <Text style={{ fontFamily: "SemiBold" }}>{props.text1}</Text>
+      <Text style={{ fontFamily: "SemiBold", maxWidth: "80%" }}>
+        {props.text1}
+      </Text>
     </View>
   );
 };

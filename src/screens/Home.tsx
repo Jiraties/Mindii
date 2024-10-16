@@ -1,5 +1,6 @@
-import AnimatedLoader from "react-native-animated-loader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
+import { useSelector } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -8,15 +9,12 @@ import {
   Appearance,
   Button,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
+import { Skeleton } from "moti/skeleton";
 
 import HomeListItem from "../components/HomeListItem";
 import RootContainer from "../components/RootContainer";
-import { useSelector } from "react-redux";
 
-import { Skeleton } from "moti/skeleton";
 import { RootState } from "../context/store";
-import Toast from "react-native-toast-message";
 
 const Home = (props) => {
   const username: any = useSelector<RootState>(
@@ -49,25 +47,10 @@ const Home = (props) => {
         />
 
         <HomeListItem
-          text="ดูประวัติการประเมินโรคของคุณ"
+          text="ดูประวัติการประเมินโรคของคุณ "
           button="ไป"
           image={false}
-          redirectTo="conclusions"
-        />
-        <Button
-          onPress={() =>
-            Toast.show({
-              type: "warning",
-              text1: "ลองใหม่",
-              // text2: "ยินดีต้อนรับ",
-              // text1Style: { fontFamily: "SemiBold" },
-              position: "top",
-              swipeable: true,
-              visibilityTime: 1500,
-              topOffset: 50,
-            })
-          }
-          title="Show Toast"
+          redirectTo="history"
         />
       </ScrollView>
       <StatusBar style="auto" />
