@@ -226,6 +226,19 @@ const Diagnosis: React.FC = (props) => {
             nextDiagnosisPage: false,
           });
         }
+      case "no_match":
+        if (
+          symptomList[0]["id"] === "heavy_diarrhea" &&
+          symptom.id === "no_match"
+        ) {
+          createCustomOptions({
+            header:
+              "คุณกินยาถ่าย ยาลดกรด ยารักษาโรคเกาต์ มะขามแขกเป็นประจำหรือไม่",
+            subheader: "",
+            options: yesNoOptions,
+            nextDiagnosisPage: true,
+          });
+        }
     }
   };
 
@@ -293,6 +306,105 @@ const Diagnosis: React.FC = (props) => {
           "ในช่วงหลายเดือนที่ผ่านมา คุณเคยเข้าป่าที่มียุงเยอะหรือไม่"
         ) {
           if (latest.value === "yes") jumpToConclusions("malaria");
+          if (latest.value === "no") {
+            createCustomOptions({
+              header: "คุณไข้สูงตลอดเวลา และ ม้ามโตหรือไม่",
+              subheader: "",
+              options: yesNoOptions,
+              nextDiagnosisPage: true,
+            });
+          }
+        }
+        if (latest.question === "คุณไข้สูงตลอดเวลา และ ม้ามโตหรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("typhoid");
+          }
+          if (latest.value === "no") {
+            jumpToConclusions("no_match");
+          }
+        }
+      case "no_match":
+        if (
+          latest.question ===
+          "คุณกินยาถ่าย ยาลดกรด ยารักษาโรคเกาต์ มะขามแขกเป็นประจำหรือไม่"
+        ) {
+          if (latest.value === "no") {
+            createCustomOptions({
+              header: "คุณท้องผูกสลับกับท้องเสียหรือไม่?",
+              subheader: "",
+              options: yesNoOptions,
+              nextDiagnosisPage: true,
+            });
+          }
+        }
+        if (latest.question === "คุณท้องผูกสลับกับท้องเสียหรือไม่?") {
+          if (latest.value === "yes") {
+            createCustomOptions({
+              header: "คุณเคยเป็นโรคลำไส้แปรปรวนหรือไม่",
+              subheader: "",
+              options: yesNoOptions,
+              nextDiagnosisPage: true,
+            });
+          }
+          if (latest.value === "no") {
+            createCustomOptions({
+              header: "คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่",
+              subheader: "",
+              options: yesNoOptions,
+              nextDiagnosisPage: true,
+            });
+          }
+        }
+        if (latest.question === "คุณเคยเป็นโรคลำไส้แปรปรวนหรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("irritable_bowel");
+          }
+          if (latest.value === "no") {
+            createCustomOptions({
+              header: "คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่",
+              subheader: "",
+              options: yesNoOptions,
+              nextDiagnosisPage: true,
+            });
+          }
+        }
+        if (latest.question === "คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("tricuriasis");
+          }
+          if (latest.value === "no") {
+            createCustomOptions({
+              header: "มีอาการเฉพาะหลังดื่มนมหรือไม่?",
+              subheader: "",
+              options: yesNoOptions,
+              nextDiagnosisPage: true,
+            });
+          }
+        }
+        if (latest.question === "มีอาการเฉพาะหลังดื่มนมหรือไม่?") {
+          if (latest.value === "yes") {
+            jumpToConclusions("lactase_deficiency");
+          }
+          if (latest.value === "no") {
+            createCustomOptions({
+              header: "คุณสุขภาพร่างกายแข็งแรงดีหรือไม่",
+              subheader: "",
+              options: yesNoOptions,
+              nextDiagnosisPage: true,
+            });
+          }
+        }
+        if (latest.question === "คุณสุขภาพร่างกายแข็งแรงดีหรือไม่") {
+          if (latest.value === "yes") {
+            createCustomOptions({
+              header: "คุณมีอาการมามากกว่า 2 อาทิตย์",
+              subheader: "",
+              options: yesNoOptions,
+              nextDiagnosisPage: true,
+            });
+          }
+          if (latest.value === "no") {
+          }
         }
     }
     if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {

@@ -13,11 +13,15 @@ const SelectSymptom: React.FC<{
   const [originalSymptomList] = useState(
     // Filter previously selected symptoms
     props.symptomList.filter((symptom, index) => {
-      return props.diagnosisData.symptomList.length !== 0 &&
+      const isPreviouslySelected =
+        props.diagnosisData.symptomList.length !== 0 &&
         index < props.diagnosisData.symptomList.length &&
-        props.diagnosisData.symptomList[index].id.includes(symptom.id)
-        ? false
-        : symptom;
+        props.diagnosisData.symptomList[index].id.includes(symptom.id);
+
+      const isNoMatch =
+        props.diagnosisData.screenIndex === 0 && symptom.id === "no_match";
+
+      return !isPreviouslySelected && !isNoMatch;
     })
   );
   const [symptomList, setSymptionList] = useState(originalSymptomList);
