@@ -45,12 +45,19 @@ const conclusionSlice = createSlice({
         diagnosisData: diagnosisDataType;
       }>
     ) {
-      state.displayConclusion.diseaseId = action.payload.diseaseId;
-      state.displayConclusion.diagnosisData = action.payload.diagnosisData;
-      const now = new Date();
-      const stringifiedDate = now.toString();
-      state.displayConclusion.date = stringifiedDate;
-      state.conclusionHistory.unshift(state.displayConclusion);
+      if (action.payload.diseaseId !== "no_match") {
+        state.displayConclusion.diseaseId = action.payload.diseaseId;
+        state.displayConclusion.diagnosisData = action.payload.diagnosisData;
+        const now = new Date();
+        const stringifiedDate = now.toString();
+        state.displayConclusion.date = stringifiedDate;
+        state.conclusionHistory.unshift(state.displayConclusion);
+      } else {
+        state.displayConclusion.diseaseId = "no_match";
+      }
+    },
+    viewConclusion(state, action: PayloadAction<string>) {
+      state.displayConclusion.diseaseId = action.payload;
     },
     clearConclusions(state) {
       state.conclusionHistory = [];

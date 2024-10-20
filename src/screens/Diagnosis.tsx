@@ -19,6 +19,7 @@ import {
   symptomLength,
 } from "../models/diagnosisTypes";
 import { StackNavigation } from "../../App";
+import { create } from "react-test-renderer";
 
 let diagnosisData: diagnosisDataType = {
   screenIndex: 0,
@@ -55,7 +56,7 @@ const logDiagnosisData = () => {
   );
 };
 
-const Diagnosis: React.FC = (props) => {
+const Diagnosis = (props) => {
   const navigation = useNavigation<StackNavigation>();
   const symptomList = [
     {
@@ -86,7 +87,7 @@ const Diagnosis: React.FC = (props) => {
     diagnosisData.screenType.push(nextScreenType);
     diagnosisData.screenIndex++;
 
-    navigation.push("diagnosis");
+    props.navigation.push("diagnosis");
   };
 
   const addSymptom = (symptom: symptom, nextScreenType: screenType) => {
@@ -151,7 +152,10 @@ const Diagnosis: React.FC = (props) => {
       return;
     }
 
-    const lastScreenType = diagnosisData["screenType"].at(-1);
+    const lastScreenType =
+      diagnosisData["screenType"][diagnosisData.screenIndex - 1];
+
+    console.log(lastScreenType);
 
     // Determine which screen type and remove previous information added
     switch (lastScreenType) {
@@ -193,6 +197,15 @@ const Diagnosis: React.FC = (props) => {
     { name: "ไม่", value: "no" },
   ];
 
+  const createYesNoOptions = (header: string, nextDiagnosisPage: boolean) => {
+    createCustomOptions({
+      header,
+      subheader: "",
+      options: yesNoOptions,
+      nextDiagnosisPage,
+    });
+  };
+
   const handleSelectSymtomPress = (symptom) => {
     const id = symptom.id;
     const symptomList = diagnosisData.symptomList;
@@ -200,38 +213,37 @@ const Diagnosis: React.FC = (props) => {
     switch (id) {
       case "heavy_diarrhea":
         addSymptom(symptom, "customOptions");
-        createCustomOptions({
-          header: "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?",
-          subheader: "",
-          options: yesNoOptions,
-          nextDiagnosisPage: false,
-        });
-
+        createYesNoOptions("คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?", false);
+        break;
       case "fever":
-        if (
+        if (screenIndex === 0) {
+          addSymptom(symptom, "customOptions");
+          createYesNoOptions(
+            "คุณไม่รู้สึกตัว ปวดศรีษะมาก อาเจียนหนักหรือชักหรือไม่",
+            false
+          );
+          return;
+        } else if (
           symptomList[0]["id"] === "heavy_diarrhea" &&
           symptom.id === "fever"
         ) {
           addSymptom(symptom, "customOptions");
-          createCustomOptions({
-            header: "ในช่วงหลายเดือนที่ผ่านมา คุณเคยเข้าป่าที่มียุงเยอะหรือไม่",
-            subheader: "",
-            options: yesNoOptions,
-            nextDiagnosisPage: false,
-          });
+          createYesNoOptions(
+            "ในช่วงหลายเดือนที่ผ่านมา คุณเคยเข้าป่าที่มียุงเยอะหรือไม่",
+            false
+          );
         }
+        break;
       case "no_match":
         if (
           symptomList[0]["id"] === "heavy_diarrhea" &&
           symptom.id === "no_match"
         ) {
-          createCustomOptions({
-            header:
-              "คุณกินยาถ่าย ยาลดกรด ยารักษาโรคเกาต์ มะขามแขกเป็นประจำหรือไม่",
-            subheader: "",
-            options: yesNoOptions,
-            nextDiagnosisPage: true,
-          });
+          addSymptom(symptom, "customOptions");
+          createYesNoOptions(
+            "คุณกินยาถ่าย ยาลดกรด ยารักษาโรคเกาต์ มะขามแขกเป็นประจำหรือไม่",
+            false
+          );
         }
     }
   };
@@ -258,7 +270,7 @@ const Diagnosis: React.FC = (props) => {
     switch (latestSelectedSymptom.id) {
       case "heavy_diarrhea":
         if (latest.question === "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?") {
-          if (latest.value === "yes")
+          if (latest.value === "yes") {
             createCustomOptions({
               header: "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม",
               subheader: "เลือกได้หลายอาการ",
@@ -275,150 +287,142 @@ const Diagnosis: React.FC = (props) => {
               ],
               nextDiagnosisPage: true,
             });
-          if (latest.value === "no") {
+          } else if (latest.value === "no") {
             nextScreen("selectSymptom");
           }
         }
         if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
           if (latest.value === ">= 2") {
             jumpToConclusions("thyroid");
-            // console.log("ต่อมไทรอยด์ ทำงานเกิน/ คอพอกเป็นพิษ หาหมอทันที");
-            // navigation.navigate("conclusions");
-          }
-          if (latest.value === "< 2") {
-            createCustomOptions({
-              header: "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่",
-              subheader: "",
-              options: yesNoOptions,
-              nextDiagnosisPage: true,
-            });
+          } else if (latest.value === "< 2") {
+            createYesNoOptions("คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่", true);
           }
         }
+        break;
+
       case "fever":
+        if (
+          latest.question ===
+          "คุณไม่รู้สึกตัว ปวดศรีษะมาก อาเจียนหนักหรือชักหรือไม่"
+        ) {
+          if (latest.value === "yes") {
+            console.log("work in progress");
+          } else if (latest.value === "no") {
+            createYesNoOptions(
+              "มีภาวะช็อก(เหงื่อออก ตัวเย็นกระสับการะส่าย ชีพจรเบาเร็วและความดันเลือดตก)",
+              true
+            );
+          }
+        }
         if (
           latest.question ===
           "ในช่วงหลายเดือนที่ผ่านมา คุณเคยเข้าป่าที่มียุงเยอะหรือไม่"
         ) {
-          if (latest.value === "yes") jumpToConclusions("malaria");
-          if (latest.value === "no") {
-            createCustomOptions({
-              header: "คุณไข้สูงตลอดเวลา และ ม้ามโตหรือไม่",
-              subheader: "",
-              options: yesNoOptions,
-              nextDiagnosisPage: true,
-            });
+          if (latest.value === "yes") {
+            jumpToConclusions("malaria");
+          } else if (latest.value === "no") {
+            createYesNoOptions("คุณไข้สูงตลอดเวลา และ ม้ามโตหรือไม่", true);
           }
         }
         if (latest.question === "คุณไข้สูงตลอดเวลา และ ม้ามโตหรือไม่") {
           if (latest.value === "yes") {
             jumpToConclusions("typhoid");
-          }
-          if (latest.value === "no") {
+          } else if (latest.value === "no") {
             jumpToConclusions("no_match");
           }
         }
+        break;
+
       case "no_match":
         if (
           latest.question ===
           "คุณกินยาถ่าย ยาลดกรด ยารักษาโรคเกาต์ มะขามแขกเป็นประจำหรือไม่"
         ) {
+          console.log("here");
           if (latest.value === "no") {
-            createCustomOptions({
-              header: "คุณท้องผูกสลับกับท้องเสียหรือไม่?",
-              subheader: "",
-              options: yesNoOptions,
-              nextDiagnosisPage: true,
-            });
+            createYesNoOptions("คุณท้องผูกสลับกับท้องเสียหรือไม่?", true);
+          } else if (latest.value === "yes") {
+            jumpToConclusions("irritable_bowel");
           }
         }
         if (latest.question === "คุณท้องผูกสลับกับท้องเสียหรือไม่?") {
           if (latest.value === "yes") {
-            createCustomOptions({
-              header: "คุณเคยเป็นโรคลำไส้แปรปรวนหรือไม่",
-              subheader: "",
-              options: yesNoOptions,
-              nextDiagnosisPage: true,
-            });
-          }
-          if (latest.value === "no") {
-            createCustomOptions({
-              header: "คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่",
-              subheader: "",
-              options: yesNoOptions,
-              nextDiagnosisPage: true,
-            });
+            createYesNoOptions("คุณเคยเป็นโรคลำไส้แปรปรวนหรือไม่", true);
+          } else if (latest.value === "no") {
+            createYesNoOptions("คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่", true);
           }
         }
         if (latest.question === "คุณเคยเป็นโรคลำไส้แปรปรวนหรือไม่") {
           if (latest.value === "yes") {
             jumpToConclusions("irritable_bowel");
-          }
-          if (latest.value === "no") {
-            createCustomOptions({
-              header: "คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่",
-              subheader: "",
-              options: yesNoOptions,
-              nextDiagnosisPage: true,
-            });
+          } else if (latest.value === "no") {
+            createYesNoOptions("คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่", true);
           }
         }
         if (latest.question === "คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่") {
           if (latest.value === "yes") {
             jumpToConclusions("tricuriasis");
-          }
-          if (latest.value === "no") {
-            createCustomOptions({
-              header: "มีอาการเฉพาะหลังดื่มนมหรือไม่?",
-              subheader: "",
-              options: yesNoOptions,
-              nextDiagnosisPage: true,
-            });
+          } else if (latest.value === "no") {
+            createYesNoOptions("มีอาการเฉพาะหลังดื่มนมหรือไม่?", true);
           }
         }
         if (latest.question === "มีอาการเฉพาะหลังดื่มนมหรือไม่?") {
           if (latest.value === "yes") {
             jumpToConclusions("lactase_deficiency");
-          }
-          if (latest.value === "no") {
-            createCustomOptions({
-              header: "คุณสุขภาพร่างกายแข็งแรงดีหรือไม่",
-              subheader: "",
-              options: yesNoOptions,
-              nextDiagnosisPage: true,
-            });
+          } else if (latest.value === "no") {
+            createYesNoOptions("คุณสุขภาพร่างกายแข็งแรงดีหรือไม่", true);
           }
         }
         if (latest.question === "คุณสุขภาพร่างกายแข็งแรงดีหรือไม่") {
           if (latest.value === "yes") {
-            createCustomOptions({
-              header: "คุณมีอาการมามากกว่า 2 อาทิตย์",
-              subheader: "",
-              options: yesNoOptions,
-              nextDiagnosisPage: true,
-            });
-          }
-          if (latest.value === "no") {
+            createYesNoOptions("คุณมีอาการมามากกว่า 2 อาทิตย์หรือไม่", true);
+          } else if (latest.value === "no") {
+            createYesNoOptions("คุณเคยเป็น บาวหวานมาก่อนหรือไม่", true);
           }
         }
+        if (latest.question === "คุณมีอาการมามากกว่า 2 อาทิตย์หรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("irritable_bowel");
+          } else if (latest.value === "no") {
+            createYesNoOptions(
+              "เกิดอาการเมื่อหลังกินอาหารประมาณ 30 นาทีหรือไม่",
+              true
+            );
+          }
+        }
+        if (
+          latest.question === "เกิดอาการเมื่อหลังกินอาหารประมาณ 30 นาทีหรือไม่"
+        ) {
+          if (latest.value === "yes") {
+            createYesNoOptions("คุณเคยเป็น บาวหวานมาก่อนหรือไม่", true);
+          } else {
+            jumpToConclusions("no_match");
+          }
+        }
+        if (latest.question === "คุณเคยเป็น บาวหวานมาก่อนหรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("diabetes");
+          } else {
+            jumpToConclusions("no_match");
+          }
+        }
+        break;
     }
+
     if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
-      if (latest.value === "no")
-        createCustomOptions({
-          header: "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่",
-          subheader: "",
-          options: yesNoOptions,
-          nextDiagnosisPage: true,
-        });
+      if (latest.value === "no") {
+        createYesNoOptions("คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่", true);
+      }
     }
+
     if (latest.question === "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่") {
       if (latest.value === "yes") {
-        createCustomOptions({
-          header:
-            "ข่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่",
-          subheader: "",
-          options: yesNoOptions,
-          nextDiagnosisPage: true,
-        });
+        createYesNoOptions(
+          "ข่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่",
+          true
+        );
+      } else {
+        jumpToConclusions("no_match");
       }
     }
     if (

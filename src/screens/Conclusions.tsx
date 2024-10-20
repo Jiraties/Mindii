@@ -1,15 +1,15 @@
+import LottieView from "lottie-react-native";
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-
-import RootContainer from "../components/RootContainer";
-import CustomButton from "../components/CustomButton";
-import { conclusion } from "../models/conclusionTypes";
+import { useNavigation, useNavigationState } from "@react-navigation/native";
 import { Skeleton } from "moti/skeleton";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+
+import RootContainer from "../components/RootContainer";
+import CustomButton from "../components/CustomButton";
 import { RootState } from "../context/store";
+import { conclusion } from "../models/conclusionTypes";
 import { StackNavigation } from "../../App";
-import LottieView from "lottie-react-native";
 import { Shadows } from "../constants/styles";
 
 export const conclusionsList = {
@@ -67,17 +67,30 @@ export const conclusionsList = {
     imageUri:
       "https://lirp.cdn-website.com/69c0b277/dms3rep/multi/opt/Typhoid+Fever+Symptoms-+Causes-+Risk+Factors-+Complications-+Diagnosis+-+Prevention-640w.jpg",
   },
+  diabetes: {
+    diseaseName: "โรคเบาหวาน",
+    description:
+      "โรคเบาหวาน คือ โรคที่เกิดจากการเกิดขึ้นของระดับน้ำตาลในเลือดที่สูงเกินไป โดยที่ระดับน้ำตาลในเลือดที่สูงเกินไปนี้เกิดจากการขาดฮอร์โมนอินซูลิน หรือเซลล์ที่ตอบสนองต่อฮอร์โมนอินซูลินไม่ได้ ทำให้เกิดอาการของโรคเบาหวาน",
+    flags: ["visitDoctor"],
+    imageUri:
+      "https://www.bumrungrad.com/-/media/project/bumrungrad/conditions/diabetes/diabetes-featured-image.jpg",
+  },
 };
 
 const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
   const [imageIsLoading, setImageIsLoading] = useState(true);
   const navigation = useNavigation<StackNavigation>();
+  const navigationRouteHistory = useNavigationState((state) => state.routes);
   const diseaseId = useSelector(
     (state: RootState) => state.conclusion.displayConclusion.diseaseId
   );
   const diagnosisData = useSelector(
     (state: RootState) => state.conclusion.displayConclusion.diagnosisData
   );
+
+  const previousScreenName =
+    navigationRouteHistory[navigationRouteHistory.length - 2].name;
+  const lastScreenWasDiagnosis = previousScreenName === "diagnosis";
 
   if (diseaseId === "no_match") {
     return (
@@ -119,7 +132,13 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
             </View>
             <CustomButton
               style={s.returnButton}
-              onPress={() => navigation.navigate("home")}
+              onPress={() => {
+                console.log(previousScreenName);
+
+                if (previousScreenName === "diagnosis")
+                  navigation.navigate("home");
+                else navigation.goBack();
+              }}
             >
               <Text style={s.returnButton__text}>กลับ</Text>
             </CustomButton>
@@ -133,7 +152,9 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
       <ScrollView>
         <View style={s.conclusionsRootContainer}>
           <View>
-            <Text style={s.headerText}>คุณมีความเสี่ยงเป็น</Text>
+            <Text style={s.headerText}>
+              {lastScreenWasDiagnosis ? "คุณมีความเสี่ยงเป็น" : ``}
+            </Text>
             <Text style={s.headerTextHighlight}>
               {conclusionsList[diseaseId].diseaseName}
             </Text>
@@ -172,7 +193,13 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
           </View>
           <CustomButton
             style={s.returnButton}
-            onPress={() => navigation.navigate("home")}
+            onPress={() => {
+              console.log(previousScreenName);
+
+              if (previousScreenName === "diagnosis")
+                navigation.navigate("home");
+              else navigation.goBack();
+            }}
           >
             <Text style={s.returnButton__text}>กลับ</Text>
           </CustomButton>

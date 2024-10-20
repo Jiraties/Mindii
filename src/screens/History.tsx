@@ -1,5 +1,3 @@
-import { useSelector } from "react-redux";
-import RootContainer from "../components/RootContainer";
 import {
   StyleSheet,
   View,
@@ -8,16 +6,27 @@ import {
   Image,
   TextInput,
 } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../context/store";
 import { conclusionsList } from "./Conclusions";
 import { Shadows } from "../constants/styles";
-import CustomButton from "../components/CustomButton";
 import { SymbolView } from "expo-symbols";
 
-const History = () => {
+import CustomButton from "../components/CustomButton";
+import RootContainer from "../components/RootContainer";
+import { conclusionActions } from "../context/conclusionSlice";
+import { useNavigationState } from "@react-navigation/native";
+
+const History = (props) => {
+  const dispatch = useDispatch();
   const conclusionHistory = useSelector(
     (state: RootState) => state.conclusion.conclusionHistory
   );
+
+  const handleItemPress = (diseaseId: string) => {
+    dispatch(conclusionActions.viewConclusion(diseaseId));
+    props.navigation.navigate("conclusions");
+  };
 
   return (
     <RootContainer>
@@ -38,7 +47,11 @@ const History = () => {
           const date = new Date(conclusion.date);
 
           return (
-            <View key={index} style={s.historyItem_wrapper}>
+            <CustomButton
+              onPress={() => handleItemPress(conclusion.diseaseId)}
+              key={index}
+              style={s.historyItem_wrapper}
+            >
               <Image
                 source={{ uri: fullConclusion.imageUri }}
                 style={s.historyItem_image}
@@ -64,7 +77,7 @@ const History = () => {
                   </CustomButton>
                 </View>
               </View>
-            </View>
+            </CustomButton>
           );
         })}
       </View>

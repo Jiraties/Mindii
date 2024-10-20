@@ -2,12 +2,10 @@ import {
   View,
   Text,
   StyleSheet,
-  Platform,
   TextInput,
-  Image,
   ActivityIndicator,
   ScrollView,
-  Alert,
+  Keyboard,
 } from "react-native";
 import {
   FIREBASE,
@@ -84,6 +82,7 @@ const Signup = (props) => {
 
   const handleSignup = async () => {
     setLoading(true);
+    Keyboard.dismiss();
 
     const errorMessage = validateInputs(
       email,

@@ -7,11 +7,9 @@ import {
   View,
   Text,
   StyleSheet,
-  Platform,
   TextInput,
-  Image,
   ActivityIndicator,
-  Alert,
+  Keyboard,
 } from "react-native";
 
 import CustomButton from "../components/CustomButton";
@@ -27,6 +25,8 @@ const Login = (props) => {
 
   const loginHandler = async () => {
     setLoading(true);
+    Keyboard.dismiss();
+
     try {
       const response: any = await signInWithEmailAndPassword(
         auth,
