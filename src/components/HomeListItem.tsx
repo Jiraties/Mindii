@@ -11,6 +11,7 @@ import {
   Linking,
 } from "react-native";
 
+import CustomModal from "./CustomModal";
 import CustomButton from "./CustomButton";
 import { Shadows } from "../constants/styles";
 
@@ -41,73 +42,12 @@ const HomeListItem: React.FC<{
         shadowOpacity: 0.2,
       }}
     >
-      <Modal
-        visible={modalIsVisible}
-        animationType="slide"
-        presentationStyle="pageSheet"
-      >
-        <View style={s.modal}>
-          {/* <Image
-            source={require("../../assets/images/modal.png")}
-            style={s.modalImage}
-          /> */}
-          <LottieView
-            source={require("../../assets/animations/diagnosisAnimation.json")}
-            style={s.animation}
-            autoPlay
-          />
-          <View style={s.modalTextWrapper}>
-            <View>
-              <Text style={s.headerText}>
-                {/* ก่อนจะประเมินควรทราบว่าแอปนี้ควรใช้ในการประเมินเบื้องต้นเท่านั้น
-              ไม่ใช่คำวินิจฉัยอาจเกิดข้อผิดพลาดได้ควรได้รับคำแนะนำจากแพทย์ */}
-                แอปพลิเคชันใกล้หมอนั้นทำมาเพื่อให้คำแนะนำด้านสุขภาพเบื้องต้นเท่านั้น
-              </Text>
-              <Text style={[s.headerText, { fontSize: 15, marginBottom: 30 }]}>
-                ไม่ควรใช้เป็นใช่เครื่องมือวินิจฉัยอย่างเป็นทางการ
-                ควรปรึกษาผู้เชี่ยวชาญด้านสุขภาพ
-                และจะไม่รับผิดชอบต่อการตัดสินใจใดๆ ที่เกิดจากคำแนะนำของแอป
-              </Text>
-            </View>
-            <CustomButton
-              style={s.termsAndConditions__button}
-              onPress={() =>
-                Linking.openURL(
-                  "https://docs.google.com/document/d/1F2cQv9utSkQ8fEZvSraeTjy1bewv5agTMVC84yN9YTs/edit?usp=sharing"
-                )
-              }
-            >
-              <Text style={s.termsAndConditions__text}>
-                ดูข้อกำหนดและเงื่อนไขเต็ม
-              </Text>
-            </CustomButton>
-          </View>
+      <CustomModal
+        modalIsVisible={modalIsVisible}
+        setModalIsVisible={setModalIsVisible}
+        redirectTo={props.redirectTo}
+      />
 
-          {/* <CustomButton
-            style={[
-              s.homeListItem__button,
-              { width: "100%", marginBottom: 20 },
-            ]}
-            pressedStyle={s.homeListItem__buttonPressed}
-            onPress={() => setModalIsVisible(false)}
-          >
-            <Text style={s.homeListItem__buttonText}>Back</Text>
-          </CustomButton> */}
-          <CustomButton
-            style={[
-              s.homeListItem__button,
-              { width: "100%", height: 50, marginTop: 30 },
-            ]}
-            pressedStyle={s.homeListItem__buttonPressed}
-            onPress={() => {
-              navigation.navigate(props.redirectTo);
-              setModalIsVisible(false);
-            }}
-          >
-            <Text style={s.homeListItem__buttonText}>รับทราบ</Text>
-          </CustomButton>
-        </View>
-      </Modal>
       <View style={s.homeListItem}>
         <ImageBackground
           style={s.homeListItem__image}

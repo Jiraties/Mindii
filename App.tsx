@@ -109,8 +109,6 @@ const AuthenticatedStack = () => {
           headerStyle: {
             backgroundColor: "#EFEFEF",
           },
-          drawerLabel: "หน้าโฮม",
-          drawerActiveTintColor: "#FB6E90",
         })}
       />
       <Stack.Screen

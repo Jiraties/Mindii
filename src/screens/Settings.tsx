@@ -9,9 +9,14 @@ import authenticationSlice, {
 } from "../context/authenticationSlice";
 import Toast from "react-native-toast-message";
 import { settings } from "firebase/analytics";
+import { useSelector } from "react-redux";
 
 const Settings = (props) => {
   const [theme, setTheme] = useState("light");
+  const userInformation = useSelector(
+    (state) => state.authentication.userInformation
+  );
+  const birthday = new Date(userInformation.birthday);
   const dispatch = useDispatch();
 
   const themeSwitchHandler = () =>
@@ -34,11 +39,34 @@ const Settings = (props) => {
     <RootContainer>
       <Text style={s.headerText}>ตั้งค่า</Text>
       <ScrollView style={s.settingsList}>
-        <View style={s.settingsItem}>
-          <Text style={s.settingsItem__text}>บัญชี</Text>
-          <CustomButton style={s.button} onPress={logoutHandler}>
-            <Text style={s.button__text}>ออกจากระบบ</Text>
-          </CustomButton>
+        <View style={[s.settingsItem, s.account]}>
+          {/* <View style={s.account__flag}>
+            <Text style={s.account__flag}>บัญชีใกล้หมอ</Text>
+          </View> */}
+          <Text style={s.account__name}>{userInformation.name}</Text>
+          <Text style={s.account__birthday}>
+            เกิดวันที่{" "}
+            {birthday.toLocaleString("th-TH", {
+              dateStyle: "long",
+            })}
+          </Text>
+
+          <View style={s.account__actions}>
+            {/* <CustomButton
+              style={s.button}
+              pressedStyle={{ backgroundColor: "#2533b3" }}
+              onPress={logoutHandler}
+            >
+              <Text style={s.button__text}>เปลี่ยนรหัสผ่าน</Text>
+            </CustomButton> */}
+            <CustomButton
+              style={s.button}
+              pressedStyle={{ backgroundColor: "#2533b3" }}
+              onPress={logoutHandler}
+            >
+              <Text style={s.button__text}>ออกจากระบบ</Text>
+            </CustomButton>
+          </View>
         </View>
         <View style={s.settingsItem}>
           <Text style={s.settingsItem__text}>Debug</Text>
@@ -68,6 +96,7 @@ const s = StyleSheet.create({
   },
   settingsList: {
     gap: 20,
+    borderRadius: 20,
   },
   settingsItem: {
     padding: 20,
@@ -92,6 +121,31 @@ const s = StyleSheet.create({
   },
   settingsItem__text: {
     fontFamily: "SemiBold",
+  },
+  account: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  account__name: {
+    fontSize: 30,
+    fontFamily: "SemiBold",
+  },
+  account__birthday: {
+    marginBottom: 30,
+    fontFamily: "SemiBold",
+  },
+  account__flag: {
+    backgroundColor: "#959ffc",
+    padding: 5,
+    borderRadius: 10,
+    color: "#fff",
+    fontFamily: "SemiBold",
+  },
+  account__actions: {
+    flexDirection: "row",
+    gap: 10,
+    marginLeft: "auto",
+    // justifyContent: "space-around",
   },
 });
 

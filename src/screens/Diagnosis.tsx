@@ -72,12 +72,6 @@ const Diagnosis: React.FC = (props) => {
       description:
         "ภาวะที่อุณหภูมิของร่างกายสูงกว่าปกติ บ่งบอกถึงการติดเชื้อหรืออาการอื่นๆ",
     },
-    {
-      id: "no_match",
-      name: "กล่าวอาการไปหมดแล้ว",
-      emoji: "✅",
-      description: "ฉันได้กล่าวอาการไปหมดแล้ว",
-    },
   ];
   const [conclusionsVisible, setConclusionsVisible] = useState<boolean>(false);
   const [conclusion, setConclusion] = useState<string>("");

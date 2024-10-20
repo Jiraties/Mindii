@@ -48,7 +48,7 @@ const SelectSymptom: React.FC<{
           ? "เริ่มจากการเลือกอาการที่กระทบคุณมากที่สุด"
           : `คุณเลือกอาการ ${props.diagnosisData.symptomList.map(
               (symptom) => symptom.name
-            )} ไปแล้ว`}
+            )} ไปแล้ว `}
       </Text>
       <TextInput
         placeholder="ค้นหาอาการที่ต้องการ..."
@@ -66,7 +66,6 @@ const SelectSymptom: React.FC<{
       {/* <View style={s.symptomListItem}>
         <Text>ผมมีอาการแค่นี้</Text>
       </View> */}
-
       <FlatList
         data={symptomList}
         keyExtractor={(symptom) => symptom.id}
@@ -98,6 +97,21 @@ const SelectSymptom: React.FC<{
           );
         }}
       />
+      {props.diagnosisData.screenIndex !== 0 && (
+        <CustomButton
+          style={s.noMatch}
+          onPress={() =>
+            props.selectedSymptomHandler({
+              id: "no_match",
+              name: "กล่าวอาการไปหมดแล้ว",
+              emoji: "✅",
+              description: "",
+            })
+          }
+        >
+          <Text style={s.noMatch__text}>กล่าวอาการไปหมดแล้ว</Text>
+        </CustomButton>
+      )}
     </>
   );
 };
@@ -209,6 +223,22 @@ const s = StyleSheet.create({
     shadowOffset: { width: 2, height: 2 },
     shadowRadius: 10,
     shadowOpacity: 0.1,
+  },
+  noMatch: {
+    position: "absolute",
+    bottom: 30,
+    right: 30,
+    backgroundColor: "#3246FF",
+    padding: 20,
+    borderRadius: 20,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    shadowOpacity: 0.25,
+  },
+  noMatch__text: {
+    color: "#fff",
+    fontFamily: "SemiBold",
   },
 });
 
