@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { View, Text, StyleSheet, Alert, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
 import SelectSymptom from "../components/diagnosisPages/SelectSymptom";
 import SelectOptions from "../components/diagnosisPages/SelectOptions";
 import Conclusions from "./Conclusions";
-import { conclusionActions } from "../context/conclusionSlice";
 import LottieView from "lottie-react-native";
+import { conclusionActions } from "../context/conclusionSlice";
+import { authenticationActions } from "../context/authenticationSlice";
+import { writeConclusionHistory } from "../context/conclusionSlice";
 
 import {
   diagnosisDataType,
@@ -20,6 +22,7 @@ import {
 } from "../models/diagnosisTypes";
 import { StackNavigation } from "../../App";
 import { create } from "react-test-renderer";
+import { RootState } from "../context/store";
 
 let diagnosisData: diagnosisDataType = {
   screenIndex: 0,
@@ -79,7 +82,8 @@ const Diagnosis = (props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const screenIndex: number = diagnosisData.screenIndex;
   const screenType: screenType = diagnosisData.screenType[screenIndex];
-  const dispatch = useDispatch();
+  const userUid = useSelector<RootState>((state) => state.authentication.uid);
+  const dispatch = useDispatch<any>();
 
   logDiagnosisData();
 
@@ -118,6 +122,7 @@ const Diagnosis = (props) => {
         diagnosisData: diagnosisData,
       })
     );
+    dispatch(writeConclusionHistory(userUid));
 
     resetDiagnosisData();
     setLoading(true);
@@ -418,7 +423,7 @@ const Diagnosis = (props) => {
     if (latest.question === "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่") {
       if (latest.value === "yes") {
         createYesNoOptions(
-          "ข่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่",
+          "ช่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่",
           true
         );
       } else {
@@ -427,7 +432,7 @@ const Diagnosis = (props) => {
     }
     if (
       latest.question ===
-      "ข่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่"
+      "ช่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่"
     ) {
       if (latest.value === "yes") {
         jumpToConclusions("giardia");

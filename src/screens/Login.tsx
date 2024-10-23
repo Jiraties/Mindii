@@ -89,7 +89,7 @@ const Login = (props) => {
           value={password}
         />
         {loading ? (
-          <ActivityIndicator />
+          <ActivityIndicator style={s.submitButton} />
         ) : (
           <CustomButton style={s.submitButton} onPress={loginHandler}>
             <Text style={s.submitButton__text}>ล็อกอิน</Text>
@@ -113,7 +113,7 @@ const Login = (props) => {
       </View>
       <View>
         {loading ? (
-          <ActivityIndicator />
+          <ActivityIndicator style={s.submitButton} />
         ) : (
           <CustomButton
             style={[s.submitButton, s.signupButton]}

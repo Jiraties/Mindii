@@ -27,7 +27,7 @@ const validatePassword = (password) => {
   const hasLowercase = /[a-z]/.test(password);
   const hasUppercase = /[A-Z]/.test(password);
   const hasNumeric = /[0-9]/.test(password);
-  const hasNonAlphanumeric = /[^a-zA-Z0-9]/.test(password);
+  // const hasNonAlphanumeric = /[^a-zA-Z0-9]/.test(password);
   const isValidLength =
     password.length >= minLength && password.length <= maxLength;
 
@@ -35,7 +35,7 @@ const validatePassword = (password) => {
     hasLowercase &&
     hasUppercase &&
     hasNumeric &&
-    hasNonAlphanumeric &&
+    // hasNonAlphanumeric &&
     isValidLength
   );
 };
@@ -64,6 +64,19 @@ const validateInputs = (email, password, reEnterPassword, birthday, name) => {
 
   if (!validatePassword(password)) {
     return "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร และประกอบไปด้วยตัวพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข และอักขระพิเศษ";
+  }
+
+  const currentDate = new Date();
+  const age = currentDate.getFullYear() - birthday.getFullYear();
+  const monthDifference = currentDate.getMonth() - birthday.getMonth();
+  const dayDifference = currentDate.getDate() - birthday.getDate();
+
+  if (
+    age < 13 ||
+    (age === 13 &&
+      (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)))
+  ) {
+    return "ผู้ใช้ต้องมีอายุอย่างน้อย 13 ปี";
   }
 
   return null;
@@ -180,13 +193,25 @@ const Signup = (props) => {
               { flexDirection: "row", alignItems: "center" },
             ]}
           >
-            <Text style={{ marginRight: "auto", color: "grey" }}>วันเกิด</Text>
+            <Text
+              style={{
+                marginRight: "auto",
+                color: "grey",
+                fontFamily: "SemiBold",
+              }}
+            >
+              วันเกิด
+            </Text>
             <DateTimePicker
               style={{ borderRadius: 20 }}
               value={birthday}
               onChange={(event, date: Date) => {
                 setBirthday(date);
               }}
+              themeVariant="light"
+              accentColor="#3246FF"
+              locale="th-TH"
+              maximumDate={new Date()}
             />
           </View>
 

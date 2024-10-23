@@ -27,6 +27,7 @@ import "react-native-reanimated";
 import "react-native-gesture-handler";
 import CustomToast from "./src/components/CustomToast";
 import History from "./src/screens/History";
+import { fetchConclusionHistory } from "./src/context/conclusionSlice";
 
 const AuthenticationStack = () => {
   return (
@@ -193,6 +194,7 @@ const Root = () => {
             uid: storedUid,
           })
         );
+        dispatch(fetchConclusionHistory(storedUid));
 
         const getUserInformation = async () => {
           const userRef = doc(db, "users", storedUid); // Assuming you saved it under their UID

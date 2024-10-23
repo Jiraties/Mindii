@@ -12,19 +12,19 @@ const Splashscreen = (props) => {
           <View style={s.preview}>
             <Image
               style={s.preview}
-              source={require("../../assets/images/IMG_4706.png")}
+              source={require("../../assets/images/splashscreen1.png")}
             />
           </View>
           <View style={s.preview}>
             <Image
               style={s.preview}
-              source={require("../../assets/images/IMG_4703.png")}
+              source={require("../../assets/images/splashscreen3.png")}
             />
           </View>
           <View style={s.preview}>
             <Image
               style={s.preview}
-              source={require("../../assets/images/IMG_4705.png")}
+              source={require("../../assets/images/splashscreen2.png")}
             />
           </View>
         </View>
