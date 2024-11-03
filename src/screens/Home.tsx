@@ -13,6 +13,7 @@ import { Skeleton } from "moti/skeleton";
 
 import HomeListItem from "../components/HomeListItem";
 import RootContainer from "../components/RootContainer";
+import { Fonts } from "../constants/styles";
 
 import { RootState } from "../context/store";
 
@@ -67,12 +68,12 @@ const s = StyleSheet.create({
   },
   headerText: {
     fontSize: 40,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   headerTextHighlight: {
     fontSize: 40,
     color: "#3246FF",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     lineHeight: 55,
   },
   homeList: {

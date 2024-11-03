@@ -4,6 +4,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import CustomButton from "../CustomButton";
 import { diagnosisOption, optionsSettings } from "../../models/diagnosisTypes";
+import { Fonts } from "../../constants/styles";
 
 const SelectOptions: React.FC<{
   optionsList: diagnosisOption[];
@@ -30,7 +31,9 @@ const SelectOptions: React.FC<{
           style={s.continueButton}
           onPress={() => props.onChecklistCompletion(checklistState, header)}
         >
-          <Text style={{ color: "#fff", fontFamily: "SemiBold" }}>ไปต่อ</Text>
+          <Text style={{ color: "#fff", fontFamily: Fonts.regular }}>
+            ไปต่อ
+          </Text>
         </CustomButton>
       )}
       <Text
@@ -74,7 +77,7 @@ const SelectOptions: React.FC<{
                 pressedStyle={{ backgroundColor: "#eee" }}
                 key={option.value}
               >
-                <Text style={{ fontFamily: "SemiBold", fontSize: 15 }}>
+                <Text style={{ fontFamily: Fonts.regular, fontSize: 15 }}>
                   {option.name}
                 </Text>
               </CustomButton>
@@ -88,11 +91,11 @@ const SelectOptions: React.FC<{
 
 const s = StyleSheet.create({
   headerText: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   headerDescriptionText: {
     fontSize: 15,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     marginBottom: 10,
   },
   optionList: {
@@ -120,7 +123,7 @@ const s = StyleSheet.create({
   },
   checkListItem__textStyle: {
     fontSize: 15,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     color: "#000",
     textDecorationLine: "none",
   },

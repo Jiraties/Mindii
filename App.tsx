@@ -231,7 +231,7 @@ const Root = () => {
 
 export default function App() {
   const [fontsAreLoaded] = useFonts({
-    SemiBold: require("./assets/fonts/IBMPlexSansThai-Medium.ttf"),
+    regular: require("./assets/fonts/IBMPlexSansThai-Medium.ttf"),
   });
   // const navigate = useNavigation();
 

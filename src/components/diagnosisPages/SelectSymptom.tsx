@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import CustomButton from "../CustomButton";
 import { diagnosisDataType, symptom } from "../../models/diagnosisTypes";
+import { Fonts } from "../../constants/styles";
 
 const SelectSymptom: React.FC<{
   symptomList: symptom[];
@@ -119,11 +120,11 @@ const SelectSymptom: React.FC<{
 const s = StyleSheet.create({
   headerText: {
     fontSize: 40,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   headerDescriptionText: {
     fontSize: 15,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     marginBottom: 10,
   },
   symptomList: {
@@ -151,7 +152,7 @@ const s = StyleSheet.create({
   },
   symptomListItem__notFoundText: {
     textAlign: "center",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   symptomListItem__textWrapper: {
     flex: 1,
@@ -159,12 +160,12 @@ const s = StyleSheet.create({
   },
   symptomListItem__titleText: {
     fontSize: 20,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     flex: 1,
   },
   symptomListItem__descriptionText: {
     flex: 1,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   symptomListItem__button: {
     flex: 0.2,
@@ -183,7 +184,7 @@ const s = StyleSheet.create({
     padding: 15,
     borderRadius: 100,
     marginBottom: 20,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     shadowColor: "black",
     shadowOffset: { width: 2, height: 2 },
     shadowRadius: 10,
@@ -203,7 +204,7 @@ const s = StyleSheet.create({
   },
   homeListItem__buttonText: {
     color: "#fff",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   homeListItem__buttonPressed: {
     backgroundColor: "#2533b3",
@@ -238,7 +239,7 @@ const s = StyleSheet.create({
   },
   noMatch__text: {
     color: "#fff",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
 });
 

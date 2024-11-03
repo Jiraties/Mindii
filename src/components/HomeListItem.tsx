@@ -13,7 +13,7 @@ import {
 
 import CustomModal from "./CustomModal";
 import CustomButton from "./CustomButton";
-import { Shadows } from "../constants/styles";
+import { Shadows, Fonts } from "../constants/styles";
 
 const HomeListItem: React.FC<{
   text: string;
@@ -83,7 +83,7 @@ const s = StyleSheet.create({
   homeListItem__text: {
     fontSize: 20,
     flex: 1,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   homeListItem__button: {
     backgroundColor: "#3246FF",
@@ -100,7 +100,7 @@ const s = StyleSheet.create({
   },
   homeListItem__buttonText: {
     color: "#fff",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   homeListItem__buttonPressed: {
     backgroundColor: "#2533b3",
@@ -137,19 +137,19 @@ const s = StyleSheet.create({
   headerText: {
     textAlign: "left",
     fontSize: 30,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     marginBottom: 10,
   },
   headerTextHighlight: {
     textAlign: "left",
     fontSize: 20,
     color: "#FB6E90",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     overflow: "visible",
   },
   termsAndConditions__button: {},
   termsAndConditions__text: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     color: "#3246FF",
     fontSize: 15,
   },

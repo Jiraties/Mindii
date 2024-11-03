@@ -20,6 +20,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
 import Toast from "react-native-toast-message";
+import { Fonts } from "../constants/styles";
 
 const validatePassword = (password) => {
   const minLength = 6;
@@ -197,7 +198,7 @@ const Signup = (props) => {
               style={{
                 marginRight: "auto",
                 color: "grey",
-                fontFamily: "SemiBold",
+                fontFamily: Fonts.regular,
               }}
             >
               วันเกิด
@@ -231,7 +232,7 @@ const Signup = (props) => {
               top: -10,
               backgroundColor: "#EFEFEF",
               color: "#828282",
-              fontFamily: "SemiBold",
+              fontFamily: Fonts.regular,
               paddingHorizontal: 10,
             }}
           >
@@ -250,7 +251,7 @@ const Signup = (props) => {
                 style={s.googleButtonImage}
                 source={require("../../assets/images/googleLogo.png")}
               /> */}
-              <Text style={{ fontFamily: "SemiBold", color: "#fff" }}>
+              <Text style={{ fontFamily: Fonts.regular, color: "#fff" }}>
                 มีบัญชีอยู่แล้ว
               </Text>
             </CustomButton>
@@ -280,25 +281,25 @@ const s = StyleSheet.create({
   },
   headerText: {
     fontSize: 40,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   subheaderText: {
     fontSize: 15,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   headerTextHighlight: {
     fontSize: 40,
     color: "blue",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   signupWrapper: {},
   signupText: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     marginBottom: 10,
     fontSize: 20,
   },
   signupInput: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     backgroundColor: "#fdfdfd",
     padding: 20,
     borderRadius: 20,
@@ -317,7 +318,7 @@ const s = StyleSheet.create({
   },
   submitButton__text: {
     color: "#fff",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     textAlign: "center",
   },
   line: {

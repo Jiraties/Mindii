@@ -16,6 +16,7 @@ import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
 import { conclusionActions } from "../context/conclusionSlice";
 import { useNavigationState } from "@react-navigation/native";
+import { Fonts } from "../constants/styles";
 
 const History = (props) => {
   const dispatch = useDispatch();
@@ -94,7 +95,7 @@ const s = StyleSheet.create({
     ...Shadows.default,
   },
   historyItem_text: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
 
   historyItem_image: {
@@ -107,12 +108,12 @@ const s = StyleSheet.create({
   },
   headerText: {
     fontSize: 40,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     // marginBottom: ,
   },
   subheaderText: {
     fontSize: 15,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     marginBottom: 20,
   },
   searchField: {
@@ -120,7 +121,7 @@ const s = StyleSheet.create({
     padding: 15,
     borderRadius: 100,
     marginBottom: 20,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     shadowColor: "black",
     shadowOffset: { width: 2, height: 2 },
     shadowRadius: 10,
@@ -149,7 +150,7 @@ const s = StyleSheet.create({
   },
   symptomListItem__notFoundText: {
     textAlign: "center",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
 });
 

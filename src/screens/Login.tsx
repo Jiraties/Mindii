@@ -14,6 +14,7 @@ import {
 
 import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
+import { Fonts } from "../constants/styles";
 import { authenticationActions } from "../context/authenticationSlice";
 
 const Login = (props) => {
@@ -104,7 +105,7 @@ const Login = (props) => {
             top: -10,
             backgroundColor: "#EFEFEF",
             color: "#828282",
-            fontFamily: "SemiBold",
+            fontFamily: Fonts.regular,
             paddingHorizontal: 10,
           }}
         >
@@ -147,25 +148,25 @@ const s = StyleSheet.create({
   },
   headerText: {
     fontSize: 40,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   subheaderText: {
     fontSize: 15,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   headerTextHighlight: {
     fontSize: 40,
     color: "blue",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   loginWrapper: {},
   loginText: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     marginBottom: 10,
     fontSize: 20,
   },
   loginInput: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     backgroundColor: "#fdfdfd",
     padding: 20,
     borderRadius: 20,
@@ -184,7 +185,7 @@ const s = StyleSheet.create({
   },
   submitButton__text: {
     color: "#fff",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     textAlign: "center",
   },
   line: {

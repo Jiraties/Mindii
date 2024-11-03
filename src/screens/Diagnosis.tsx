@@ -12,6 +12,7 @@ import LottieView from "lottie-react-native";
 import { conclusionActions } from "../context/conclusionSlice";
 import { authenticationActions } from "../context/authenticationSlice";
 import { writeConclusionHistory } from "../context/conclusionSlice";
+import { Fonts } from "../constants/styles";
 
 import {
   diagnosisDataType,
@@ -517,7 +518,7 @@ const Diagnosis = (props) => {
       </Modal>
       {displayScreenType(screenType)}
       <CustomButton style={s.backButton} onPress={rewindSymptom}>
-        <Text style={{ fontFamily: "SemiBold" }}>กลับ</Text>
+        <Text style={{ fontFamily: Fonts.regular }}>กลับ</Text>
       </CustomButton>
     </RootContainer>
   );
@@ -526,11 +527,11 @@ const Diagnosis = (props) => {
 const s = StyleSheet.create({
   headerText: {
     fontSize: 40,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   headerDescriptionText: {
     fontSize: 15,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     marginBottom: 10,
   },
 

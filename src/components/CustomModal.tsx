@@ -3,7 +3,7 @@ import { View, Text, Modal, StyleSheet, Linking } from "react-native";
 import LottieView from "lottie-react-native";
 import CustomButton from "./CustomButton";
 import { useNavigation } from "@react-navigation/native";
-import { Shadows } from "../constants/styles";
+import { Shadows, Fonts } from "../constants/styles";
 
 const CustomModal: React.FC<{
   modalIsVisible: boolean;
@@ -87,12 +87,12 @@ const s = StyleSheet.create({
   headerText: {
     textAlign: "left",
     fontSize: 30,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     marginBottom: 10,
   },
   termsAndConditions__button: {},
   termsAndConditions__text: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     color: "#3246FF",
     fontSize: 15,
   },
@@ -107,7 +107,7 @@ const s = StyleSheet.create({
   },
   homeListItem__buttonText: {
     color: "#fff",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   homeListItem__buttonPressed: {
     backgroundColor: "#2533b3",

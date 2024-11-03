@@ -3,6 +3,10 @@ export const Colors = {
   background: "#EFEFEF",
 };
 
+export const Fonts = {
+  regular: "regular",
+};
+
 export const Shadows = {
   light: {
     shadowColor: "black",

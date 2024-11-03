@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, Image, ScrollView } from "react-native";
 import RootContainer from "../components/RootContainer";
 import CustomButton from "../components/CustomButton";
 import { Colors } from "../constants/styles";
+import { Fonts } from "../constants/styles";
 
 const Splashscreen = (props) => {
   return (
@@ -100,11 +101,11 @@ const s = StyleSheet.create({
     flexWrap: "wrap",
   },
   titleText: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     fontSize: 40,
   },
   subtitleText: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     textAlign: "center",
     marginBottom: 40,
   },
@@ -121,7 +122,7 @@ const s = StyleSheet.create({
     ...defaultShadow,
   },
   signupButton__text: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     color: "#fff",
   },
   loginButton: {
@@ -130,7 +131,7 @@ const s = StyleSheet.create({
     gap: 5,
   },
   loginButton__text: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
 });
 

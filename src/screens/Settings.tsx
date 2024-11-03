@@ -1,19 +1,19 @@
+import Toast from "react-native-toast-message";
 import { Text, StyleSheet, ScrollView, View, Switch } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 
 import RootContainer from "../components/RootContainer";
 import CustomButton from "../components/CustomButton";
-import { useDispatch } from "react-redux";
 import authenticationSlice, {
   authenticationActions,
 } from "../context/authenticationSlice";
-import Toast from "react-native-toast-message";
-import { settings } from "firebase/analytics";
-import { useSelector } from "react-redux";
+import { Fonts } from "../constants/styles";
+import { RootState } from "../context/store";
 
 const Settings = (props) => {
   const [theme, setTheme] = useState("light");
-  const userInformation = useSelector(
+  const userInformation = useSelector<RootState>(
     (state) => state.authentication.userInformation
   );
   const birthday = new Date(userInformation.birthday);
@@ -91,7 +91,7 @@ const Settings = (props) => {
 const s = StyleSheet.create({
   headerText: {
     fontSize: 40,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
     marginBottom: 30,
   },
   settingsList: {
@@ -117,10 +117,10 @@ const s = StyleSheet.create({
   },
   button__text: {
     color: "#fff",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   settingsItem__text: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   account: {
     flexDirection: "column",
@@ -128,18 +128,18 @@ const s = StyleSheet.create({
   },
   account__name: {
     fontSize: 30,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   account__birthday: {
     marginBottom: 30,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   account__flag: {
     backgroundColor: "#959ffc",
     padding: 5,
     borderRadius: 10,
     color: "#fff",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   account__actions: {
     flexDirection: "row",

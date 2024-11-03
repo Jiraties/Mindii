@@ -1,8 +1,11 @@
 import { View, Text } from "react-native";
 import { SymbolView } from "expo-symbols";
+import { Fonts } from "../constants/styles";
+
+import type { SFSymbol } from "sf-symbols-typescript";
 
 const CustomToast = (props) => {
-  let symbolName = "";
+  let symbolName: SFSymbol = "questionmark.folder";
   let symbolColor = "";
 
   switch (props.type) {
@@ -33,7 +36,7 @@ const CustomToast = (props) => {
       }}
     >
       <SymbolView name={symbolName} tintColor={symbolColor} />
-      <Text style={{ fontFamily: "SemiBold", maxWidth: "80%" }}>
+      <Text style={{ fontFamily: Fonts.regular, maxWidth: "80%" }}>
         {props.text1}
       </Text>
     </View>

@@ -10,7 +10,7 @@ import CustomButton from "../components/CustomButton";
 import { RootState } from "../context/store";
 import { conclusion } from "../models/conclusionTypes";
 import { StackNavigation } from "../../App";
-import { Shadows } from "../constants/styles";
+import { Shadows, Fonts } from "../constants/styles";
 
 export const conclusionsList = {
   malaria: {
@@ -216,12 +216,12 @@ const s = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   headerTextHighlight: {
     fontSize: 40,
     // color: "blue",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   conclusionsTag: {
     backgroundColor: "#f54254",
@@ -231,7 +231,7 @@ const s = StyleSheet.create({
   },
   conclusionsTag__text: {
     color: "#fcdcdf",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   image: {
     height: 250,
@@ -239,7 +239,7 @@ const s = StyleSheet.create({
     ...Shadows.default,
   },
   descriptionText: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   remedies: {
     backgroundColor: "#fdfdfd",
@@ -248,7 +248,7 @@ const s = StyleSheet.create({
     ...Shadows.default,
   },
   remedies__text: {
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
   returnButton: {
     backgroundColor: "#3246FF",
@@ -259,7 +259,7 @@ const s = StyleSheet.create({
   },
   returnButton__text: {
     color: "#fff",
-    fontFamily: "SemiBold",
+    fontFamily: Fonts.regular,
   },
 });
 
