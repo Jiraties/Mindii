@@ -27,7 +27,10 @@ import "react-native-reanimated";
 import "react-native-gesture-handler";
 import CustomToast from "./src/components/CustomToast";
 import History from "./src/screens/History";
-import { fetchConclusionHistory } from "./src/context/conclusionSlice";
+import {
+  fetchConclusionHistory,
+  conclusionActions,
+} from "./src/context/conclusionSlice";
 
 const AuthenticationStack = () => {
   return (
@@ -140,9 +143,9 @@ const AuthenticatedStack = () => {
         name="conclusions"
         component={Conclusions}
         options={{
-          headerBackVisible: false,
           gestureEnabled: false,
           headerTitle: () => <HeaderText isDiagnosis={true} />,
+          // headerBackVisible:
         }}
       />
       <Stack.Screen
@@ -164,6 +167,7 @@ const Navigation = () => {
     login: ({ text1 }) => <CustomToast type="login" text1={text1} />,
     logout: ({ text1 }) => <CustomToast type="logout" text1={text1} />,
     warning: ({ text1 }) => <CustomToast type="warning" text1={text1} />,
+    success2: ({ text1 }) => <CustomToast type="success2" text1={text1} />,
   };
 
   return (
@@ -194,7 +198,7 @@ const Root = () => {
             uid: storedUid,
           })
         );
-        dispatch(fetchConclusionHistory(storedUid));
+        // dispatch(fetchConclusionHistory(storedUid));
 
         const getUserInformation = async () => {
           const userRef = doc(db, "users", storedUid); // Assuming you saved it under their UID

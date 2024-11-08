@@ -3,7 +3,14 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { conclusion } from "../models/conclusionTypes";
 import { diagnosisDataType } from "../models/diagnosisTypes";
 import { FIREBASE_FIRESTORE } from "../../FirebaseConfig";
-import { setDoc, doc, getDoc } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  getDoc,
+  addDoc,
+  collection,
+  updateDoc,
+} from "firebase/firestore";
 import { RootState } from "./store";
 
 interface displayConclusion {
@@ -45,11 +52,24 @@ const db = FIREBASE_FIRESTORE;
 export const writeConclusionHistory = createAsyncThunk(
   "conclusion/writeConclusionHistory",
   async (uid: any, { getState }) => {
-    console.log("writeConclusionHistory");
     const state = getState() as RootState;
+    console.log("writing ConclusionHistory");
     try {
-      await setDoc(doc(db, "conclusionHistory", uid), {
-        conlusionHistory: state.conclusion.conclusionHistory,
+      // Fetch the existing conclusion history
+      const conclusionHistoryRef = doc(db, "conclusionHistory", uid);
+      const docSnap = await getDoc(conclusionHistoryRef);
+      let existingHistory = [];
+      if (docSnap.exists()) {
+        existingHistory = docSnap.data().conclusionHistory || [];
+      }
+
+      // Append the new conclusion history
+      const newConclusion = state.conclusion.displayConclusion;
+      const updatedHistory = [newConclusion, ...existingHistory];
+
+      // Update the document with the new conclusion history
+      await updateDoc(conclusionHistoryRef, {
+        conclusionHistory: updatedHistory,
       });
       console.log("setting doc");
     } catch (error) {
@@ -65,21 +85,13 @@ export const fetchConclusionHistory = createAsyncThunk<
   { state: RootState }
 >("conclusion/fetchConclusionHistory", async (uid, { getState }) => {
   console.log("fetchConclusionHistory");
-  try {
-    const docRef = doc(db, "conclusionHistory", uid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const conclusionHistory = docSnap.data()
-        .conclusionHistory as displayConclusion[];
-      getState().conclusion.conclusionHistory = conclusionHistory;
-      return docSnap.data().conclusionHistory;
-    } else {
-      console.log("No such document!");
-      return [];
-    }
-  } catch (error) {
-    console.log("fetchConclusionHistory Error: ", error);
-    throw error;
+  const conclusionHistoryRef = doc(db, "conclusionHistory", uid);
+  const docSnap = await getDoc(conclusionHistoryRef);
+  if (docSnap.exists()) {
+    const fetchedConclusionHistory = docSnap.data();
+    return fetchedConclusionHistory.conclusionHistory;
+  } else {
+    console.log("No such document!");
   }
 });
 
@@ -110,6 +122,9 @@ const conclusionSlice = createSlice({
     },
     clearConclusions(state) {
       state.conclusionHistory = [];
+    },
+    setConclusionHistory(state, action: PayloadAction<displayConclusion[]>) {
+      state.conclusionHistory = action.payload;
     },
   },
   extraReducers: (builder) => {

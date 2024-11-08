@@ -5,7 +5,9 @@ import {
   ImageBackground,
   Image,
   TextInput,
+  FlatList,
 } from "react-native";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../context/store";
 import { conclusionsList } from "./Conclusions";
@@ -17,16 +19,67 @@ import RootContainer from "../components/RootContainer";
 import { conclusionActions } from "../context/conclusionSlice";
 import { useNavigationState } from "@react-navigation/native";
 import { Fonts } from "../constants/styles";
+import { useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchConclusionHistory } from "../context/conclusionSlice";
+import { Skeleton } from "moti/skeleton";
+import Toast from "react-native-toast-message";
 
 const History = (props) => {
   const dispatch = useDispatch();
   const conclusionHistory = useSelector(
     (state: RootState) => state.conclusion.conclusionHistory
   );
+  const [loading, setLoading] = useState(true);
 
   const handleItemPress = (diseaseId: string) => {
     dispatch(conclusionActions.viewConclusion(diseaseId));
     props.navigation.navigate("conclusions");
+  };
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      const storedUid = await AsyncStorage.getItem("uid");
+      if (storedUid) {
+        const latestConclusionHistory = await dispatch(
+          fetchConclusionHistory(storedUid)
+        ).unwrap();
+
+        console.log("Fetching the latest conclusions history");
+
+        if (latestConclusionHistory && latestConclusionHistory.length > 0) {
+          dispatch(
+            conclusionActions.setConclusionHistory(latestConclusionHistory)
+          );
+        }
+        setLoading(false);
+        // dispatch(conclusionActions.setConclusionHistory(latestConclusionHistory));
+      }
+    };
+
+    fetchHistory();
+  }, []);
+
+  const handleUpvote = () => {
+    Toast.show({
+      type: "success2",
+      text1: "ขอบคุณสำหรับการตอบรับของคุณ",
+      position: "top",
+      swipeable: true,
+      visibilityTime: 1500,
+      topOffset: 50,
+    });
+  };
+
+  const handleDownvote = () => {
+    Toast.show({
+      type: "success2",
+      text1: "ขอบคุณสำหรับการตอบรับของคุณ",
+      position: "top",
+      swipeable: true,
+      visibilityTime: 1500,
+      topOffset: 50,
+    });
   };
 
   return (
@@ -34,54 +87,61 @@ const History = (props) => {
       <Text style={s.headerText}>ประวัติการประเมิน</Text>
       <Text style={s.subheaderText}>หาประวัติการประเมินเก่าของคุณและริวีว</Text>
 
-      <View style={{ gap: 20, flex: 4.5 }}>
-        {conclusionHistory.length === 0 && (
-          <View style={s.symptomListItem__notFound}>
-            <Text style={s.symptomListItem__notFoundText}>
-              คุณยังไม่มีประวัติการประเมินโรค 🤷‍♂️
-            </Text>
-          </View>
-        )}
-        {conclusionHistory.map((conclusion, index) => {
-          const fullConclusion = conclusionsList[conclusion.diseaseId];
-          console.log(conclusion.date);
-          const date = new Date(conclusion.date);
+      {loading ? (
+        <Skeleton width={"100%"} height={"50%"} colorMode="light" />
+      ) : (
+        <FlatList
+          data={conclusionHistory}
+          keyExtractor={(item, index) => index.toString()}
+          ListEmptyComponent={
+            <View style={s.symptomListItem__notFound}>
+              <Text style={s.symptomListItem__notFoundText}>
+                คุณยังไม่มีประวัติการประเมินโรค 🤷‍♂️
+              </Text>
+            </View>
+          }
+          style={{ overflow: "visible" }}
+          renderItem={({ item }) => {
+            const fullConclusion = conclusionsList[item.diseaseId];
+            const date = new Date(item.date);
 
-          return (
-            <CustomButton
-              onPress={() => handleItemPress(conclusion.diseaseId)}
-              key={index}
-              style={s.historyItem_wrapper}
-            >
-              <Image
-                source={{ uri: fullConclusion.imageUri }}
-                style={s.historyItem_image}
-              />
-              <View style={s.historyItem_textWrapper}>
-                <Text style={[s.historyItem_text, { fontSize: 20 }]}>
-                  {fullConclusion.diseaseName}
-                </Text>
-                <Text style={s.historyItem_text}>
-                  {date.toLocaleString("th-TH", {
-                    month: "short",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                  })}
-                </Text>
-                <View style={s.vote__wraper}>
-                  <CustomButton style={s.upvote}>
-                    <SymbolView name="hand.thumbsup" tintColor="green" />
-                  </CustomButton>
-                  <CustomButton style={s.downvote}>
-                    <SymbolView name="hand.thumbsdown" tintColor="#fa5639" />
-                  </CustomButton>
+            return (
+              <CustomButton
+                onPress={() => handleItemPress(item.diseaseId)}
+                style={s.historyItem_wrapper}
+              >
+                <Image
+                  source={{ uri: fullConclusion.imageUri }}
+                  style={s.historyItem_image}
+                />
+                <View style={s.historyItem_textWrapper}>
+                  <Text style={[s.historyItem_text, { fontSize: 20 }]}>
+                    {fullConclusion.diseaseName}
+                  </Text>
+                  <Text style={s.historyItem_text}>
+                    {date.toLocaleString("th-TH", {
+                      month: "short",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                    })}
+                    น.
+                  </Text>
+                  <View style={s.vote__wraper}>
+                    <CustomButton style={s.upvote} onPress={handleUpvote}>
+                      <SymbolView name="hand.thumbsup" tintColor="green" />
+                    </CustomButton>
+                    <CustomButton style={s.downvote} onPress={handleDownvote}>
+                      <SymbolView name="hand.thumbsdown" tintColor="#fa5639" />
+                    </CustomButton>
+                  </View>
                 </View>
-              </View>
-            </CustomButton>
-          );
-        })}
-      </View>
+              </CustomButton>
+            );
+          }}
+          contentContainerStyle={{ gap: 20, flexGrow: 1 }}
+        />
+      )}
     </RootContainer>
   );
 };

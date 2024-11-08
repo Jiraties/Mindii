@@ -194,8 +194,6 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
           <CustomButton
             style={s.returnButton}
             onPress={() => {
-              console.log(previousScreenName);
-
               if (previousScreenName === "diagnosis")
                 navigation.navigate("home");
               else navigation.goBack();

@@ -21,6 +21,10 @@ const CustomToast = (props) => {
       symbolName = "person.crop.circle.badge.checkmark";
       symbolColor = "#32CD32";
       break;
+    case "success2":
+      symbolName = "checkmark.circle";
+      symbolColor = "#32CD32";
+      break;
   }
 
   return (

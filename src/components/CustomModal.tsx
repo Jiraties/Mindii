@@ -59,7 +59,7 @@ const CustomModal: React.FC<{
             setModalIsVisible(false);
           }}
         >
-          <Text style={s.homeListItem__buttonText}>รับทราบ</Text>
+          <Text style={s.homeListItem__buttonText}>รับทราบและตกลง</Text>
         </CustomButton>
       </View>
     </Modal>

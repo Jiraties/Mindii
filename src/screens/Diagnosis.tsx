@@ -9,6 +9,7 @@ import SelectSymptom from "../components/diagnosisPages/SelectSymptom";
 import SelectOptions from "../components/diagnosisPages/SelectOptions";
 import Conclusions from "./Conclusions";
 import LottieView from "lottie-react-native";
+import { ErrorBoundary } from "react-error-boundary";
 import { conclusionActions } from "../context/conclusionSlice";
 import { authenticationActions } from "../context/authenticationSlice";
 import { writeConclusionHistory } from "../context/conclusionSlice";
@@ -84,6 +85,9 @@ const Diagnosis = (props) => {
   const screenIndex: number = diagnosisData.screenIndex;
   const screenType: screenType = diagnosisData.screenType[screenIndex];
   const userUid = useSelector<RootState>((state) => state.authentication.uid);
+  const userInfo = useSelector<any>(
+    (state) => state.authentication.userInformation
+  );
   const dispatch = useDispatch<any>();
 
   logDiagnosisData();
@@ -123,7 +127,9 @@ const Diagnosis = (props) => {
         diagnosisData: diagnosisData,
       })
     );
-    dispatch(writeConclusionHistory(userUid));
+    if (conclusionId !== "no_match") {
+      dispatch(writeConclusionHistory(userUid));
+    }
 
     resetDiagnosisData();
     setLoading(true);
@@ -203,10 +209,14 @@ const Diagnosis = (props) => {
     { name: "ไม่", value: "no" },
   ];
 
-  const createYesNoOptions = (header: string, nextDiagnosisPage: boolean) => {
+  const createYesNoOptions = (
+    header: string,
+    nextDiagnosisPage: boolean,
+    subheader = ""
+  ) => {
     createCustomOptions({
       header,
-      subheader: "",
+      subheader,
       options: yesNoOptions,
       nextDiagnosisPage,
     });
@@ -224,10 +234,20 @@ const Diagnosis = (props) => {
       case "fever":
         if (screenIndex === 0) {
           addSymptom(symptom, "customOptions");
-          createYesNoOptions(
-            "คุณไม่รู้สึกตัว ปวดศรีษะมาก อาเจียนหนักหรือชักหรือไม่",
-            false
-          );
+          createCustomOptions({
+            header: "จาก 3 อาการดังกล่าว มีอาการไหนตรงกับคุณไหม",
+            subheader: "เลือกได้หลายอาการ ถ้าไม่มีอาการไหนตรงให้กดไปต่อ",
+            checklist: true,
+            options: [
+              { name: "ไม่รู้สึกตัว", value: "ไม่รู้สึกตัว" },
+              { name: "ปวดศรีษะมาก", value: "ปวดศรีษะมาก" },
+              {
+                name: "อาเจียนหนักหรือชัก",
+                value: "อาเจียนหนักหรือชัก",
+              },
+            ],
+            nextDiagnosisPage: false,
+          });
           return;
         } else if (
           symptomList[0]["id"] === "heavy_diarrhea" &&
@@ -274,12 +294,13 @@ const Diagnosis = (props) => {
     }
 
     switch (latestSelectedSymptom.id) {
+      //////////////////////// HEAVY DIARRHEA q&as ////////////////////////
       case "heavy_diarrhea":
         if (latest.question === "คุณน้ำหนักลดลงอย่างรวดเร็วหรือเปล่า?") {
           if (latest.value === "yes") {
             createCustomOptions({
               header: "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม",
-              subheader: "เลือกได้หลายอาการ",
+              subheader: "เลือกได้หลายอาการ ถ้าไม่มีอาการไหนตรงให้กดไปต่อ",
               checklist: true,
               options: [
                 { name: "เหนื่อยง่าย", value: "เหนื่อยง่าย" },
@@ -298,25 +319,41 @@ const Diagnosis = (props) => {
           }
         }
         if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
-          if (latest.value === ">= 2") {
+          const optionsChecked = parseInt(latest.value);
+
+          if (optionsChecked >= 2) {
             jumpToConclusions("thyroid");
-          } else if (latest.value === "< 2") {
+          } else {
             createYesNoOptions("คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่", true);
           }
         }
         break;
 
+      //////////////////////// FEVER q&as ////////////////////////
       case "fever":
-        if (
-          latest.question ===
-          "คุณไม่รู้สึกตัว ปวดศรีษะมาก อาเจียนหนักหรือชักหรือไม่"
-        ) {
-          if (latest.value === "yes") {
-            console.log("work in progress");
-          } else if (latest.value === "no") {
+        if (latest.question === "จาก 3 อาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
+          const optionsChecked = parseInt(latest.value);
+
+          if (optionsChecked === 3) {
+            const birthDate = new Date(userInfo.birthday);
+            const ageDifMs = Date.now() - birthDate.getTime();
+            const ageDate = new Date(ageDifMs);
+            const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+
+            if (age >= 18) {
+              createCustomOptions({
+                header: "คุณได้เข้าป่าในช่วงที่ผ่านมาหรือไม่",
+                subheader: `เราใช้ข้อมูลอายุคุณเพื่อประเมิน จากระบบคุณอายุ ${age} ปี`,
+                options: yesNoOptions,
+                nextDiagnosisPage: true,
+              });
+            } else {
+            }
+          } else {
             createYesNoOptions(
-              "มีภาวะช็อก(เหงื่อออก ตัวเย็นกระสับการะส่าย ชีพจรเบาเร็วและความดันเลือดตก)",
-              true
+              "คุณมีอาการของภาวะช็อกหรือไม่",
+              true,
+              "เหงื่อออก ตัวเย็นกระสับการะส่าย ชีพจรเบาเร็วและความดันเลือดตก เป็นอาการหลักๆของภาวะช็อค"
             );
           }
         }
@@ -337,8 +374,49 @@ const Diagnosis = (props) => {
             jumpToConclusions("no_match");
           }
         }
+        if (latest.question === "คุณได้เข้าป่าในช่วงที่ผ่านมาหรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("malaria");
+          } else {
+            createCustomOptions({
+              header: "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม",
+              subheader: "เลือกได้หลายอาการ",
+              checklist: true,
+              options: [
+                {
+                  name: "เคยถูกสุนัขหรือสัตว์เลี้ยงลูกด้วนนมกัดหรือข่วน",
+                  value: "เคยถูกสุนัขหรือสัตว์เลี้ยงลูกด้วนนมกัดหรือข่วน",
+                },
+                { name: "กลัวน้ำ", value: "กลัวน้ำ" },
+              ],
+              nextDiagnosisPage: true,
+            });
+          }
+        }
+        if (latest.question === "คุณมีอาการของภาวะช็อกหรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("no_match");
+          } else {
+            createYesNoOptions("คุณอาการไข้เกินหนึ่งเดือนหรือไม่", true);
+          }
+        }
+        if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
+          const optionsChecked = parseInt(latest.value);
+          if (optionsChecked === 2) {
+            jumpToConclusions("tetanus");
+          } else {
+            createYesNoOptions("คุณรู้สึกตัวดีหรือไม่", true);
+          }
+        }
+        if (latest.question === "คุณอาการไข้เกินหนึ่งเดือนหรือไม่") {
+          if (latest.value === "yes") {
+            createYesNoOptions("คุณไอและน้ำหนักลดอย่างรวดเร็วหรือไม่", true);
+          } else {
+          }
+        }
         break;
 
+      //////////////////////// NO MATCH q&as ////////////////////////
       case "no_match":
         if (
           latest.question ===
@@ -415,11 +493,11 @@ const Diagnosis = (props) => {
         break;
     }
 
-    if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
-      if (latest.value === "no") {
-        createYesNoOptions("คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่", true);
-      }
-    }
+    // if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
+    //   if (latest.value === "no") {
+    //     createYesNoOptions("คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่", true);
+    //   }
+    // }
 
     if (latest.question === "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่") {
       if (latest.value === "yes") {
@@ -447,17 +525,26 @@ const Diagnosis = (props) => {
       option.isChecked && numberOfOptionsChecked++;
     });
 
-    if (numberOfOptionsChecked >= 2) {
-      handleCustomOptionPress(
-        { name: "2 ขึ้นไป", value: ">= 2", question: headerText },
-        headerText
-      );
-    } else {
-      handleCustomOptionPress(
-        { name: "น้อยกว่า 2", value: "< 2", question: headerText },
-        headerText
-      );
-    }
+    handleCustomOptionPress(
+      {
+        name: numberOfOptionsChecked.toString(),
+        value: numberOfOptionsChecked.toString(),
+        question: headerText,
+      },
+      headerText
+    );
+
+    // if (numberOfOptionsChecked >= 2) {
+    //   handleCustomOptionPress(
+    //     { name: "2 ขึ้นไป", value: ">= 2", question: headerText },
+    //     headerText
+    //   );
+    // } else {
+    //   handleCustomOptionPress(
+    //     { name: "น้อยกว่า 2", value: "< 2", question: headerText },
+    //     headerText
+    //   );
+    // }
   };
 
   const displayScreenType = (type) => {
@@ -469,6 +556,25 @@ const Diagnosis = (props) => {
             style={{ width: 400, height: 400 }}
             autoPlay
           />
+          {/* <Animated.Text
+              style={[
+              s.loadingText,
+              {
+                color: "#fff",
+                opacity: 1,
+                transform: [
+                {
+                  scale: 2.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [1, 1.2],
+                  }),
+                },
+                ],
+              },
+              ]}
+            >
+              กำลังประเมิน
+            </Animated.Text> */}
         </View>
       );
 
@@ -508,19 +614,29 @@ const Diagnosis = (props) => {
   };
 
   return (
-    <RootContainer>
-      <Modal
-        visible={conclusionsVisible}
-        presentationStyle="pageSheet"
-        animationType="slide"
-      >
-        <Conclusions conclusionId={conclusion} />
-      </Modal>
-      {displayScreenType(screenType)}
-      <CustomButton style={s.backButton} onPress={rewindSymptom}>
-        <Text style={{ fontFamily: Fonts.regular }}>กลับ</Text>
-      </CustomButton>
-    </RootContainer>
+    <ErrorBoundary
+      fallback={
+        <>
+          <Text>404</Text>
+        </>
+      }
+    >
+      <RootContainer>
+        <Modal
+          visible={conclusionsVisible}
+          presentationStyle="pageSheet"
+          animationType="slide"
+        >
+          <Conclusions conclusionId={conclusion} />
+        </Modal>
+        {displayScreenType(screenType)}
+        {!loading && (
+          <CustomButton style={s.backButton} onPress={rewindSymptom}>
+            <Text style={{ fontFamily: Fonts.regular }}>กลับ</Text>
+          </CustomButton>
+        )}
+      </RootContainer>
+    </ErrorBoundary>
   );
 };
 
@@ -546,6 +662,9 @@ const s = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     shadowOpacity: 0.25,
+  },
+  loadingText: {
+    fontFamily: Fonts.regular,
   },
 });
 
