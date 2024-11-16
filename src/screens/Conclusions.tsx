@@ -75,6 +75,17 @@ export const conclusionsList = {
     imageUri:
       "https://www.bumrungrad.com/-/media/project/bumrungrad/conditions/diabetes/diabetes-featured-image.jpg",
   },
+  tetanus: {
+    diseaseName: "โรคบาดทะยัก",
+    description:
+      "การติดเชื้อแบคทีเรีย น้ำลายสัตว์เลี้ยงลูกด้วยนม โดยการติดเชื้ออาจส่งผลต่อระบบประสาท ทำให้กล้ามเนื้อตึงหรือแข็งเกร็ง",
+    flags: ["visitDoctor"],
+  },
+  heatstroke: {
+    description:
+      "สภาพอากาศที่ร้อนจัด ทำให้อุณหภูมิในร่างกายสูงขึ้นอย่างรวดเร็ว จนไม่สามารถระบายความร้อนออกได้ทันที",
+    flags: ["visitDoctor"],
+  },
 };
 
 const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
@@ -147,64 +158,84 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
       </RootContainer>
     );
   }
-  return (
-    <RootContainer>
-      <ScrollView>
-        <View style={s.conclusionsRootContainer}>
-          <View>
-            <Text style={s.headerText}>
-              {lastScreenWasDiagnosis ? "คุณมีความเสี่ยงเป็น" : ``}
-            </Text>
-            <Text style={s.headerTextHighlight}>
-              {conclusionsList[diseaseId].diseaseName}
-            </Text>
-          </View>
 
-          {conclusionsList[diseaseId].flags.map((flag, index) => {
-            if (flag === "visitDoctor") {
-              return (
-                <View style={s.conclusionsTag} key={index}>
-                  <Text style={s.conclusionsTag__text}>ควรพบแพทย์ทันที</Text>
-                </View>
-              );
-            }
-          })}
+  console.log(conclusionsList[diseaseId]);
 
-          {imageIsLoading && (
-            <Skeleton height={250} width={"100%"} colorMode="light" />
-          )}
-          <Image
-            style={s.image}
-            source={{
-              uri: conclusionsList[diseaseId].imageUri,
-            }}
-            onLoad={() => setImageIsLoading(false)}
-          />
-          <Text style={s.descriptionText}>
-            {conclusionsList[diseaseId].description}
-          </Text>
-          <View style={s.remedies}>
-            <Text style={s.remedies__text}>
-              อาการที่คุณเลือก:{"  "}
-              {diagnosisData.symptomList.map(
-                (symptom, index) => symptom.name + " "
-              )}
+  if (conclusionsList[diseaseId] !== undefined) {
+    return (
+      <RootContainer>
+        <ScrollView>
+          <View style={s.conclusionsRootContainer}>
+            <View>
+              <Text style={s.headerText}>
+                {lastScreenWasDiagnosis ? "คุณมีความเสี่ยงเป็น" : ``}
+              </Text>
+              <Text style={s.headerTextHighlight}>
+                {conclusionsList[diseaseId].diseaseName}
+              </Text>
+            </View>
+
+            {conclusionsList[diseaseId].flags.map((flag, index) => {
+              if (flag === "visitDoctor") {
+                return (
+                  <View style={s.conclusionsTag} key={index}>
+                    <Text style={s.conclusionsTag__text}>ควรพบแพทย์ทันที</Text>
+                  </View>
+                );
+              }
+            })}
+
+            {imageIsLoading && (
+              <Skeleton height={250} width={"100%"} colorMode="light" />
+            )}
+            <Image
+              style={s.image}
+              source={{
+                uri: conclusionsList[diseaseId].imageUri,
+              }}
+              onLoad={() => setImageIsLoading(false)}
+            />
+            <Text style={s.descriptionText}>
+              {conclusionsList[diseaseId].description}
             </Text>
+            <View style={s.remedies}>
+              <Text style={s.remedies__text}>
+                อาการที่คุณเลือก:{"  "}
+                {diagnosisData.symptomList.map(
+                  (symptom, index) => symptom.name + " "
+                )}
+              </Text>
+            </View>
+            <CustomButton
+              style={s.returnButton}
+              onPress={() => {
+                if (previousScreenName === "diagnosis")
+                  navigation.navigate("home");
+                else navigation.goBack();
+              }}
+            >
+              <Text style={s.returnButton__text}>กลับ</Text>
+            </CustomButton>
           </View>
-          <CustomButton
-            style={s.returnButton}
-            onPress={() => {
-              if (previousScreenName === "diagnosis")
-                navigation.navigate("home");
-              else navigation.goBack();
-            }}
-          >
-            <Text style={s.returnButton__text}>กลับ</Text>
-          </CustomButton>
-        </View>
-      </ScrollView>
-    </RootContainer>
-  );
+        </ScrollView>
+      </RootContainer>
+    );
+  } else {
+    return (
+      <RootContainer>
+        <Text>The disease {diseaseId} is still in the works</Text>
+        <CustomButton
+          style={s.returnButton}
+          onPress={() => {
+            if (previousScreenName === "diagnosis") navigation.navigate("home");
+            else navigation.goBack();
+          }}
+        >
+          <Text style={s.returnButton__text}>กลับ</Text>
+        </CustomButton>
+      </RootContainer>
+    );
+  }
 };
 
 const s = StyleSheet.create({

@@ -22,12 +22,6 @@ const Home = (props) => {
     (state) => state.authentication.userInformation.name
   );
 
-  async function fetchToken() {
-    const storedToken = await AsyncStorage.getItem("token");
-  }
-
-  fetchToken();
-
   return (
     <RootContainer>
       <View style={s.headerView}>
