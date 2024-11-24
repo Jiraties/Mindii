@@ -14,6 +14,7 @@ import { conclusionActions } from "../context/conclusionSlice";
 import { authenticationActions } from "../context/authenticationSlice";
 import { writeConclusionHistory } from "../context/conclusionSlice";
 import { Fonts } from "../constants/styles";
+import { conclusionsList } from "./Conclusions";
 
 import {
   diagnosisDataType,
@@ -92,7 +93,7 @@ const Diagnosis = (props) => {
   const screenIndex: number = diagnosisData.screenIndex;
   const screenType: screenType = diagnosisData.screenType[screenIndex];
   const userUid = useSelector<RootState>((state) => state.authentication.uid);
-  const userInfo = useSelector<any>(
+  const userInfo = useSelector<RootState>(
     (state) => state.authentication.userInformation
   );
   const dispatch = useDispatch<any>();
@@ -134,9 +135,25 @@ const Diagnosis = (props) => {
         diagnosisData: diagnosisData,
       })
     );
-    if (conclusionId !== "no_match") {
-      dispatch(writeConclusionHistory(userUid));
+    if (conclusionId in conclusionsList) {
+      console.log("Dispatching");
+
+      console.log(
+        "THE CONCLUSION ID EXISTS: ",
+        conclusionId in conclusionsList
+      );
+
+      if (conclusionId !== "no_match") {
+        console.log("Writing conclusion history");
+        dispatch(writeConclusionHistory(userUid));
+      }
+      if (conclusionId !== "serious_no_match") {
+        console.log("Writing conclusion history");
+        dispatch(writeConclusionHistory(userUid));
+      }
     }
+
+    console.log("Jumping to conclusions:", conclusionId);
 
     resetDiagnosisData();
     setLoading(true);
@@ -266,6 +283,7 @@ const Diagnosis = (props) => {
             false
           );
         }
+
         break;
       case "vomit":
         addSymptom(symptom, "customOptions");
@@ -358,13 +376,110 @@ const Diagnosis = (props) => {
                 nextDiagnosisPage: true,
               });
             } else {
+              jumpToConclusions("no_match");
             }
           } else {
             createYesNoOptions(
               "คุณมีไข้อ่อนนานเกิน 1 เดือนหรือไม่",
               true,
-              "ไข้อ่อนอุณหภูมิ 37.5-38 องศา"
+              "ไข้อ่อนอุณหภูมิมี 37.5-38 องศา"
             );
+          }
+        }
+
+        if (latest.question === "คุณมีไข้อ่อนนานเกิน 1 เดือนหรือไม่") {
+          if (latest.value === "yes") {
+            createYesNoOptions("ไอและนํ้าหนักลดฮวบ", true);
+          } else {
+            createYesNoOptions(
+              "หอบหรือหายใจเร็วกว่าปกติหรือปวดท้องรุนแรง",
+              true
+            );
+          }
+        }
+        if (latest.question === "ไอและนํ้าหนักลดฮวบ") {
+          if (latest.value === "yes") {
+            jumpToConclusions("tuberculosis");
+          } else {
+            createYesNoOptions(
+              "ปวดข้อนิ้วมือ ผมร่วง หรือมีผื่นปีกผีเสื้อที่ข้างจมูก",
+              true
+            );
+          }
+        }
+        if (
+          latest.question ===
+          "ปวดข้อนิ้วมือ ผมร่วง หรือมีผื่นปีกผีเสื้อที่ข้างจมูก"
+        ) {
+          if (latest.value === "yes") {
+            jumpToConclusions("sle");
+          } else {
+            createYesNoOptions("จับไข้หนาวสั่นวันเว้นวันและเคยเข้าป่า", true);
+          }
+        }
+        if (latest.question === "จับไข้หนาวสั่นวันเว้นวันและเคยเข้าป่า") {
+          if (latest.value === "yes") {
+            jumpToConclusions("malaria");
+          } else {
+            createYesNoOptions(
+              "มีจุดแดงที่เยื่อบุตาหรือใต้เล็บ และม้ามโต",
+              true
+            );
+          }
+        }
+        if (latest.question === "มีจุดแดงที่เยื่อบุตาหรือใต้เล็บ และม้ามโต") {
+          if (latest.value === "yes") {
+            jumpToConclusions("pericarditis");
+          } else {
+            jumpToConclusions("serious_no_match");
+          }
+        }
+
+        if (latest.question === "หอบหรือหายใจเร็วกว่าปกติหรือปวดท้องรุนแรง") {
+          if (latest.value === "yes") {
+            jumpToConclusions("serious_no_match");
+          } else {
+            createYesNoOptions("ซีด มีจุดแดงหรือจํ้าเขียวขึ้นตามตัว", true);
+          }
+        }
+        if (latest.question === "ซีด มีจุดแดงหรือจํ้าเขียวขึ้นตามตัว") {
+          if (latest.value === "yes") {
+            jumpToConclusions("serious_no_match");
+          } else {
+            createYesNoOptions("เจ็บหน้าอกแปลบๆเวลาใจเข้าลึกๆ", true);
+          }
+        }
+        if (latest.question === "เจ็บหน้าอกแปลบๆเวลาใจเข้าลึกๆ") {
+          if (latest.value === "yes") {
+            jumpToConclusions("pneumonia");
+          } else {
+            createYesNoOptions(
+              "มีไข้สูง อ่อนเพลียง คลื่นไส้ อาเจียน ปวดศรีษะ หลังทำงานหรือออกกำลังกายในที่อุณหภูมิสูง",
+              true
+            );
+          }
+        }
+        if (latest.question === "มีการอักเสบที่ผิวหนัง") {
+          if (latest.value === "yes") {
+            jumpToConclusions("skin_infection");
+          }
+        }
+        if (
+          latest.question ===
+          "มีไข้สูง อ่อนเพลียง คลื่นไส้ อาเจียน ปวดศรีษะ หลังทำงานหรือออกกำลังกายในที่อุณหภูมิสูง"
+        ) {
+          if (latest.value === "yes") {
+            jumpToConclusions("heatstroke");
+          } else {
+            createYesNoOptions("ไข้สูงตลอดเวลา และ หน้าแดงเปลือกตาแดง", true);
+          }
+        }
+
+        if (latest.question === "ไข้สูงตลอดเวลา และ หน้าแดงเปลือกตาแดง") {
+          if (latest.value === "yes") {
+            jumpToConclusions("dengue");
+          } else {
+            jumpToConclusions("no_match");
           }
         }
 
@@ -418,6 +533,24 @@ const Diagnosis = (props) => {
           if (latest.value === "yes") {
             createYesNoOptions("คุณไอและน้ำหนักลดอย่างรวดเร็วหรือไม่", true);
           } else {
+          }
+        }
+
+        if (
+          latest.question ===
+          "ในช่วงหลายเดือนที่ผ่านมา คุณเคยเข้าป่าที่มียุงเยอะหรือไม่"
+        ) {
+          if (latest.value === "yes") {
+            jumpToConclusions("malaria");
+          } else if (latest.value === "no") {
+            createYesNoOptions("คุณไข้สูงตลอดเวลา และ ม้ามโตหรือไม่", true);
+          }
+        }
+        if (latest.question === "คุณไข้สูงตลอดเวลา และ ม้ามโตหรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("typhoid");
+          } else if (latest.value === "no") {
+            jumpToConclusions("no_match");
           }
         }
         break;

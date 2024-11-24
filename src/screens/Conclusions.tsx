@@ -1,5 +1,12 @@
 import LottieView from "lottie-react-native";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Linking,
+} from "react-native";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 import { Skeleton } from "moti/skeleton";
 import { useState } from "react";
@@ -11,11 +18,132 @@ import { RootState } from "../context/store";
 import { conclusion } from "../models/conclusionTypes";
 import { StackNavigation } from "../../App";
 import { Shadows, Fonts } from "../constants/styles";
+import { SymbolView } from "expo-symbols";
+
+const ai_generated = {
+  // Existing conclusions...
+  acute_gastritis: {
+    diseaseName: "โรคกระเพาะอาหารอักเสบเฉียบพลัน",
+    description: "การอักเสบของเยื่อบุกระเพาะอาหาร",
+    remedies: "หลีกเลี่ยงอาหารรสจัดและแอลกอฮอล์ ทานยาลดกรดตามแพทย์สั่ง",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/acute_gastritis.jpg",
+  },
+  severe_cirrhosis: {
+    diseaseName: "โรคตับแข็งขั้นรุนแรง",
+    description: "การทำลายเนื้อเยื่อตับอย่างรุนแรง",
+    remedies: "หลีกเลี่ยงแอลกอฮอล์ ทานยาตามแพทย์สั่ง",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/severe_cirrhosis.jpg",
+  },
+  peptic_ulcer: {
+    diseaseName: "แผลในกระเพาะอาหาร",
+    description: "แผลที่เกิดขึ้นในเยื่อบุกระเพาะอาหาร",
+    remedies: "หลีกเลี่ยงอาหารรสจัด ทานยาลดกรดตามแพทย์สั่ง",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/peptic_ulcer.jpg",
+  },
+  stomach_cancer: {
+    diseaseName: "มะเร็งกระเพาะอาหาร",
+    description: "การเจริญเติบโตของเซลล์มะเร็งในกระเพาะอาหาร",
+    remedies: "พบแพทย์เพื่อรับการรักษา",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/stomach_cancer.jpg",
+  },
+  possible_meningitis_or_brain_injury: {
+    diseaseName: "อาจเป็นเยื่อหุ้มสมองอักเสบหรือบาดเจ็บที่สมอง",
+    description:
+      "อาการที่อาจเกิดจากการอักเสบของเยื่อหุ้มสมองหรือบาดเจ็บที่สมอง",
+    remedies: "พบแพทย์ทันที",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/meningitis_or_brain_injury.jpg",
+  },
+  chronic_abdominal_pain: {
+    diseaseName: "อาการปวดท้องเรื้อรัง",
+    description: "อาการปวดท้องที่เกิดขึ้นเป็นเวลานาน",
+    remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/chronic_abdominal_pain.jpg",
+  },
+  possible_jaundice: {
+    diseaseName: "อาจเป็นดีซ่าน",
+    description: "ภาวะที่ผิวหนังและตาเหลืองเนื่องจากระดับบิลิรูบินในเลือดสูง",
+    remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/jaundice.jpg",
+  },
+  side_effect_from_medication: {
+    diseaseName: "ผลข้างเคียงจากยา",
+    description: "อาการที่เกิดจากการใช้ยาบางชนิด",
+    remedies: "ปรึกษาแพทย์เพื่อปรับเปลี่ยนยา",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/side_effect_from_medication.jpg",
+  },
+  pregnancy: {
+    diseaseName: "การตั้งครรภ์",
+    description: "ภาวะที่เกิดจากการตั้งครรภ์",
+    remedies: "พบแพทย์เพื่อรับการดูแลและคำแนะนำ",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/pregnancy.jpg",
+  },
+  chronic_kidney_failure: {
+    diseaseName: "ไตวายเรื้อรัง",
+    description: "ภาวะที่ไตสูญเสียความสามารถในการกรองของเสียจากเลือด",
+    remedies: "พบแพทย์เพื่อรับการรักษา",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/chronic_kidney_failure.jpg",
+  },
+  indigestion_or_chronic_biliary_colic: {
+    diseaseName: "อาการอาหารไม่ย่อยหรือปวดท้องเรื้อรัง",
+    description: "อาการปวดท้องที่เกิดจากการย่อยอาหารไม่สมบูรณ์",
+    remedies: "หลีกเลี่ยงอาหารที่กระตุ้นอาการ ทานยาตามแพทย์สั่ง",
+    flags: ["visitDoctor"],
+    imageUri:
+      "https://www.example.com/indigestion_or_chronic_biliary_colic.jpg",
+  },
+  intestinal_parasites: {
+    diseaseName: "พยาธิในลำไส้",
+    description: "การติดเชื้อพยาธิในลำไส้",
+    remedies: "ทานยาถ่ายพยาธิตามคำแนะนำของแพทย์",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/intestinal_parasites.jpg",
+  },
+  chronic_vomiting_in_children: {
+    diseaseName: "อาเจียนเรื้อรังในเด็ก",
+    description: "อาการอาเจียนที่เกิดขึ้นเป็นเวลานานในเด็ก",
+    remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/chronic_vomiting_in_children.jpg",
+  },
+  fever_with_fatigue_or_infection: {
+    diseaseName: "ไข้ร่วมกับอ่อนเพลียหรือการติดเชื้อ",
+    description: "อาการไข้ที่เกิดร่วมกับอาการอ่อนเพลียหรือการติดเชื้อ",
+    remedies: "พักผ่อน ดื่มน้ำมาก ๆ พบแพทย์เพื่อรับการรักษา",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/fever_with_fatigue_or_infection.jpg",
+  },
+  other_possible_causes: {
+    diseaseName: "สาเหตุอื่น ๆ ที่เป็นไปได้",
+    description: "อาการที่อาจเกิดจากสาเหตุอื่น ๆ",
+    remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/other_possible_causes.jpg",
+  },
+  possible_cough_induced_vomiting: {
+    diseaseName: "อาเจียนจากการไอ",
+    description: "อาการอาเจียนที่เกิดจากการไอ",
+    remedies: "พักผ่อน ดื่มน้ำมาก ๆ พบแพทย์เพื่อรับการรักษา",
+    flags: ["visitDoctor"],
+    imageUri: "https://www.example.com/cough_induced_vomiting.jpg",
+  },
+};
 
 export const conclusionsList = {
   malaria: {
     diseaseName: "มาลาเรีย",
-    description: " ควรกินยาลดไข้ ควรกินยารักษามาลาเรีย",
+    description: "ควรกินยาลดไข้ ควรกินยารักษามาลาเรีย",
+    remedies:
+      "กินยารักษามาลาเรียตามคำแนะนำของแพทย์ ดื่มน้ำเยอะ ๆ พักผ่อนให้เพียงพอ",
     flags: ["visitDoctor"],
     imageUri:
       "https://www.cdc.gov/malaria/media/images/1_Anopheles_gambiae.jpg",
@@ -23,69 +151,114 @@ export const conclusionsList = {
   thyroid: {
     diseaseName: "ต่อมไทรอยด์ทำงานเกิน คอพอกเป็นพิษ",
     description:
-      "ต่อมไทรอยด์ คือ ต่อมไร้ท่อที่อยู่บริเวณลำคอด้านหน้าต่ำกว่าลูกกระเดือกเล็กน้อยมีรูปร่างคล้ายผีเสื้อ ประกอบด้วยปีกซ้ายและขวาคอยทำหน้าที่สร้างฮอร์โมนไทรอยด์ ซึ่งออกฤทธิ์ต่อหลายอวัยวะ เช่นการทำงานของหัวใจและระบบประสาท พัฒนาการของสมองในวัยเด็กรวมถึงระบบเผาผลาญพลังงานของร่างกาย เป็นต้น",
+      "ต่อมไทรอยด์ทำงานผิดปกติ ส่งผลต่อการทำงานของระบบต่าง ๆ ในร่างกาย",
+    remedies: "ลดความเครียด ทานอาหารสมดุล พบแพทย์เพื่อปรับฮอร์โมน",
     flags: ["visitDoctor"],
     imageUri: "https://www.vibhavadi.com/images/healthex/4299_01639541039.jpg",
   },
   giardia: {
     diseaseName: "ท้องเสียจากเชื้อไกอาร์เดีย",
-    description:
-      "เป็นโปรโตซัว (สัตว์เซลล์เดียว) ชนิดหนึ่งแบบเดียวกับอะมีบา สามารถเข้าไปทำให้เกิดการติดเชื้อที่ลำไส้เล็ก กลายเป็นโรคท้องเดินทั้งชนิดเฉียบพลันและเรื้อรังได้",
+    description: "การติดเชื้อที่ลำไส้เล็ก ทำให้เกิดอาการท้องเสีย",
+    remedies: "ดื่มน้ำเกลือแร่ หลีกเลี่ยงอาหารรสจัดและดิบ พักผ่อนให้เพียงพอ",
     flags: [],
     imageUri: "https://cth.co.th/wp-content/uploads/2021/05/Giardiasis2.jpg",
   },
   irritable_bowel: {
     diseaseName: "ลำไส้แปรปรวน",
-    description:
-      "ลำไส้แปรปรวนเป็นภาวะการทำงานของลำไส้ที่ผิดปกติ ทำให้เกิดอาการปวดท้องร่วมกับการขับถ่ายที่เปลี่ยนไป โดยอาจเปลี่ยนที่ความถี่ หรือลักษณะของอุจจาระ โรคนี้มักเรื้อรั้งโดยอาการอาจเป็นๆ หายๆ ซึ่งแม้จะไม่ใช่โรคร้ายแรงแต่ส่งผลต่อคุณภาพชีวิต",
+    description: "ภาวะลำไส้ทำงานผิดปกติ ทำให้เกิดอาการปวดท้องและขับถ่ายผิดปกติ",
+    remedies:
+      "หลีกเลี่ยงอาหารที่กระตุ้นอาการ เช่น อาหารรสจัดและไขมันสูง ทานอาหารมีกากใย",
     flags: [],
     imageUri:
       "https://d2jx2rerrg6sh3.cloudfront.net/images/Article_Images/ImageForArticle_6292_44959658610231484248.jpg",
   },
-
   tricuriasis: {
     diseaseName: "โรคพยาธิแส้ม้า",
-    description:
-      "   โรคพยาธิเเส้ม้า คือโรคที่เกิดจากพยาธิตัวกลมที่ชื่อ ทริคูริส ทริคิยูร่า (Trichuris trichiura) หรือที่เรียกกันว่า พยาธิเเส้ม้า ที่เรียกอย่างนี้เพราะตัวพยาธิมีรูปร่างคล้ายเเส้ โดยมีหัวเรียวยาวคล้ายปลายเเส้ เเละส่วนท้ายของลำตัวอ้วนใหญ่คล้ายด้ามเเส้ พยาธิตัวเต็มวัยใช้ส่วนหัวฝังอยู่ในบริเวณลำไส้ใหญ่ส่วนต้น พยาธิตัวผู้มีความยาวประมาณ 30-45 มม. ส่วนพยาธิตัวเมียมีความยาวประมาณ 35-50 มม.",
+    description: "เกิดจากพยาธิตัวกลมที่อยู่ในลำไส้ใหญ่",
+    remedies: "รักษาความสะอาด ทานยาถ่ายพยาธิตามคำแนะนำของแพทย์",
     flags: [],
     imageUri:
       "https://www.lenntech.com/images/Water%20Borne%20Diseases/trichuriasis.jpg",
   },
   lactase_deficiency: {
     diseaseName: "ภาวะพร่องแล็กเทส",
-    description:
-      "ส ควรดูแลรักษา และปฏิบัติตัวตามคำแนะนำของแพทย์ ดังนี้ ดื่มนมครั้งละน้อย (น้อยกว่า 200 มล.) หรือดื่มพร้อมอาหารมื้อหลัก หรือบริโภคโยเกิร์ต (ซึ่งผ่านการย่อยจากแบคทีเรียมาระดับหนึ่งแล้ว) ก็อาจไม่ทำให้เกิดอาการได้ หรือลดอาการให้น้อยลงได้",
+    description: "ร่างกายย่อยแลคโตสในนมได้ไม่สมบูรณ์",
+    remedies:
+      "ดื่มนมทีละน้อยหรือดื่มนมที่ไม่มีแลคโตส เลือกโยเกิร์ตหรือชีสแทนนมสด",
     flags: [],
     imageUri:
       "https://samitivej-prod-new-website.s3.ap-southeast-1.amazonaws.com/public/uploads/contents/dcbaff3c2bc12cf75a6caa9fec1d8f20.jpg",
   },
   typhoid: {
     diseaseName: "ไข้ทัยฟอยด์",
-    description:
-      "ไข้ทัยฟอยด์ หรือไข้พาราทิฟอยด์ คือโรคที่เกิดจากการติดเชื้อแบคทีเรียซาลโมเนลลา ที่เป็นเชื้อที่อยู่ในกลุ่มเชื้อที่ทำให้เกิดอาการปวดท้อง อาเจียน ถ่ายเหลว และไข้สูง โดยเชื้อนี้สามารถติดต่อผ่านทางอาหารหรือน้ำดื่มที่มีเชื้อ",
+    description: "โรคจากเชื้อแบคทีเรียซาลโมเนลลา มีอาการปวดท้องและไข้สูง",
+    remedies: "ดื่มน้ำเยอะ ๆ พักผ่อน ทานยาฆ่าเชื้อตามแพทย์สั่ง",
     flags: ["visitDoctor"],
     imageUri:
       "https://lirp.cdn-website.com/69c0b277/dms3rep/multi/opt/Typhoid+Fever+Symptoms-+Causes-+Risk+Factors-+Complications-+Diagnosis+-+Prevention-640w.jpg",
   },
   diabetes: {
     diseaseName: "โรคเบาหวาน",
-    description:
-      "โรคเบาหวาน คือ โรคที่เกิดจากการเกิดขึ้นของระดับน้ำตาลในเลือดที่สูงเกินไป โดยที่ระดับน้ำตาลในเลือดที่สูงเกินไปนี้เกิดจากการขาดฮอร์โมนอินซูลิน หรือเซลล์ที่ตอบสนองต่อฮอร์โมนอินซูลินไม่ได้ ทำให้เกิดอาการของโรคเบาหวาน",
+    description: "ระดับน้ำตาลในเลือดสูงผิดปกติจากการขาดอินซูลิน",
+    remedies: "ควบคุมอาหาร ออกกำลังกาย ทานยาหรือฉีดอินซูลินตามแพทย์สั่ง",
     flags: ["visitDoctor"],
     imageUri:
       "https://www.bumrungrad.com/-/media/project/bumrungrad/conditions/diabetes/diabetes-featured-image.jpg",
   },
   tetanus: {
     diseaseName: "โรคบาดทะยัก",
-    description:
-      "การติดเชื้อแบคทีเรีย น้ำลายสัตว์เลี้ยงลูกด้วยนม โดยการติดเชื้ออาจส่งผลต่อระบบประสาท ทำให้กล้ามเนื้อตึงหรือแข็งเกร็ง",
+    description: "การติดเชื้อแบคทีเรียส่งผลต่อระบบประสาท",
+    remedies: "ทำแผลให้สะอาดทันที พบแพทย์เพื่อฉีดวัคซีนป้องกันบาดทะยัก",
     flags: ["visitDoctor"],
   },
   heatstroke: {
-    description:
-      "สภาพอากาศที่ร้อนจัด ทำให้อุณหภูมิในร่างกายสูงขึ้นอย่างรวดเร็ว จนไม่สามารถระบายความร้อนออกได้ทันที",
+    diseaseName: "โรคลมร้อน",
+    description: "อุณหภูมิในร่างกายสูงจนเกิดอาการอ่อนเพลียและอันตราย",
+    remedies: "พักในที่ร่ม ดื่มน้ำให้มาก เช็ดตัวลดไข้",
     flags: ["visitDoctor"],
+    imageUri:
+      "https://familyfirster.com/wp-content/uploads/2022/06/heatstroke-symptoms.jpeg",
   },
+  pneumonia: {
+    diseaseName: "โรคปอดอักเสบ",
+    description: "การติดเชื้อหรือการระคายเคืองในปอด",
+    remedies: "พักผ่อน ทานยาปฏิชีวนะตามแพทย์สั่ง",
+    flags: ["visitDoctor"],
+    imageUri:
+      "https://bgh.sgp1.digitaloceanspaces.com/old-site/inline-images/shutterstock_417318079.jpg",
+  },
+  dengue: {
+    diseaseName: "โรคไข้เลือดออก",
+    description: "การติดเชื้อไวรัสเดงกีจากยุงลาย",
+    remedies: "ดื่มน้ำมาก ๆ เช็ดตัวลดไข้ ไม่ใช้ยาแอสไพริน",
+    flags: [],
+    imageUri:
+      "https://bgh.sgp1.digitaloceanspaces.com/old-site/inline-images/shutterstock_417318079.jpg",
+  },
+  tuberculosis: {
+    diseaseName: "วัณโรค",
+    description: "การติดเชื้อแบคทีเรียในปอด",
+    remedies: "พักผ่อน ทานอาหารเสริมภูมิคุ้มกัน ทานยาตามแพทย์สั่ง",
+    flags: ["visitDoctor"],
+    imageUri:
+      "https://www.pan-tb.org/wp-content/uploads/2023/04/What-is-tuberculosis.jpg",
+  },
+  sle: {
+    diseaseName: "โรคแพ้ภูมิตนเอง",
+    description: "ภาวะที่ระบบภูมิคุ้มกันทำงานผิดปกติ",
+    remedies: "รับประทานยาตามแพทย์สั่ง หลีกเลี่ยงสารกระตุ้นอาการ เช่น แสงแดด",
+    flags: [],
+    imageUri:
+      "https://i0.wp.com/images-prod.healthline.com/hlcmsresource/images/Image-Galleries/Systemic-Lupus/642X361_SLIDE_2_Systemic_Lupus_Erythematosus.jpg?w=1155",
+  },
+  pericarditis: {
+    diseaseName: "เยื่อหุ้มหัวใจอักเสบ",
+    description: "การอักเสบของเยื่อหุ้มหัวใจ",
+    remedies: "พักผ่อน ทานยาตามแพทย์สั่ง",
+    flags: ["visitDoctor"],
+    imageUri: "https://i.ytimg.com/vi/BXfnlCebHHE/maxresdefault.jpg",
+  },
+  ...ai_generated,
 };
 
 const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
@@ -98,12 +271,13 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
   const diagnosisData = useSelector(
     (state: RootState) => state.conclusion.displayConclusion.diagnosisData
   );
+  // const imageUri = conclusionsList[diseaseId].imageUri ? true : false;
 
   const previousScreenName =
     navigationRouteHistory[navigationRouteHistory.length - 2].name;
   const lastScreenWasDiagnosis = previousScreenName === "diagnosis";
 
-  if (diseaseId === "no_match") {
+  if (diseaseId === "no_match" || diseaseId === "serious_no_match") {
     return (
       <RootContainer>
         <ScrollView>
@@ -113,6 +287,9 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
               <Text style={s.headerTextHighlight}>
                 เราไม่พบโรคที่ตรงกับข้อมูลของคุณ
               </Text>
+            </View>
+            <View style={s.conclusionsTag}>
+              <Text style={s.conclusionsTag__text}>ควรพบแพทย์ทันที</Text>
             </View>
 
             <View
@@ -164,11 +341,13 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
   if (conclusionsList[diseaseId] !== undefined) {
     return (
       <RootContainer>
-        <ScrollView>
+        <ScrollView style={{ overflow: "visible" }}>
           <View style={s.conclusionsRootContainer}>
             <View>
               <Text style={s.headerText}>
-                {lastScreenWasDiagnosis ? "คุณมีความเสี่ยงเป็น" : ``}
+                {lastScreenWasDiagnosis
+                  ? "คุณมีความเสี่ยงเป็น"
+                  : "ขณะนั้นระบบเราประเมินว่าคุณเป็น"}
               </Text>
               <Text style={s.headerTextHighlight}>
                 {conclusionsList[diseaseId].diseaseName}
@@ -188,6 +367,7 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
             {imageIsLoading && (
               <Skeleton height={250} width={"100%"} colorMode="light" />
             )}
+
             <Image
               style={s.image}
               source={{
@@ -195,29 +375,63 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
               }}
               onLoad={() => setImageIsLoading(false)}
             />
+
             <Text style={s.descriptionText}>
               {conclusionsList[diseaseId].description}
             </Text>
             <View style={s.remedies}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+              >
+                <SymbolView
+                  name="stethoscope.circle.fill"
+                  tintColor="#3246ff"
+                  size={40}
+                />
+                <Text style={s.remedies__text}>การรักษาเบื้องต้น</Text>
+              </View>
               <Text style={s.remedies__text}>
-                อาการที่คุณเลือก:{"  "}
+                {conclusionsList[diseaseId].remedies}
+              </Text>
+            </View>
+            <View style={s.remedies}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+              >
+                <SymbolView
+                  name="checkmark.circle.fill"
+                  tintColor="#3246ff"
+                  size={40}
+                />
+                <Text style={s.remedies__text}>อาการหลักที่คุณเลือก</Text>
+              </View>
+              <Text style={s.remedies__text}>
                 {diagnosisData.symptomList.map(
                   (symptom, index) => symptom.name + " "
                 )}
               </Text>
             </View>
             <CustomButton
-              style={s.returnButton}
-              onPress={() => {
-                if (previousScreenName === "diagnosis")
-                  navigation.navigate("home");
-                else navigation.goBack();
-              }}
+              style={s.link}
+              onPress={() =>
+                Linking.openURL(
+                  `https://www.google.com/search?q=${conclusionsList[diseaseId].diseaseName}`
+                )
+              }
             >
-              <Text style={s.returnButton__text}>กลับ</Text>
+              <Text style={s.link__text}>อ่านเกี่ยวกับโรคเพิ่มเติมบนเว็บ</Text>
             </CustomButton>
           </View>
         </ScrollView>
+        <CustomButton
+          style={s.returnButton}
+          onPress={() => {
+            if (previousScreenName === "diagnosis") navigation.navigate("home");
+            else navigation.goBack();
+          }}
+        >
+          <Text style={s.returnButton__text}>กลับ</Text>
+        </CustomButton>
       </RootContainer>
     );
   } else {
@@ -274,19 +488,42 @@ const s = StyleSheet.create({
     backgroundColor: "#fdfdfd",
     padding: 20,
     borderRadius: 20,
+    gap: 10,
     ...Shadows.default,
   },
   remedies__text: {
     fontFamily: Fonts.regular,
   },
+  remedies__icon: {
+    height: 20,
+    width: 20,
+  },
   returnButton: {
-    backgroundColor: "#3246FF",
+    backgroundColor: "#fdfdfd",
+    position: "absolute",
+    bottom: 30,
+    left: 30,
     padding: 20,
-    marginTop: 30,
     borderRadius: 20,
-    marginBottom: 40,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    shadowOpacity: 0.25,
   },
   returnButton__text: {
+    color: "#000",
+    fontFamily: Fonts.regular,
+  },
+  link: {
+    width: "100%",
+    backgroundColor: "#3246FF",
+    padding: 20,
+    borderRadius: 20,
+    ...Shadows.default,
+    alignItems: "center",
+    marginBottom: 50,
+  },
+  link__text: {
     color: "#fff",
     fontFamily: Fonts.regular,
   },

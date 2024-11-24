@@ -143,6 +143,7 @@ const AuthenticatedStack = () => {
         name="conclusions"
         component={Conclusions}
         options={{
+          headerBackVisible: false,
           gestureEnabled: false,
           headerTitle: () => <HeaderText isDiagnosis={true} />,
           // headerBackVisible:

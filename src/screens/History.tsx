@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../context/store";
+import { AppDispatch, RootState } from "../context/store";
 import { conclusionsList } from "./Conclusions";
 import { Shadows } from "../constants/styles";
 import { SymbolView } from "expo-symbols";
@@ -26,7 +26,7 @@ import { Skeleton } from "moti/skeleton";
 import Toast from "react-native-toast-message";
 
 const History = (props) => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const conclusionHistory = useSelector(
     (state: RootState) => state.conclusion.conclusionHistory
   );
@@ -82,6 +82,8 @@ const History = (props) => {
     });
   };
 
+  console.log(conclusionHistory);
+
   return (
     <RootContainer>
       <Text style={s.headerText}>ประวัติการประเมิน</Text>
@@ -111,9 +113,12 @@ const History = (props) => {
                 style={s.historyItem_wrapper}
               >
                 <Image
-                  source={{ uri: fullConclusion.imageUri }}
+                  source={{
+                    uri: fullConclusion.imageUri,
+                  }}
                   style={s.historyItem_image}
                 />
+
                 <View style={s.historyItem_textWrapper}>
                   <Text style={[s.historyItem_text, { fontSize: 20 }]}>
                     {fullConclusion.diseaseName}
