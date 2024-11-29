@@ -5,6 +5,8 @@ import CustomButton from "../CustomButton";
 import { diagnosisDataType, symptom } from "../../models/diagnosisTypes";
 import { Fonts } from "../../constants/styles";
 
+const unstableSymptoms = ["vomit", "cough", "irregular_heartbeat"];
+
 const SelectSymptom: React.FC<{
   symptomList: symptom[];
   diagnosisData: diagnosisDataType;
@@ -80,13 +82,19 @@ const SelectSymptom: React.FC<{
               ]}
             >
               <View style={s.symptomListItem__textWrapper}>
-                <Text
-                  style={s.symptomListItem__titleText}
-                >{`${symptom.emoji} ${symptom.name}`}</Text>
+                <Text style={s.symptomListItem__titleText}>
+                  {`${symptom.emoji} ${symptom.name}`}{" "}
+                  {unstableSymptoms.includes(symptom.id) && (
+                    <View style={s.unstable}>
+                      <Text style={s.unstable__text}>ไม่เสถียร</Text>
+                    </View>
+                  )}
+                </Text>
                 <Text style={s.symptomListItem__descriptionText}>
                   {symptom.description}
                 </Text>
               </View>
+
               <CustomButton
                 onPress={() => props.selectedSymptomHandler(symptom)}
                 style={s.symptomListItem__button}
@@ -239,6 +247,19 @@ const s = StyleSheet.create({
   },
   noMatch__text: {
     color: "#fff",
+    fontFamily: Fonts.regular,
+  },
+  unstable: {
+    backgroundColor: "#959ffc",
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 15,
+  },
+  unstable__text: {
+    color: "#fff",
+    fontSize: 12,
     fontFamily: Fonts.regular,
   },
 });

@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 import {
   StyleSheet,
   View,
@@ -11,19 +13,16 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../context/store";
 import { conclusionsList } from "./Conclusions";
-import { Shadows } from "../constants/styles";
 import { SymbolView } from "expo-symbols";
+import { useEffect } from "react";
+import { Skeleton } from "moti/skeleton";
 
 import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
+import { Shadows } from "../constants/styles";
 import { conclusionActions } from "../context/conclusionSlice";
-import { useNavigationState } from "@react-navigation/native";
 import { Fonts } from "../constants/styles";
-import { useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchConclusionHistory } from "../context/conclusionSlice";
-import { Skeleton } from "moti/skeleton";
-import Toast from "react-native-toast-message";
 
 const History = (props) => {
   const dispatch: AppDispatch = useDispatch();

@@ -108,6 +108,8 @@ const conclusionSlice = createSlice({
     ) {
       if (action.payload.diseaseId === "no_match") {
         state.displayConclusion.diseaseId = "no_match";
+      } else if (action.payload.diseaseId === "serious_no_match") {
+        state.displayConclusion.diseaseId = "serious_no_match";
       } else {
         state.displayConclusion.diseaseId = action.payload.diseaseId;
         state.displayConclusion.diagnosisData = action.payload.diagnosisData;

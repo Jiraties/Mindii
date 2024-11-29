@@ -20,6 +20,9 @@ import { StackNavigation } from "../../App";
 import { Shadows, Fonts } from "../constants/styles";
 import { SymbolView } from "expo-symbols";
 
+const filler_image =
+  "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=";
+
 const ai_generated = {
   // Existing conclusions...
   acute_gastritis: {
@@ -27,28 +30,28 @@ const ai_generated = {
     description: "การอักเสบของเยื่อบุกระเพาะอาหาร",
     remedies: "หลีกเลี่ยงอาหารรสจัดและแอลกอฮอล์ ทานยาลดกรดตามแพทย์สั่ง",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/acute_gastritis.jpg",
+    imageUri: filler_image,
   },
   severe_cirrhosis: {
     diseaseName: "โรคตับแข็งขั้นรุนแรง",
     description: "การทำลายเนื้อเยื่อตับอย่างรุนแรง",
     remedies: "หลีกเลี่ยงแอลกอฮอล์ ทานยาตามแพทย์สั่ง",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/severe_cirrhosis.jpg",
+    imageUri: filler_image,
   },
   peptic_ulcer: {
     diseaseName: "แผลในกระเพาะอาหาร",
     description: "แผลที่เกิดขึ้นในเยื่อบุกระเพาะอาหาร",
     remedies: "หลีกเลี่ยงอาหารรสจัด ทานยาลดกรดตามแพทย์สั่ง",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/peptic_ulcer.jpg",
+    imageUri: filler_image,
   },
   stomach_cancer: {
     diseaseName: "มะเร็งกระเพาะอาหาร",
     description: "การเจริญเติบโตของเซลล์มะเร็งในกระเพาะอาหาร",
     remedies: "พบแพทย์เพื่อรับการรักษา",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/stomach_cancer.jpg",
+    imageUri: filler_image,
   },
   possible_meningitis_or_brain_injury: {
     diseaseName: "อาจเป็นเยื่อหุ้มสมองอักเสบหรือบาดเจ็บที่สมอง",
@@ -56,85 +59,84 @@ const ai_generated = {
       "อาการที่อาจเกิดจากการอักเสบของเยื่อหุ้มสมองหรือบาดเจ็บที่สมอง",
     remedies: "พบแพทย์ทันที",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/meningitis_or_brain_injury.jpg",
+    imageUri: filler_image,
   },
   chronic_abdominal_pain: {
     diseaseName: "อาการปวดท้องเรื้อรัง",
     description: "อาการปวดท้องที่เกิดขึ้นเป็นเวลานาน",
     remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/chronic_abdominal_pain.jpg",
+    imageUri: filler_image,
   },
   possible_jaundice: {
     diseaseName: "อาจเป็นดีซ่าน",
     description: "ภาวะที่ผิวหนังและตาเหลืองเนื่องจากระดับบิลิรูบินในเลือดสูง",
     remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/jaundice.jpg",
+    imageUri: filler_image,
   },
   side_effect_from_medication: {
     diseaseName: "ผลข้างเคียงจากยา",
     description: "อาการที่เกิดจากการใช้ยาบางชนิด",
     remedies: "ปรึกษาแพทย์เพื่อปรับเปลี่ยนยา",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/side_effect_from_medication.jpg",
+    imageUri: filler_image,
   },
   pregnancy: {
     diseaseName: "การตั้งครรภ์",
     description: "ภาวะที่เกิดจากการตั้งครรภ์",
     remedies: "พบแพทย์เพื่อรับการดูแลและคำแนะนำ",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/pregnancy.jpg",
+    imageUri: filler_image,
   },
   chronic_kidney_failure: {
     diseaseName: "ไตวายเรื้อรัง",
     description: "ภาวะที่ไตสูญเสียความสามารถในการกรองของเสียจากเลือด",
     remedies: "พบแพทย์เพื่อรับการรักษา",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/chronic_kidney_failure.jpg",
+    imageUri: filler_image,
   },
   indigestion_or_chronic_biliary_colic: {
     diseaseName: "อาการอาหารไม่ย่อยหรือปวดท้องเรื้อรัง",
     description: "อาการปวดท้องที่เกิดจากการย่อยอาหารไม่สมบูรณ์",
     remedies: "หลีกเลี่ยงอาหารที่กระตุ้นอาการ ทานยาตามแพทย์สั่ง",
     flags: ["visitDoctor"],
-    imageUri:
-      "https://www.example.com/indigestion_or_chronic_biliary_colic.jpg",
+    imageUri: filler_image,
   },
   intestinal_parasites: {
     diseaseName: "พยาธิในลำไส้",
     description: "การติดเชื้อพยาธิในลำไส้",
     remedies: "ทานยาถ่ายพยาธิตามคำแนะนำของแพทย์",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/intestinal_parasites.jpg",
+    imageUri: filler_image,
   },
   chronic_vomiting_in_children: {
     diseaseName: "อาเจียนเรื้อรังในเด็ก",
     description: "อาการอาเจียนที่เกิดขึ้นเป็นเวลานานในเด็ก",
     remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/chronic_vomiting_in_children.jpg",
+    imageUri: filler_image,
   },
   fever_with_fatigue_or_infection: {
     diseaseName: "ไข้ร่วมกับอ่อนเพลียหรือการติดเชื้อ",
     description: "อาการไข้ที่เกิดร่วมกับอาการอ่อนเพลียหรือการติดเชื้อ",
     remedies: "พักผ่อน ดื่มน้ำมาก ๆ พบแพทย์เพื่อรับการรักษา",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/fever_with_fatigue_or_infection.jpg",
+    imageUri: filler_image,
   },
   other_possible_causes: {
     diseaseName: "สาเหตุอื่น ๆ ที่เป็นไปได้",
     description: "อาการที่อาจเกิดจากสาเหตุอื่น ๆ",
     remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/other_possible_causes.jpg",
+    imageUri: filler_image,
   },
   possible_cough_induced_vomiting: {
     diseaseName: "อาเจียนจากการไอ",
     description: "อาการอาเจียนที่เกิดจากการไอ",
     remedies: "พักผ่อน ดื่มน้ำมาก ๆ พบแพทย์เพื่อรับการรักษา",
     flags: ["visitDoctor"],
-    imageUri: "https://www.example.com/cough_induced_vomiting.jpg",
+    imageUri: filler_image,
   },
 };
 
@@ -209,6 +211,8 @@ export const conclusionsList = {
     diseaseName: "โรคบาดทะยัก",
     description: "การติดเชื้อแบคทีเรียส่งผลต่อระบบประสาท",
     remedies: "ทำแผลให้สะอาดทันที พบแพทย์เพื่อฉีดวัคซีนป้องกันบาดทะยัก",
+    imageUri:
+      "https://www.scientificanimations.com/wp-content/uploads/2020/02/3D-medical-animation-of-tatanus.jpg",
     flags: ["visitDoctor"],
   },
   heatstroke: {
@@ -278,6 +282,11 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
   const lastScreenWasDiagnosis = previousScreenName === "diagnosis";
 
   if (diseaseId === "no_match" || diseaseId === "serious_no_match") {
+    console.log("diseaseId", diseaseId);
+    const isSerious = diseaseId === "serious_no_match";
+
+    console.log("isSerious", isSerious);
+
     return (
       <RootContainer>
         <ScrollView>
@@ -285,12 +294,16 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
             <View>
               <Text style={s.headerText}>ทางเราขออภัยอย่างยิ่ง</Text>
               <Text style={s.headerTextHighlight}>
-                เราไม่พบโรคที่ตรงกับข้อมูลของคุณ
+                {isSerious
+                  ? "เราแนะนำให้คุณพบแพทย์"
+                  : "เราไม่พบโรคที่ตรงกับข้อมูลของคุณ"}
               </Text>
             </View>
-            <View style={s.conclusionsTag}>
-              <Text style={s.conclusionsTag__text}>ควรพบแพทย์ทันที</Text>
-            </View>
+            {isSerious && (
+              <View style={s.conclusionsTag}>
+                <Text style={s.conclusionsTag__text}>ควรพบแพทย์ทันที</Text>
+              </View>
+            )}
 
             <View
               style={{
@@ -309,7 +322,11 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
               />
             </View>
 
-            <Text style={s.descriptionText}></Text>
+            <Text style={s.descriptionText}>
+              {isSerious
+                ? "เราขออภัยที่ไม่สามารถประเมินโรคจากข้อมูลอาการของคุณได้ในขณะนี้ อย่างไรก็ตาม เนื่องจากอาการของคุณดูมีความรุนแรง เราขอแนะนำให้คุณเข้ารับการตรวจและคำปรึกษาจากแพทย์โดยด่วนเพื่อความปลอดภัยและการรักษาที่เหมาะสม"
+                : "เราขออภัยที่ไม่สามารถประเมินโรคจากข้อมูลอาการของคุณได้ในขณะนี้"}
+            </Text>
             <View style={s.remedies}>
               <Text style={s.remedies__text}>
                 อาการที่คุณเลือก:{"  "}
@@ -318,20 +335,19 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
                 )}
               </Text>
             </View>
-            <CustomButton
-              style={s.returnButton}
-              onPress={() => {
-                console.log(previousScreenName);
-
-                if (previousScreenName === "diagnosis")
-                  navigation.navigate("home");
-                else navigation.goBack();
-              }}
-            >
-              <Text style={s.returnButton__text}>กลับ</Text>
-            </CustomButton>
           </View>
         </ScrollView>
+        <CustomButton
+          style={s.returnButton}
+          onPress={() => {
+            console.log(previousScreenName);
+
+            if (previousScreenName === "diagnosis") navigation.navigate("home");
+            else navigation.goBack();
+          }}
+        >
+          <Text style={s.returnButton__text}>กลับ</Text>
+        </CustomButton>
       </RootContainer>
     );
   }

@@ -21,6 +21,8 @@ import CustomButton from "../components/CustomButton";
 import RootContainer from "../components/RootContainer";
 import Toast from "react-native-toast-message";
 import { Fonts } from "../constants/styles";
+import { useAnimatedKeyboard, useAnimatedStyle } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 
 const validatePassword = (password) => {
   const minLength = 6;
@@ -250,7 +252,8 @@ const Signup = (props) => {
               {/* <Image
                 style={s.googleButtonImage}
                 source={require("../../assets/images/googleLogo.png")}
-              /> */}
+                /> */}
+              \
               <Text style={{ fontFamily: Fonts.regular, color: "#fff" }}>
                 มีบัญชีอยู่แล้ว
               </Text>

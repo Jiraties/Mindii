@@ -8,7 +8,7 @@ import CustomButton from "../components/CustomButton";
 import authenticationSlice, {
   authenticationActions,
 } from "../context/authenticationSlice";
-import { Fonts } from "../constants/styles";
+import { Fonts, Shadows } from "../constants/styles";
 import { RootState } from "../context/store";
 
 const Settings = (props) => {
@@ -68,20 +68,26 @@ const Settings = (props) => {
             </CustomButton>
           </View>
         </View>
-        <View style={s.settingsItem}>
-          <Text style={s.settingsItem__text}>Debug</Text>
-          <CustomButton
-            style={s.button}
-            onPress={() =>
-              Toast.show({
-                type: "warning",
-                text1: "TESTING TOAST",
-                text2: "successfully testing",
-              })
-            }
-          >
-            <Text style={s.button__text}>Toast</Text>
-          </CustomButton>
+
+        <View style={[s.settingsItem, s.credits]}>
+          <Text style={s.credits__header}>แอปพลิเคชันจัดทำโดย</Text>
+          <Text style={s.credits__person}>จิรัฏฐ์ ชูตระกูล</Text>
+          <Text style={s.credits__person}>ปภังกร รุ่งรัตติกรณ์</Text>
+          <Text style={s.credits__person}>ภูรินท์ ตรีเทวะวงษา</Text>
+          <Text style={s.credits__person}>เมธาสิทธิ์ กิจมโนมัย</Text>
+          <Text style={s.credits__person}>สิรภพ ชววัฑรัตน์ชัย</Text>
+          <Text style={s.credits__person}>ทัชชกฤต ลาภมณเฑียรทอง</Text>
+          <Text style={s.credits__person}>พฤกษ์ ศิริโชติ</Text>
+          <Text style={s.credits__person}>วิชญ การุณยวนิช</Text>
+          <Text style={s.credits__person}>ณฐพบ โกฏเพชร</Text>
+        </View>
+
+        <View style={[s.settingsItem, s.credits]}>
+          <Text style={s.credits__header}>ข้อมูลระบบการประเมิน</Text>
+          <Text style={s.settingsItem__text}>
+            คู่มือวินิจฉัยโรคของแพทย์ โดย นายแพทย์สุรเกียรติ อาชานานุภาพ, 2551
+            และข้อมูลจากแหล่งอื่นๆ
+          </Text>
         </View>
       </ScrollView>
     </RootContainer>
@@ -97,6 +103,7 @@ const s = StyleSheet.create({
   settingsList: {
     gap: 20,
     borderRadius: 20,
+    overflow: "visible",
   },
   settingsItem: {
     padding: 20,
@@ -106,6 +113,7 @@ const s = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
+    ...Shadows.default,
   },
   button: {
     backgroundColor: "#3246FF",
@@ -145,7 +153,23 @@ const s = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     marginLeft: "auto",
-    // justifyContent: "space-around",
+  },
+  credits: {
+    flexDirection: "collumn",
+  },
+  credits__person: {
+    padding: 10,
+    fontFamily: Fonts.regular,
+    borderBottomColor: "#d9d9d9",
+    borderBottomWidth: 1,
+    width: "100%",
+  },
+  credits__header: {
+    fontFamily: Fonts.regular,
+    fontSize: 20,
+    marginRight: "auto",
+    padding: 10,
+    paddingLeft: 5,
   },
 });
 
