@@ -205,7 +205,7 @@ export const conclusionsList = {
     remedies: "ควบคุมอาหาร ออกกำลังกาย ทานยาหรือฉีดอินซูลินตามแพทย์สั่ง",
     flags: ["visitDoctor"],
     imageUri:
-      "https://www.bumrungrad.com/-/media/project/bumrungrad/conditions/diabetes/diabetes-featured-image.jpg",
+      "https://alokamedicare.in/wp-content/uploads/2022/07/Diabetes-Alokamedicare-1024x1024.jpg",
   },
   tetanus: {
     diseaseName: "โรคบาดทะยัก",
@@ -380,16 +380,14 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
               }
             })}
 
-            {imageIsLoading && (
-              <Skeleton height={250} width={"100%"} colorMode="light" />
-            )}
-
             <Image
               style={s.image}
               source={{
                 uri: conclusionsList[diseaseId].imageUri,
               }}
-              onLoad={() => setImageIsLoading(false)}
+              onLoadStart={() => setImageIsLoading(true)}
+              onLoadEnd={() => setImageIsLoading(false)}
+              onError={() => setImageIsLoading(false)}
             />
 
             <Text style={s.descriptionText}>

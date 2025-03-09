@@ -101,7 +101,7 @@ const History = (props) => {
               </Text>
             </View>
           }
-          style={{ overflow: "visible" }}
+          style={{ overflow: "hidden" }}
           renderItem={({ item }) => {
             const fullConclusion = conclusionsList[item.diseaseId];
             const date = new Date(item.date);
@@ -156,7 +156,7 @@ const s = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
 
-    ...Shadows.default,
+    // ...Shadows.default,
   },
   historyItem_text: {
     fontFamily: Fonts.regular,

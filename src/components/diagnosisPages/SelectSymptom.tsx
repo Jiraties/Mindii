@@ -95,13 +95,31 @@ const SelectSymptom: React.FC<{
                 </Text>
               </View>
 
-              <CustomButton
-                onPress={() => props.selectedSymptomHandler(symptom)}
-                style={s.symptomListItem__button}
-                pressedStyle={s.homeListItem__buttonPressed}
-              >
-                <Text style={s.symptomListItem__buttonText}>{">"}</Text>
-              </CustomButton>
+              {unstableSymptoms.includes(symptom.id) ? (
+                <View
+                  style={[
+                    s.symptomListItem__button,
+                    { backgroundColor: "#f0f0f0" },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      s.symptomListItem__buttonText,
+                      { color: "#787878" },
+                    ]}
+                  >
+                    {"-"}
+                  </Text>
+                </View>
+              ) : (
+                <CustomButton
+                  onPress={() => props.selectedSymptomHandler(symptom)}
+                  style={s.symptomListItem__button}
+                  pressedStyle={s.homeListItem__buttonPressed}
+                >
+                  <Text style={s.symptomListItem__buttonText}>{">"}</Text>
+                </CustomButton>
+              )}
             </View>
           );
         }}

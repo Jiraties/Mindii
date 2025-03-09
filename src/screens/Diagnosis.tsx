@@ -278,7 +278,7 @@ const Diagnosis = (props) => {
             checklist: true,
             options: [
               { name: "ไม่รู้สึกตัว", value: "ไม่รู้สึกตัว" },
-              { name: "ปวดศรีษะมาก", value: "ปวดศรีษะมาก" },
+              { name: "ปวดศีรษะมาก", value: "ปวดศีรษะมาก" },
               {
                 name: "อาเจียนหนักหรือชัก",
                 value: "อาเจียนหนักหรือชัก",
@@ -425,10 +425,16 @@ const Diagnosis = (props) => {
           if (latest.value === "yes") {
             jumpToConclusions("sle");
           } else {
-            createYesNoOptions("จับไข้หนาวสั่นวันเว้นวันและเคยเข้าป่า", true);
+            createYesNoOptions(
+              "จับไข้หนาวสั่นวันเว้นวันและได้อยู่ในบริเวณที่มียุง",
+              true
+            );
           }
         }
-        if (latest.question === "จับไข้หนาวสั่นวันเว้นวันและเคยเข้าป่า") {
+        if (
+          latest.question ===
+          "จับไข้หนาวสั่นวันเว้นวันและได้อยู่ในบริเวณที่มียุง"
+        ) {
           if (latest.value === "yes") {
             jumpToConclusions("malaria");
           } else {
@@ -465,7 +471,7 @@ const Diagnosis = (props) => {
             jumpToConclusions("pneumonia");
           } else {
             createYesNoOptions(
-              "มีไข้สูง อ่อนเพลียง คลื่นไส้ อาเจียน ปวดศรีษะ หลังทำงานหรือออกกำลังกายในที่อุณหภูมิสูง",
+              "มีไข้สูง อ่อนเพลียง คลื่นไส้ อาเจียน ปวดศีรษะ หลังทำงานหรือออกกำลังกายในที่อุณหภูมิสูง",
               true
             );
           }
@@ -477,7 +483,7 @@ const Diagnosis = (props) => {
         }
         if (
           latest.question ===
-          "มีไข้สูง อ่อนเพลียง คลื่นไส้ อาเจียน ปวดศรีษะ หลังทำงานหรือออกกำลังกายในที่อุณหภูมิสูง"
+          "มีไข้สูง อ่อนเพลียง คลื่นไส้ อาเจียน ปวดศีรษะ หลังทำงานหรือออกกำลังกายในที่อุณหภูมิสูง"
         ) {
           if (latest.value === "yes") {
             jumpToConclusions("heatstroke");
@@ -582,289 +588,6 @@ const Diagnosis = (props) => {
           }
         }
         break;
-
-      case "vomit":
-        if (latest.question === "พึ่งอาเจียนหลังจากฟื้นจากไข้หวัดใช่หรือไม่") {
-          if (latest.value === "yes") {
-            jumpToConclusions("reye_syndrome");
-          } else {
-            createYesNoOptions("คุณปวดท้องรุนแรงใช่หรือไม่", true);
-          }
-        }
-
-        if (latest.question === "คุณปวดท้องรุนแรงใช่หรือไม่") {
-          if (latest.value === "yes") {
-            createYesNoOptions(
-              "คุณปวดท้องหรือท้องน้อยและมีท้องเดินหรือไม่",
-              true
-            );
-          } else {
-            createYesNoOptions("คุณกินสัตว์ที่มีพิษใช่หรือไม่", true);
-          }
-        }
-
-        if (latest.question === "คุณปวดท้องหรือท้องน้อยและมีท้องเดินหรือไม่") {
-          if (latest.value === "yes") {
-            jumpToConclusions("chronic_abdominal_pain");
-          } else {
-            createYesNoOptions("คุณกินสัตว์ที่มีพิษใช่หรือไม่", true);
-          }
-        }
-
-        if (latest.question === "คุณกินสัตว์ที่มีพิษใช่หรือไม่") {
-          if (latest.value === "yes") {
-            jumpToConclusions("botulism");
-          } else {
-            createYesNoOptions(
-              "คุณกินอาหารทะเลหรืออาหารไม่สุกใช่หรือไม่",
-              true
-            );
-          }
-        }
-
-        if (latest.question === "คุณกินอาหารทะเลหรืออาหารไม่สุกใช่หรือไม่") {
-          if (latest.value === "yes") {
-            jumpToConclusions("food_poisoning");
-          } else {
-            createYesNoOptions("คุณอาเจียนเฉพาะเวลาไอใช่หรือไม่", true);
-          }
-        }
-
-        if (latest.question === "คุณอาเจียนเฉพาะเวลาไอใช่หรือไม่") {
-          if (latest.value === "yes") {
-            jumpToConclusions("possible_cough_induced_vomiting");
-          } else {
-            createYesNoOptions(
-              "คุณมีอาการดีซ่าน ปวดหัว เวียนหัว หรือปวดท้องใช่หรือไม่",
-              true
-            );
-          }
-        }
-
-        if (
-          latest.question ===
-          "คุณมีอาการดีซ่าน ปวดหัว เวียนหัว หรือปวดท้องใช่หรือไม่"
-        ) {
-          if (latest.value === "yes") {
-            jumpToConclusions("possible_jaundice");
-          } else {
-            createYesNoOptions(
-              "คุณอาเจียนหลังจากกินยาหรือฉีดยาบางชนิดใช่หรือไม่",
-              true
-            );
-          }
-        }
-
-        if (
-          latest.question === "คุณอาเจียนหลังจากกินยาหรือฉีดยาบางชนิดใช่หรือไม่"
-        ) {
-          if (latest.value === "yes") {
-            jumpToConclusions("side_effect_from_medication");
-          } else {
-            createYesNoOptions(
-              "คุณเป็นผู้หญิงที่แต่งงานแล้วและประจำเดือนขาดใช่หรือไม่",
-              true
-            );
-          }
-        }
-
-        if (
-          latest.question ===
-          "คุณเป็นผู้หญิงที่แต่งงานแล้วและประจำเดือนขาดใช่หรือไม่"
-        ) {
-          if (latest.value === "yes") {
-            jumpToConclusions("pregnancy");
-          } else {
-            createYesNoOptions(
-              "คุณมีอาการอาเจียนเป็นๆ หายๆ เรื้อรังใช่หรือไม่",
-              true
-            );
-          }
-        }
-
-        if (
-          latest.question === "คุณมีอาการอาเจียนเป็นๆ หายๆ เรื้อรังใช่หรือไม่"
-        ) {
-          if (latest.value === "yes") {
-            createYesNoOptions(
-              "คุณมีอาการบวมซีด ความดันโลหิตสูง หรือเป็นโรคไตหรือเบาหวานใช่หรือไม่",
-              true
-            );
-          } else {
-            createYesNoOptions(
-              "คุณมีอาการจุกแน่นท้องหรือมีลมในท้องใช่หรือไม่",
-              true
-            );
-          }
-        }
-
-        if (
-          latest.question ===
-          "คุณมีอาการบวมซีด ความดันโลหิตสูง หรือเป็นโรคไตหรือเบาหวานใช่หรือไม่"
-        ) {
-          if (latest.value === "yes") {
-            jumpToConclusions("chronic_kidney_failure");
-          } else {
-            createYesNoOptions(
-              "คุณมีอาการจุกแน่นท้องหรือมีลมในท้องใช่หรือไม่",
-              true
-            );
-          }
-        }
-
-        if (
-          latest.question === "คุณมีอาการจุกแน่นท้องหรือมีลมในท้องใช่หรือไม่"
-        ) {
-          if (latest.value === "yes") {
-            jumpToConclusions("indigestion_or_chronic_biliary_colic");
-          } else {
-            createYesNoOptions(
-              "คุณอาเจียนหรือถ่ายเป็นตัวไส้เดือนหรือพยาธิใช่หรือไม่",
-              true
-            );
-          }
-        }
-
-        if (
-          latest.question ===
-          "คุณอาเจียนหรือถ่ายเป็นตัวไส้เดือนหรือพยาธิใช่หรือไม่"
-        ) {
-          if (latest.value === "yes") {
-            jumpToConclusions("intestinal_parasites");
-          } else {
-            createYesNoOptions(
-              "คุณเป็นเด็กและมีอาการเรื้อรังนานกว่า 6 เดือนใช่หรือไม่",
-              true
-            );
-          }
-        }
-
-        if (
-          latest.question ===
-          "คุณเป็นเด็กและมีอาการเรื้อรังนานกว่า 6 เดือนใช่หรือไม่"
-        ) {
-          if (latest.value === "yes") {
-            jumpToConclusions("chronic_vomiting_in_children");
-          } else {
-            createYesNoOptions(
-              "คุณมีอาการไข้ร่วมกับหอบหรืออ่อนเพลียใช่หรือไม่",
-              true
-            );
-          }
-        }
-
-        if (
-          latest.question === "คุณมีอาการไข้ร่วมกับหอบหรืออ่อนเพลียใช่หรือไม่"
-        ) {
-          if (latest.value === "yes") {
-            jumpToConclusions("fever_with_fatigue_or_infection");
-          } else {
-            jumpToConclusions("other_possible_causes");
-          }
-        }
-      //////////////////////// NO MATCH q&as ////////////////////////
-      case "no_match":
-        if (
-          latest.question ===
-          "คุณกินยาถ่าย ยาลดกรด ยารักษาโรคเกาต์ มะขามแขกเป็นประจำหรือไม่"
-        ) {
-          console.log("here");
-          if (latest.value === "no") {
-            createYesNoOptions("คุณท้องผูกสลับกับท้องเสียหรือไม่?", true);
-          } else if (latest.value === "yes") {
-            jumpToConclusions("irritable_bowel");
-          }
-        }
-        if (latest.question === "คุณท้องผูกสลับกับท้องเสียหรือไม่?") {
-          if (latest.value === "yes") {
-            createYesNoOptions("คุณเคยเป็นโรคลำไส้แปรปรวนหรือไม่", true);
-          } else if (latest.value === "no") {
-            createYesNoOptions("คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่", true);
-          }
-        }
-        if (latest.question === "คุณเคยเป็นโรคลำไส้แปรปรวนหรือไม่") {
-          if (latest.value === "yes") {
-            jumpToConclusions("irritable_bowel");
-          } else if (latest.value === "no") {
-            createYesNoOptions("คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่", true);
-          }
-        }
-        if (latest.question === "คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่") {
-          if (latest.value === "yes") {
-            jumpToConclusions("tricuriasis");
-          } else if (latest.value === "no") {
-            createYesNoOptions("มีอาการเฉพาะหลังดื่มนมหรือไม่?", true);
-          }
-        }
-        if (latest.question === "มีอาการเฉพาะหลังดื่มนมหรือไม่?") {
-          if (latest.value === "yes") {
-            jumpToConclusions("lactase_deficiency");
-          } else if (latest.value === "no") {
-            createYesNoOptions("คุณสุขภาพร่างกายแข็งแรงดีหรือไม่", true);
-          }
-        }
-        if (latest.question === "คุณสุขภาพร่างกายแข็งแรงดีหรือไม่") {
-          if (latest.value === "yes") {
-            createYesNoOptions("คุณมีอาการมามากกว่า 2 อาทิตย์หรือไม่", true);
-          } else if (latest.value === "no") {
-            createYesNoOptions("คุณเคยเป็น บาวหวานมาก่อนหรือไม่", true);
-          }
-        }
-        if (latest.question === "คุณมีอาการมามากกว่า 2 อาทิตย์หรือไม่") {
-          if (latest.value === "yes") {
-            jumpToConclusions("irritable_bowel");
-          } else if (latest.value === "no") {
-            createYesNoOptions(
-              "เกิดอาการเมื่อหลังกินอาหารประมาณ 30 นาทีหรือไม่",
-              true
-            );
-          }
-        }
-        if (
-          latest.question === "เกิดอาการเมื่อหลังกินอาหารประมาณ 30 นาทีหรือไม่"
-        ) {
-          if (latest.value === "yes") {
-            createYesNoOptions("คุณเคยเป็น บาวหวานมาก่อนหรือไม่", true);
-          } else {
-            jumpToConclusions("no_match");
-          }
-        }
-        if (latest.question === "คุณเคยเป็น บาวหวานมาก่อนหรือไม่") {
-          if (latest.value === "yes") {
-            jumpToConclusions("diabetes");
-          } else {
-            jumpToConclusions("no_match");
-          }
-        }
-        break;
-      default:
-    }
-
-    // if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
-    //   if (latest.value === "no") {
-    //     createYesNoOptions("คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่", true);
-    //   }
-    // }
-
-    if (latest.question === "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่") {
-      if (latest.value === "yes") {
-        createYesNoOptions(
-          "ช่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่",
-          true
-        );
-      } else if (latest.value === "no") {
-        jumpToConclusions("serious_no_match");
-      }
-    }
-    if (
-      latest.question ===
-      "ช่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่"
-    ) {
-      if (latest.value === "yes") {
-        jumpToConclusions("giardia");
-      } else {
-        jumpToConclusions("serious_no_match");
-      }
     }
   };
 

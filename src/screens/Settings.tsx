@@ -103,7 +103,7 @@ const s = StyleSheet.create({
   settingsList: {
     gap: 20,
     borderRadius: 20,
-    overflow: "visible",
+    overflow: "hidden",
   },
   settingsItem: {
     padding: 20,
@@ -113,7 +113,7 @@ const s = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
-    ...Shadows.default,
+    // ...Shadows.default,
   },
   button: {
     backgroundColor: "#3246FF",
