@@ -438,13 +438,10 @@ const Diagnosis = (props) => {
           if (latest.value === "yes") {
             jumpToConclusions("malaria");
           } else {
-            createYesNoOptions(
-              "มีจุดแดงที่เยื่อบุตาหรือใต้เล็บ และม้ามโต",
-              true
-            );
+            createYesNoOptions("มีจุดแดงที่เยื่อบุตาหรือใต้เล็บ", true);
           }
         }
-        if (latest.question === "มีจุดแดงที่เยื่อบุตาหรือใต้เล็บ และม้ามโต") {
+        if (latest.question === "มีจุดแดงที่เยื่อบุตาหรือใต้เล็บ") {
           if (latest.value === "yes") {
             jumpToConclusions("pericarditis");
           } else {
@@ -471,7 +468,7 @@ const Diagnosis = (props) => {
             jumpToConclusions("pneumonia");
           } else {
             createYesNoOptions(
-              "มีไข้สูง อ่อนเพลียง คลื่นไส้ อาเจียน ปวดศีรษะ หลังทำงานหรือออกกำลังกายในที่อุณหภูมิสูง",
+              "มีไข้สูง อ่อนเพลีย คลื่นไส้ อาเจียน ปวดศีรษะ หลังทำงานหรือออกกำลังกายในที่อุณหภูมิสูง",
               true
             );
           }
@@ -483,16 +480,16 @@ const Diagnosis = (props) => {
         }
         if (
           latest.question ===
-          "มีไข้สูง อ่อนเพลียง คลื่นไส้ อาเจียน ปวดศีรษะ หลังทำงานหรือออกกำลังกายในที่อุณหภูมิสูง"
+          "มีไข้สูง อ่อนเพลีย คลื่นไส้ อาเจียน ปวดศีรษะ หลังทำงานหรือออกกำลังกายในที่อุณหภูมิสูง"
         ) {
           if (latest.value === "yes") {
             jumpToConclusions("heatstroke");
           } else {
-            createYesNoOptions("ไข้สูงตลอดเวลา และ หน้าแดงเปลือกตาแดง", true);
+            createYesNoOptions("มีไข้สูงตลอดเวลา และ หน้าแดงเปลือกตาแดง", true);
           }
         }
 
-        if (latest.question === "ไข้สูงตลอดเวลา และ หน้าแดงเปลือกตาแดง") {
+        if (latest.question === "มีไข้สูงตลอดเวลา และ หน้าแดงเปลือกตาแดง") {
           if (latest.value === "yes") {
             jumpToConclusions("dengue");
           } else {
@@ -531,7 +528,7 @@ const Diagnosis = (props) => {
         if (latest.question === "จากอาการดังกล่าว มีอาการไหนตรงกับคุณไหม") {
           const optionsChecked = parseInt(latest.value);
           if (optionsChecked === 2) {
-            jumpToConclusions("tetanus");
+            jumpToConclusions("rabies");
           } else {
             createYesNoOptions(
               "ไข้เกิดหลังจากอยู่ท่ามกลางอุณหภูมิสูงเป็นเวลานาน",
@@ -547,7 +544,8 @@ const Diagnosis = (props) => {
           } else {
             createYesNoOptions(
               "ชากรรไกรแข็ง หลังแอ่น หรือชักเมื่อถูกสัมผัส หรือเมื่ออยู่ในแสงสว่างหรือที่เสียงดัง",
-              true
+              true,
+              "ชากรรไกรแข็งหมายถึงการที่กรามหรือปากมีอาการแข็งหรือเคลื่อนไหวยาก"
             );
           }
         }
@@ -588,6 +586,105 @@ const Diagnosis = (props) => {
           }
         }
         break;
+      //////////////////////// NO MATCH q&as ////////////////////////
+      case "no_match":
+        if (
+          latest.question ===
+          "คุณกินยาถ่าย ยาลดกรด ยารักษาโรคเกาต์ มะขามแขกเป็นประจำหรือไม่"
+        ) {
+          console.log("here");
+          if (latest.value === "no") {
+            createYesNoOptions("คุณท้องผูกสลับกับท้องเสียหรือไม่?", true);
+          } else if (latest.value === "yes") {
+            jumpToConclusions("irritable_bowel");
+          }
+        }
+        if (latest.question === "คุณท้องผูกสลับกับท้องเสียหรือไม่?") {
+          if (latest.value === "yes") {
+            createYesNoOptions("คุณเคยเป็นโรคลำไส้แปรปรวนหรือไม่", true);
+          } else if (latest.value === "no") {
+            createYesNoOptions(
+              "คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่",
+              true,
+              " อาการทวารหนักโผล่ในเด็กหมายถึงการที่ส่วนของลำไส้ส่วนปลายหรือทวารหนักยื่นออกมาผ่านช่องทวารหนัก"
+            );
+          }
+        }
+        if (latest.question === "คุณเคยเป็นโรคลำไส้แปรปรวนหรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("irritable_bowel");
+          } else if (latest.value === "no") {
+            createYesNoOptions("คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่", true);
+          }
+        }
+        if (latest.question === "คุณเคยมีอาการทวารหนักโผล่ในเด็กหรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("tricuriasis");
+          } else if (latest.value === "no") {
+            createYesNoOptions("มีอาการเฉพาะหลังดื่มนมหรือไม่?", true);
+          }
+        }
+        if (latest.question === "มีอาการเฉพาะหลังดื่มนมหรือไม่?") {
+          if (latest.value === "yes") {
+            jumpToConclusions("lactase_deficiency");
+          } else if (latest.value === "no") {
+            createYesNoOptions("คุณสุขภาพร่างกายแข็งแรงดีหรือไม่", true);
+          }
+        }
+        if (latest.question === "คุณสุขภาพร่างกายแข็งแรงดีหรือไม่") {
+          if (latest.value === "yes") {
+            createYesNoOptions("คุณมีอาการมามากกว่า 2 อาทิตย์หรือไม่", true);
+          } else if (latest.value === "no") {
+            createYesNoOptions("คุณเคยเป็น เบาหวานมาก่อนหรือไม่", true);
+          }
+        }
+        if (latest.question === "คุณมีอาการมามากกว่า 2 อาทิตย์หรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("irritable_bowel");
+          } else if (latest.value === "no") {
+            createYesNoOptions(
+              "เกิดอาการเมื่อหลังกินอาหารประมาณ 30 นาทีหรือไม่",
+              true
+            );
+          }
+        }
+        if (
+          latest.question === "เกิดอาการเมื่อหลังกินอาหารประมาณ 30 นาทีหรือไม่"
+        ) {
+          if (latest.value === "yes") {
+            createYesNoOptions("คุณเคยเป็น บาวหวานมาก่อนหรือไม่", true);
+          } else {
+            jumpToConclusions("no_match");
+          }
+        }
+        if (latest.question === "คุณเคยเป็น เบาหวานมาก่อนหรือไม่") {
+          if (latest.value === "yes") {
+            jumpToConclusions("diabetes");
+          } else {
+            jumpToConclusions("no_match");
+          }
+        }
+        break;
+    }
+    if (latest.question === "คุณกระหายน้ำและปัสสาวะบ่อยขึ้นหรือไม่") {
+      if (latest.value === "yes") {
+        createYesNoOptions(
+          "ช่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่",
+          true
+        );
+      } else if (latest.value === "no") {
+        jumpToConclusions("serious_no_match");
+      }
+    }
+    if (
+      latest.question ===
+      "ช่วงหลังคุณถ่ายเหลว,มีกลิ่นเหม็นมากหรือมีเลือดในอุจาระหรือไม่"
+    ) {
+      if (latest.value === "yes") {
+        jumpToConclusions("giardia");
+      } else {
+        jumpToConclusions("serious_no_match");
+      }
     }
   };
 
