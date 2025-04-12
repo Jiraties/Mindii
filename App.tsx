@@ -1,11 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast, { ErrorToast, ToastConfig } from "react-native-toast-message";
+import { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useFonts } from "expo-font";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import { useState, useEffect } from "react";
 import { getDoc, doc } from "firebase/firestore";
 import { NavigationProp } from "@react-navigation/native";
 
@@ -31,6 +32,8 @@ import {
   fetchConclusionHistory,
   conclusionActions,
 } from "./src/context/conclusionSlice";
+import MindiiMate from "./src/screens/MindiiMate";
+import Journal from "./src/screens/Journal";
 
 const AuthenticationStack = () => {
   return (
@@ -63,6 +66,8 @@ const AuthenticationStack = () => {
 const AuthenticatedStack = () => {
   const dispatch = useDispatch();
   const db = FIREBASE_FIRESTORE;
+
+  const Tabs = createBottomTabNavigator();
 
   useEffect(() => {
     async function fetchToken() {
@@ -153,7 +158,21 @@ const AuthenticatedStack = () => {
         name="history"
         component={History}
         options={{
-          headerTitle: () => <HeaderText isDiagnosis={true} />,
+          headerTitle: () => <HeaderText text={"Diagnosis"} />,
+        }}
+      />
+      <Stack.Screen
+        name="mate"
+        component={MindiiMate}
+        options={{
+          headerTitle: () => <HeaderText text={"Mate"} />,
+        }}
+      />
+      <Stack.Screen
+        name="journal"
+        component={Journal}
+        options={{
+          headerTitle: () => <HeaderText text={"Journal"} />,
         }}
       />
     </Stack.Navigator>
@@ -257,7 +276,10 @@ export type ScreenNames = [
   "history",
   "login",
   "signup",
-  "splashscreen"
+  "splashscreen",
+  "ai",
+  "mate",
+  "journal"
 ];
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;

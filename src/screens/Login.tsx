@@ -65,7 +65,7 @@ const Login = (props) => {
     <RootContainer style={s.loginRootContainer}>
       <View>
         <Text style={s.headerText}>ยินดีต้อนรับสู่</Text>
-        <Text style={[s.headerText, { color: "#3246FF" }]}>ใกล้หมอ </Text>
+        <Text style={[s.headerText, { color: "#5271ff" }]}>ใกล้หมอ </Text>
         <Text style={s.subheaderText}>
           ล็อกอินเพื่อเริ่มต้นประเมินอาการได้ทันที
         </Text>
@@ -174,7 +174,7 @@ const s = StyleSheet.create({
     ...defaultShadow,
   },
   submitButton: {
-    backgroundColor: "#3246FF",
+    backgroundColor: "#5271ff",
     padding: 20,
     marginTop: 30,
     borderRadius: 20,

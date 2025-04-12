@@ -1,4 +1,8 @@
-export type screenType = "selectSymptom" | "symptomLength" | "customOptions";
+export type screenType =
+  | "selectSymptom"
+  | "symptomLength"
+  | "customOptions"
+  | "diagnosisIntro";
 
 export type symptom = {
   id: string;
@@ -9,7 +13,7 @@ export type symptom = {
 
 export type diagnosisOption = {
   question: string;
-  value: string;
+  value: number;
   name: string;
   isChecked?: boolean;
 };
@@ -25,8 +29,13 @@ export interface diagnosisDataType {
   screenType: screenType[];
   options: diagnosisOption[];
   optionsSettings: optionsSettings;
-  symptomList: symptom[];
-  selectedOptionList: diagnosisOption[];
+  latestQuestion: string;
+  scoring: {
+    somatic: number;
+    anxietyAndInsomnia: number;
+    socialDysfunction: number;
+    severeDepression: number;
+  };
 }
 
 export interface symptomLength {

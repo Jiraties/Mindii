@@ -75,7 +75,7 @@ const s = StyleSheet.create({
   homeListItem: {
     width: "100%",
     backgroundColor: "#fdfdfd",
-    borderRadius: 20,
+    borderRadius: 30,
     marginBottom: 20,
     height: 175,
     overflow: "hidden",
@@ -86,7 +86,7 @@ const s = StyleSheet.create({
     fontFamily: Fonts.regular,
   },
   homeListItem__button: {
-    backgroundColor: "#3246FF",
+    backgroundColor: "#5271ff",
     width: "40%",
     height: 40,
     borderRadius: 100,
@@ -150,7 +150,7 @@ const s = StyleSheet.create({
   termsAndConditions__button: {},
   termsAndConditions__text: {
     fontFamily: Fonts.regular,
-    color: "#3246FF",
+    color: "#5271ff",
     fontSize: 15,
   },
 });

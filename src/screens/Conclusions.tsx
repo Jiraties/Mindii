@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 import { Skeleton } from "moti/skeleton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import RootContainer from "../components/RootContainer";
@@ -19,451 +19,126 @@ import { conclusion } from "../models/conclusionTypes";
 import { StackNavigation } from "../../App";
 import { Shadows, Fonts } from "../constants/styles";
 import { SymbolView } from "expo-symbols";
-
-const filler_image =
-  "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=";
-
-const ai_generated = {
-  // Existing conclusions...
-  acute_gastritis: {
-    diseaseName: "โรคกระเพาะอาหารอักเสบเฉียบพลัน",
-    description: "การอักเสบของเยื่อบุกระเพาะอาหาร",
-    remedies: "หลีกเลี่ยงอาหารรสจัดและแอลกอฮอล์ ทานยาลดกรดตามแพทย์สั่ง",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  severe_cirrhosis: {
-    diseaseName: "โรคตับแข็งขั้นรุนแรง",
-    description: "การทำลายเนื้อเยื่อตับอย่างรุนแรง",
-    remedies: "หลีกเลี่ยงแอลกอฮอล์ ทานยาตามแพทย์สั่ง",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  peptic_ulcer: {
-    diseaseName: "แผลในกระเพาะอาหาร",
-    description: "แผลที่เกิดขึ้นในเยื่อบุกระเพาะอาหาร",
-    remedies: "หลีกเลี่ยงอาหารรสจัด ทานยาลดกรดตามแพทย์สั่ง",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  stomach_cancer: {
-    diseaseName: "มะเร็งกระเพาะอาหาร",
-    description: "การเจริญเติบโตของเซลล์มะเร็งในกระเพาะอาหาร",
-    remedies: "พบแพทย์เพื่อรับการรักษา",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  possible_meningitis_or_brain_injury: {
-    diseaseName: "อาจเป็นเยื่อหุ้มสมองอักเสบหรือบาดเจ็บที่สมอง",
-    description:
-      "อาการที่อาจเกิดจากการอักเสบของเยื่อหุ้มสมองหรือบาดเจ็บที่สมอง",
-    remedies: "พบแพทย์ทันที",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  chronic_abdominal_pain: {
-    diseaseName: "อาการปวดท้องเรื้อรัง",
-    description: "อาการปวดท้องที่เกิดขึ้นเป็นเวลานาน",
-    remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  possible_jaundice: {
-    diseaseName: "อาจเป็นดีซ่าน",
-    description: "ภาวะที่ผิวหนังและตาเหลืองเนื่องจากระดับบิลิรูบินในเลือดสูง",
-    remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  side_effect_from_medication: {
-    diseaseName: "ผลข้างเคียงจากยา",
-    description: "อาการที่เกิดจากการใช้ยาบางชนิด",
-    remedies: "ปรึกษาแพทย์เพื่อปรับเปลี่ยนยา",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  pregnancy: {
-    diseaseName: "การตั้งครรภ์",
-    description: "ภาวะที่เกิดจากการตั้งครรภ์",
-    remedies: "พบแพทย์เพื่อรับการดูแลและคำแนะนำ",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  chronic_kidney_failure: {
-    diseaseName: "ไตวายเรื้อรัง",
-    description: "ภาวะที่ไตสูญเสียความสามารถในการกรองของเสียจากเลือด",
-    remedies: "พบแพทย์เพื่อรับการรักษา",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  indigestion_or_chronic_biliary_colic: {
-    diseaseName: "อาการอาหารไม่ย่อยหรือปวดท้องเรื้อรัง",
-    description: "อาการปวดท้องที่เกิดจากการย่อยอาหารไม่สมบูรณ์",
-    remedies: "หลีกเลี่ยงอาหารที่กระตุ้นอาการ ทานยาตามแพทย์สั่ง",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  intestinal_parasites: {
-    diseaseName: "พยาธิในลำไส้",
-    description: "การติดเชื้อพยาธิในลำไส้",
-    remedies: "ทานยาถ่ายพยาธิตามคำแนะนำของแพทย์",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  chronic_vomiting_in_children: {
-    diseaseName: "อาเจียนเรื้อรังในเด็ก",
-    description: "อาการอาเจียนที่เกิดขึ้นเป็นเวลานานในเด็ก",
-    remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  fever_with_fatigue_or_infection: {
-    diseaseName: "ไข้ร่วมกับอ่อนเพลียหรือการติดเชื้อ",
-    description: "อาการไข้ที่เกิดร่วมกับอาการอ่อนเพลียหรือการติดเชื้อ",
-    remedies: "พักผ่อน ดื่มน้ำมาก ๆ พบแพทย์เพื่อรับการรักษา",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  other_possible_causes: {
-    diseaseName: "สาเหตุอื่น ๆ ที่เป็นไปได้",
-    description: "อาการที่อาจเกิดจากสาเหตุอื่น ๆ",
-    remedies: "พบแพทย์เพื่อรับการวินิจฉัยและรักษา",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-  possible_cough_induced_vomiting: {
-    diseaseName: "อาเจียนจากการไอ",
-    description: "อาการอาเจียนที่เกิดจากการไอ",
-    remedies: "พักผ่อน ดื่มน้ำมาก ๆ พบแพทย์เพื่อรับการรักษา",
-    flags: ["visitDoctor"],
-    imageUri: filler_image,
-  },
-};
-
-export const conclusionsList = {
-  malaria: {
-    diseaseName: "มาลาเรีย",
-    description: "ควรกินยาลดไข้ ควรกินยารักษามาลาเรีย",
-    remedies:
-      "กินยารักษามาลาเรียตามคำแนะนำของแพทย์ ดื่มน้ำเยอะ ๆ พักผ่อนให้เพียงพอ",
-    flags: ["visitDoctor"],
-    imageUri:
-      "https://www.cdc.gov/malaria/media/images/1_Anopheles_gambiae.jpg",
-  },
-  thyroid: {
-    diseaseName: "ต่อมไทรอยด์ทำงานเกิน คอพอกเป็นพิษ",
-    description:
-      "ต่อมไทรอยด์ทำงานผิดปกติ ส่งผลต่อการทำงานของระบบต่าง ๆ ในร่างกาย",
-    remedies: "ลดความเครียด ทานอาหารสมดุล พบแพทย์เพื่อปรับฮอร์โมน",
-    flags: ["visitDoctor"],
-    imageUri: "https://www.vibhavadi.com/images/healthex/4299_01639541039.jpg",
-  },
-  giardia: {
-    diseaseName: "ท้องเสียจากเชื้อไกอาร์เดีย",
-    description: "การติดเชื้อที่ลำไส้เล็ก ทำให้เกิดอาการท้องเสีย",
-    remedies: "ดื่มน้ำเกลือแร่ หลีกเลี่ยงอาหารรสจัดและดิบ พักผ่อนให้เพียงพอ",
-    flags: [],
-    imageUri: "https://cth.co.th/wp-content/uploads/2021/05/Giardiasis2.jpg",
-  },
-  irritable_bowel: {
-    diseaseName: "ลำไส้แปรปรวน",
-    description: "ภาวะลำไส้ทำงานผิดปกติ ทำให้เกิดอาการปวดท้องและขับถ่ายผิดปกติ",
-    remedies:
-      "หลีกเลี่ยงอาหารที่กระตุ้นอาการ เช่น อาหารรสจัดและไขมันสูง ทานอาหารมีกากใย",
-    flags: [],
-    imageUri:
-      "https://d2jx2rerrg6sh3.cloudfront.net/images/Article_Images/ImageForArticle_6292_44959658610231484248.jpg",
-  },
-  tricuriasis: {
-    diseaseName: "โรคพยาธิแส้ม้า",
-    description: "เกิดจากพยาธิตัวกลมที่อยู่ในลำไส้ใหญ่",
-    remedies: "รักษาความสะอาด ทานยาถ่ายพยาธิตามคำแนะนำของแพทย์",
-    flags: [],
-    imageUri:
-      "https://www.lenntech.com/images/Water%20Borne%20Diseases/trichuriasis.jpg",
-  },
-  lactase_deficiency: {
-    diseaseName: "ภาวะพร่องแล็กเทส",
-    description: "ร่างกายย่อยแลคโตสในนมได้ไม่สมบูรณ์",
-    remedies:
-      "ดื่มนมทีละน้อยหรือดื่มนมที่ไม่มีแลคโตส เลือกโยเกิร์ตหรือชีสแทนนมสด",
-    flags: [],
-    imageUri:
-      "https://samitivej-prod-new-website.s3.ap-southeast-1.amazonaws.com/public/uploads/contents/dcbaff3c2bc12cf75a6caa9fec1d8f20.jpg",
-  },
-  typhoid: {
-    diseaseName: "ไข้ทัยฟอยด์",
-    description: "โรคจากเชื้อแบคทีเรียซาลโมเนลลา มีอาการปวดท้องและไข้สูง",
-    remedies: "ดื่มน้ำเยอะ ๆ พักผ่อน ทานยาฆ่าเชื้อตามแพทย์สั่ง",
-    flags: ["visitDoctor"],
-    imageUri:
-      "https://lirp.cdn-website.com/69c0b277/dms3rep/multi/opt/Typhoid+Fever+Symptoms-+Causes-+Risk+Factors-+Complications-+Diagnosis+-+Prevention-640w.jpg",
-  },
-  diabetes: {
-    diseaseName: "โรคเบาหวาน",
-    description: "ระดับน้ำตาลในเลือดสูงผิดปกติจากการขาดอินซูลิน",
-    remedies: "ควบคุมอาหาร ออกกำลังกาย ทานยาหรือฉีดอินซูลินตามแพทย์สั่ง",
-    flags: ["visitDoctor"],
-    imageUri:
-      "https://alokamedicare.in/wp-content/uploads/2022/07/Diabetes-Alokamedicare-1024x1024.jpg",
-  },
-  tetanus: {
-    diseaseName: "โรคบาดทะยัก",
-    description: "การติดเชื้อแบคทีเรียส่งผลต่อระบบประสาท",
-    remedies: "ทำแผลให้สะอาดทันที พบแพทย์เพื่อฉีดวัคซีนป้องกันบาดทะยัก",
-    imageUri:
-      "https://www.scientificanimations.com/wp-content/uploads/2020/02/3D-medical-animation-of-tatanus.jpg",
-    flags: ["visitDoctor"],
-  },
-  heatstroke: {
-    diseaseName: "โรคลมร้อน",
-    description: "อุณหภูมิในร่างกายสูงจนเกิดอาการอ่อนเพลียและอันตราย",
-    remedies: "พักในที่ร่ม ดื่มน้ำให้มาก เช็ดตัวลดไข้",
-    flags: ["visitDoctor"],
-    imageUri:
-      "https://familyfirster.com/wp-content/uploads/2022/06/heatstroke-symptoms.jpeg",
-  },
-  pneumonia: {
-    diseaseName: "โรคปอดอักเสบ",
-    description: "การติดเชื้อหรือการระคายเคืองในปอด",
-    remedies: "พักผ่อน ทานยาปฏิชีวนะตามแพทย์สั่ง",
-    flags: ["visitDoctor"],
-    imageUri:
-      "https://bgh.sgp1.digitaloceanspaces.com/old-site/inline-images/shutterstock_417318079.jpg",
-  },
-  dengue: {
-    diseaseName: "โรคไข้เลือดออก",
-    description: "การติดเชื้อไวรัสเดงกีจากยุงลาย",
-    remedies: "ดื่มน้ำมาก ๆ เช็ดตัวลดไข้ ไม่ใช้ยาแอสไพริน",
-    flags: [],
-    imageUri:
-      "https://bgh.sgp1.digitaloceanspaces.com/old-site/inline-images/shutterstock_417318079.jpg",
-  },
-  tuberculosis: {
-    diseaseName: "วัณโรค",
-    description: "การติดเชื้อแบคทีเรียในปอด",
-    remedies: "พักผ่อน ทานอาหารเสริมภูมิคุ้มกัน ทานยาตามแพทย์สั่ง",
-    flags: ["visitDoctor"],
-    imageUri:
-      "https://www.pan-tb.org/wp-content/uploads/2023/04/What-is-tuberculosis.jpg",
-  },
-  sle: {
-    diseaseName: "โรคแพ้ภูมิตนเอง",
-    description: "ภาวะที่ระบบภูมิคุ้มกันทำงานผิดปกติ",
-    remedies: "รับประทานยาตามแพทย์สั่ง หลีกเลี่ยงสารกระตุ้นอาการ เช่น แสงแดด",
-    flags: [],
-    imageUri:
-      "https://i0.wp.com/images-prod.healthline.com/hlcmsresource/images/Image-Galleries/Systemic-Lupus/642X361_SLIDE_2_Systemic_Lupus_Erythematosus.jpg?w=1155",
-  },
-  pericarditis: {
-    diseaseName: "เยื่อหุ้มหัวใจอักเสบ",
-    description: "การอักเสบของเยื่อหุ้มหัวใจ",
-    remedies: "พักผ่อน ทานยาตามแพทย์สั่ง",
-    flags: ["visitDoctor"],
-    imageUri: "https://i.ytimg.com/vi/BXfnlCebHHE/maxresdefault.jpg",
-  },
-  ...ai_generated,
-};
+import { ProgressTransitionManager } from "react-native-reanimated/lib/typescript/layoutReanimation";
 
 const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
   const [imageIsLoading, setImageIsLoading] = useState(true);
   const navigation = useNavigation<StackNavigation>();
   const navigationRouteHistory = useNavigationState((state) => state.routes);
-  const diseaseId = useSelector(
-    (state: RootState) => state.conclusion.displayConclusion.diseaseId
-  );
+
   const diagnosisData = useSelector(
     (state: RootState) => state.conclusion.displayConclusion.diagnosisData
   );
-  // const imageUri = conclusionsList[diseaseId].imageUri ? true : false;
+  const scoring = diagnosisData.scoring;
 
   const previousScreenName =
     navigationRouteHistory[navigationRouteHistory.length - 2].name;
-  const lastScreenWasDiagnosis = previousScreenName === "diagnosis";
 
-  if (diseaseId === "no_match" || diseaseId === "serious_no_match") {
-    console.log("diseaseId", diseaseId);
-    const isSerious = diseaseId === "serious_no_match";
+  console.log(diagnosisData);
 
-    console.log("isSerious", isSerious);
+  const totalScore =
+    scoring.anxietyAndInsomnia +
+    scoring.severeDepression +
+    scoring.socialDysfunction +
+    scoring.somatic;
 
-    return (
-      <RootContainer>
-        <ScrollView>
-          <View style={s.conclusionsRootContainer}>
-            <View>
-              <Text style={s.headerText}>ทางเราขออภัยอย่างยิ่ง</Text>
-              <Text style={s.headerTextHighlight}>
-                {isSerious
-                  ? "เราแนะนำให้คุณพบแพทย์"
-                  : "เราไม่พบโรคที่ตรงกับข้อมูลของคุณ"}
-              </Text>
-            </View>
-            {isSerious && (
-              <View style={s.conclusionsTag}>
-                <Text style={s.conclusionsTag__text}>ควรพบแพทย์ทันที</Text>
-              </View>
-            )}
+  const programs = [
+    {
+      name: "Mindii Mate",
+      description: "คู่หู AI ที่คุยเป็นเพื่อนช่วย Support คุณ",
+      points: 100,
+    },
+    {
+      name: "Bedtime Journal",
+      description: "การเขียน journal ก่อนนอนเพื่อลดความเครียด",
+      points: 50,
+    },
+    {
+      name: "Stress Tracker",
+      description: "เรียนรู้การเปลี่ยนแปลงทางอารมณ์ของคุณ",
+      points: 50,
+    },
+  ];
 
-            <View
-              style={{
-                width: "auto",
-                backgroundColor: "#fdfdfd",
-                borderRadius: 20,
-                justifyContent: "center",
-                alignItems: "center",
-                ...Shadows.default,
-              }}
-            >
-              <LottieView
-                source={require("../../assets/animations/failAnimation.json")}
-                autoPlay
-                style={{ width: 300, height: 300 }}
-              />
-            </View>
+  let text = {
+    header: "",
+    description: "",
+  };
 
-            <Text style={s.descriptionText}>
-              {isSerious
-                ? "เราขออภัยที่ไม่สามารถประเมินโรคจากข้อมูลอาการของคุณได้ในขณะนี้ อย่างไรก็ตาม เนื่องจากอาการของคุณดูมีความรุนแรง เราขอแนะนำให้คุณเข้ารับการตรวจและคำปรึกษาจากแพทย์โดยด่วนเพื่อความปลอดภัยและการรักษาที่เหมาะสม"
-                : "เราขออภัยที่ไม่สามารถประเมินโรคจากข้อมูลอาการของคุณได้ในขณะนี้"}
-            </Text>
-            <View style={s.remedies}>
-              <Text style={s.remedies__text}>
-                อาการที่คุณเลือก:{"  "}
-                {diagnosisData.symptomList.map(
-                  (symptom, index) => symptom.name + " "
-                )}
-              </Text>
-            </View>
-          </View>
-        </ScrollView>
-        <CustomButton
-          style={s.returnButton}
-          onPress={() => {
-            console.log(previousScreenName);
-
-            if (previousScreenName === "diagnosis") navigation.navigate("home");
-            else navigation.goBack();
-          }}
-        >
-          <Text style={s.returnButton__text}>กลับ</Text>
-        </CustomButton>
-      </RootContainer>
-    );
+  if (totalScore <= 12) {
+    text.header = "สุขภาพจิตของคุณอยู่ในเกณฑ์ที่ดี 🎉";
+    text.description = "";
+  } else if (totalScore <= 24) {
+    text.header = "พบว่าคุณอาจมีความเครียดหรือความกังวลในระดับหนึ่ง 💙";
+    text.description =
+      "ลองให้เวลากับตัวเองในการพักผ่อน ออกกำลังกาย หรือทำกิจกรรมที่ช่วยให้รู้สึกผ่อนคลาย หากรู้สึกว่าความเครียดเริ่มส่งผลต่อชีวิตประจำวัน การพูดคุยกับคนที่คุณไว้ใจหรือผู้เชี่ยวชาญอาจเป็นทางเลือกที่ดีค่ะ 😊";
+  } else if (totalScore <= 36) {
+    text.header = "คุณอาจกำลังเผชิญกับความเครียดหรือความกดดันมากกว่าปกติ 💛";
+    text.description = "";
+  } else if (totalScore <= 48) {
+    text.header =
+      "คุณอาจกำลังเผชิญกับความเครียดหรือความกังวลที่ส่งผลต่อสุขภาพใจ ❤️";
+    text.description = "";
   }
 
-  console.log(conclusionsList[diseaseId]);
+  console.log(totalScore);
 
-  if (conclusionsList[diseaseId] !== undefined) {
-    return (
-      <RootContainer>
-        <ScrollView style={{ overflow: "visible" }}>
-          <View style={s.conclusionsRootContainer}>
-            <View>
-              <Text style={s.headerText}>
-                {lastScreenWasDiagnosis
-                  ? "คุณมีความเสี่ยงเป็น"
-                  : "ขณะนั้นระบบเราประเมินว่าคุณเป็น"}
-              </Text>
-              <Text style={s.headerTextHighlight}>
-                {conclusionsList[diseaseId].diseaseName}
-              </Text>
-            </View>
-
-            {conclusionsList[diseaseId].flags.map((flag, index) => {
-              if (flag === "visitDoctor") {
-                return (
-                  <View style={s.conclusionsTag} key={index}>
-                    <Text style={s.conclusionsTag__text}>ควรพบแพทย์ทันที</Text>
-                  </View>
-                );
-              }
-            })}
-
-            <Image
-              style={s.image}
-              source={{
-                uri: conclusionsList[diseaseId].imageUri,
-              }}
-              onLoadStart={() => setImageIsLoading(true)}
-              onLoadEnd={() => setImageIsLoading(false)}
-              onError={() => setImageIsLoading(false)}
-            />
-
-            <Text style={s.descriptionText}>
-              {conclusionsList[diseaseId].description}
-            </Text>
-            <View style={s.remedies}>
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-              >
-                <SymbolView
-                  name="stethoscope.circle.fill"
-                  tintColor="#3246ff"
-                  size={40}
-                />
-                <Text style={s.remedies__text}>การรักษาเบื้องต้น</Text>
-              </View>
-              <Text style={s.remedies__text}>
-                {conclusionsList[diseaseId].remedies}
-              </Text>
-            </View>
-            <View style={s.remedies}>
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-              >
-                <SymbolView
-                  name="checkmark.circle.fill"
-                  tintColor="#3246ff"
-                  size={40}
-                />
-                <Text style={s.remedies__text}>อาการหลักที่คุณเลือก</Text>
-              </View>
-              <Text style={s.remedies__text}>
-                {diagnosisData.symptomList.map(
-                  (symptom, index) => symptom.name + " "
-                )}
-              </Text>
-            </View>
-            <CustomButton
-              style={s.link}
-              onPress={() =>
-                Linking.openURL(
-                  `https://www.google.com/search?q=${conclusionsList[diseaseId].diseaseName}`
-                )
-              }
-            >
-              <Text style={s.link__text}>อ่านเกี่ยวกับโรคเพิ่มเติมบนเว็บ</Text>
-            </CustomButton>
+  return (
+    <RootContainer>
+      <ScrollView style={{ overflow: "visible" }}>
+        <View style={s.conclusionsRootContainer}>
+          <View>
+            <Text style={s.headerText}>จากแบบประเมิน</Text>
+            <Text style={s.headerTextHighlight}>{text.header}</Text>
           </View>
-        </ScrollView>
-        <CustomButton
-          style={s.returnButton}
-          onPress={() => {
-            if (previousScreenName === "diagnosis") navigation.navigate("home");
-            else navigation.goBack();
-          }}
-        >
-          <Text style={s.returnButton__text}>กลับ</Text>
-        </CustomButton>
-      </RootContainer>
-    );
-  } else {
-    return (
-      <RootContainer>
-        <Text>The disease {diseaseId} is still in the works</Text>
-        <CustomButton
-          style={s.returnButton}
-          onPress={() => {
-            if (previousScreenName === "diagnosis") navigation.navigate("home");
-            else navigation.goBack();
-          }}
-        >
-          <Text style={s.returnButton__text}>กลับ</Text>
-        </CustomButton>
-      </RootContainer>
-    );
-  }
+
+          <Text style={s.descriptionText}>{text.description}</Text>
+
+          <Text style={s.programRecommendations__text}>
+            แผนพัฒนาที่เราแนะนำสำหรับคุณ
+          </Text>
+          <View style={s.programRecommendations}>
+            {programs.map((program, index) => (
+              <View
+                style={[
+                  s.programRecommendations__item,
+                  {
+                    borderBottomWidth: index !== programs.length - 1 ? 1 : 0,
+                    borderBottomColor: "#eee",
+                  },
+                ]}
+              >
+                <View style={{ flex: 3 }}>
+                  <Text style={s.programRecommendations__itemHeader}>
+                    {program.name}
+                  </Text>
+                  <Text style={s.programRecommendations__itemDesc}>
+                    {program.description}
+                  </Text>
+                </View>
+
+                <View style={s.programRecommendations__score}>
+                  <Text style={s.programRecommendations__scoreText}>
+                    +{program.points}
+                  </Text>
+                  <SymbolView name="star.fill" tintColor="#5271ff" size={30} />
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
+      <CustomButton
+        style={s.returnButton}
+        onPress={() => {
+          if (previousScreenName === "diagnosis") navigation.navigate("home");
+          else navigation.goBack();
+        }}
+      >
+        <Text style={s.returnButton__text}>กลับ</Text>
+      </CustomButton>
+    </RootContainer>
+  );
 };
 
 const s = StyleSheet.create({
@@ -476,7 +151,7 @@ const s = StyleSheet.create({
     fontFamily: Fonts.regular,
   },
   headerTextHighlight: {
-    fontSize: 40,
+    fontSize: 30,
     // color: "blue",
     fontFamily: Fonts.regular,
   },
@@ -500,7 +175,6 @@ const s = StyleSheet.create({
   },
   remedies: {
     backgroundColor: "#fdfdfd",
-    padding: 20,
     borderRadius: 20,
     gap: 10,
     ...Shadows.default,
@@ -530,7 +204,7 @@ const s = StyleSheet.create({
   },
   link: {
     width: "100%",
-    backgroundColor: "#3246FF",
+    backgroundColor: "#5271ff",
     padding: 20,
     borderRadius: 20,
     ...Shadows.default,
@@ -540,6 +214,36 @@ const s = StyleSheet.create({
   link__text: {
     color: "#fff",
     fontFamily: Fonts.regular,
+  },
+  programRecommendations: {
+    backgroundColor: "#fdfdfd",
+    borderRadius: 30,
+    width: "100%",
+
+    ...Shadows.default,
+  },
+  programRecommendations__item: {
+    padding: 20,
+    flexDirection: "row",
+    gap: 10,
+  },
+  programRecommendations__itemHeader: {
+    fontFamily: Fonts.regular,
+    fontSize: 20,
+  },
+  programRecommendations__itemDesc: {
+    fontFamily: Fonts.regular,
+  },
+  programRecommendations__text: {
+    fontFamily: Fonts.regular,
+    fontSize: 20,
+  },
+  programRecommendations__score: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
   },
 });
 

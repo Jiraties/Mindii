@@ -102,22 +102,10 @@ const conclusionSlice = createSlice({
     setDisplayConclusion(
       state,
       action: PayloadAction<{
-        diseaseId: string;
         diagnosisData: diagnosisDataType;
       }>
     ) {
-      if (action.payload.diseaseId === "no_match") {
-        state.displayConclusion.diseaseId = "no_match";
-      } else if (action.payload.diseaseId === "serious_no_match") {
-        state.displayConclusion.diseaseId = "serious_no_match";
-      } else {
-        state.displayConclusion.diseaseId = action.payload.diseaseId;
-        state.displayConclusion.diagnosisData = action.payload.diagnosisData;
-        const now = new Date();
-        const stringifiedDate = now.toString();
-        state.displayConclusion.date = stringifiedDate;
-        state.conclusionHistory.unshift(state.displayConclusion);
-      }
+      state.displayConclusion.diagnosisData = action.payload.diagnosisData;
     },
     viewConclusion(state, action: PayloadAction<string>) {
       state.displayConclusion.diseaseId = action.payload;

@@ -5,37 +5,20 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import CustomButton from "../CustomButton";
 import { diagnosisOption, optionsSettings } from "../../models/diagnosisTypes";
 import { Fonts } from "../../constants/styles";
+import { SymbolView } from "expo-symbols";
 
 const SelectOptions: React.FC<{
   optionsList: diagnosisOption[];
-  onChecklistCompletion: (checklistState: any, header: string) => void;
   onOptionPress: (option: diagnosisOption, header: string) => void;
   optionsSettings: optionsSettings;
 }> = (props) => {
   const header = props.optionsSettings.header;
   const subheader = props.optionsSettings.subheader;
-  const isChecklist = props.optionsSettings.checklist;
-
-  if (isChecklist) {
-    props.optionsList.forEach((option) => {
-      option.isChecked = false;
-    });
-  }
 
   const [checklistState, setChecklistState] = useState(props.optionsList);
 
   return (
     <>
-      {isChecklist && (
-        <CustomButton
-          style={s.continueButton}
-          onPress={() => props.onChecklistCompletion(checklistState, header)}
-        >
-          <Text style={{ color: "#fff", fontFamily: Fonts.regular }}>
-            ไปต่อ
-          </Text>
-        </CustomButton>
-      )}
       <Text
         style={[
           s.headerText,
@@ -48,41 +31,18 @@ const SelectOptions: React.FC<{
 
       <View style={s.optionList}>
         {props.optionsList.map((option, index) => {
-          if (isChecklist) {
-            return (
-              <BouncyCheckbox
-                style={s.checkListItem}
-                textStyle={s.checkListItem__textStyle}
-                fillColor="#3246FF"
-                unFillColor="#eee"
-                text={option.name}
-                isChecked={checklistState[index].isChecked}
-                onPress={(checked: boolean) => {
-                  setChecklistState(
-                    checklistState.map((item) =>
-                      item.value === option.value
-                        ? { ...item, isChecked: checked }
-                        : item
-                    )
-                  );
-                }}
-                key={index}
-              />
-            );
-          } else {
-            return (
-              <CustomButton
-                style={s.optionItem}
-                onPress={() => props.onOptionPress(option, header)}
-                pressedStyle={{ backgroundColor: "#eee" }}
-                key={option.value}
-              >
-                <Text style={{ fontFamily: Fonts.regular, fontSize: 15 }}>
-                  {option.name}
-                </Text>
-              </CustomButton>
-            );
-          }
+          return (
+            <CustomButton
+              style={s.optionItem}
+              onPress={() => props.onOptionPress(option, header)}
+              pressedStyle={{ backgroundColor: "#eee" }}
+              key={option.value}
+            >
+              <Text style={{ fontFamily: Fonts.regular, fontSize: 15 }}>
+                {option.name}
+              </Text>
+            </CustomButton>
+          );
         })}
       </View>
     </>
@@ -131,7 +91,7 @@ const s = StyleSheet.create({
     position: "absolute",
     bottom: 30,
     right: 30,
-    backgroundColor: "#3246FF",
+    backgroundColor: "#5271ff",
     padding: 20,
     borderRadius: 20,
     shadowColor: "black",

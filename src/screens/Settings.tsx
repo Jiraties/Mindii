@@ -72,14 +72,10 @@ const Settings = (props) => {
         <View style={[s.settingsItem, s.credits]}>
           <Text style={s.credits__header}>แอปพลิเคชันจัดทำโดย</Text>
           <Text style={s.credits__person}>จิรัฏฐ์ ชูตระกูล</Text>
-          <Text style={s.credits__person}>ปภังกร รุ่งรัตติกรณ์</Text>
-          <Text style={s.credits__person}>ภูรินท์ ตรีเทวะวงษา</Text>
-          <Text style={s.credits__person}>เมธาสิทธิ์ กิจมโนมัย</Text>
-          <Text style={s.credits__person}>สิรภพ ชววัฑรัตน์ชัย</Text>
-          <Text style={s.credits__person}>ทัชชกฤต ลาภมณเฑียรทอง</Text>
-          <Text style={s.credits__person}>พฤกษ์ ศิริโชติ</Text>
-          <Text style={s.credits__person}>วิชญ การุณยวนิช</Text>
-          <Text style={s.credits__person}>ณฐพบ โกฏเพชร</Text>
+          <Text style={s.credits__person}>เคนจิ ทานิกุชิ</Text>
+          <Text style={[s.credits__person, { borderBottomWidth: 0 }]}>
+            สาริน สุขแก้ว
+          </Text>
         </View>
 
         <View style={[s.settingsItem, s.credits]}>
@@ -102,13 +98,13 @@ const s = StyleSheet.create({
   },
   settingsList: {
     gap: 20,
-    borderRadius: 20,
+    borderRadius: 30,
     overflow: "hidden",
   },
   settingsItem: {
     padding: 20,
     backgroundColor: "#fdfdfd",
-    borderRadius: 20,
+    borderRadius: 30,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -116,7 +112,7 @@ const s = StyleSheet.create({
     // ...Shadows.default,
   },
   button: {
-    backgroundColor: "#3246FF",
+    backgroundColor: "#5271ff",
     width: "40%",
     padding: 15,
     borderRadius: 100,

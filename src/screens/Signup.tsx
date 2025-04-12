@@ -212,7 +212,7 @@ const Signup = (props) => {
                 setBirthday(date);
               }}
               themeVariant="light"
-              accentColor="#3246FF"
+              accentColor="#5271ff"
               locale="th-TH"
               maximumDate={new Date()}
             />
@@ -310,7 +310,7 @@ const s = StyleSheet.create({
     ...defaultShadow,
   },
   submitButton: {
-    backgroundColor: "#3246FF",
+    backgroundColor: "#5271ff",
     padding: 20,
     marginTop: 30,
     borderRadius: 20,

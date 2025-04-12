@@ -13,7 +13,8 @@ const RootContainer: React.FC<{
   image?: boolean;
   style?: any;
   children: any;
-}> = ({ image = true, style, children }) => {
+  padding?: boolean;
+}> = ({ image = true, style, children, padding = true }) => {
   const { height: screenHeight, width: screenWidth } = useWindowDimensions();
   const isIpad = screenWidth >= 1100 && screenHeight >= 800;
 
@@ -22,6 +23,12 @@ const RootContainer: React.FC<{
       style={[
         s.rootContainer,
         isIpad && { paddingHorizontal: screenWidth / 3.5 },
+        padding
+          ? {
+              paddingHorizontal: 20,
+              paddingTop: 20,
+            }
+          : { padding: 0 },
         style,
       ]}
     >
@@ -45,8 +52,6 @@ const s = StyleSheet.create({
   rootContainer: {
     flex: 1,
     backgroundColor: colorScheme === "light" ? "#EFEFEF" : "#000",
-    paddingHorizontal: 20,
-    paddingTop: 20,
   },
   imageBackground: {
     position: "absolute",

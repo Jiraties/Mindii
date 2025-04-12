@@ -4,16 +4,15 @@ import { Fonts } from "../constants/styles";
 const HeaderText = (props) => {
   return (
     <View style={{ flexDirection: "row" }}>
-      <Text style={{ fontSize: 20, fontFamily: Fonts.regular }}>ใกล้</Text>
       <Text
-        style={{ fontSize: 20, fontFamily: Fonts.regular, color: "#3246FF" }}
+        style={{ fontSize: 20, fontFamily: Fonts.regular, color: "#5271ff" }}
       >
-        หมอ
+        Mindii
       </Text>
-      {props.isDiagnosis && (
+      {props.text && (
         <Text style={{ fontSize: 20, fontFamily: Fonts.regular }}>
           {" "}
-          · ประเมินโรค
+          · {props.text}
         </Text>
       )}
     </View>

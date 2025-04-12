@@ -27,7 +27,8 @@ const CustomModal: React.FC<{
         <View style={s.modalTextWrapper}>
           <View>
             <Text style={s.headerText}>
-              แอปพลิเคชันใกล้หมอนั้นทำมาเพื่อให้คำแนะนำด้านสุขภาพเบื้องต้นเท่านั้น
+              แอปพลิเคชัน Mindii
+              นั้นทำมาเพื่อให้คำแนะนำด้านสุขภาพเบื้องต้นเท่านั้น
             </Text>
             <Text style={[s.headerText, { fontSize: 15, marginBottom: 30 }]}>
               ไม่ควรใช้เป็นใช่เครื่องมือวินิจฉัยอย่างเป็นทางการ
@@ -93,11 +94,11 @@ const s = StyleSheet.create({
   termsAndConditions__button: {},
   termsAndConditions__text: {
     fontFamily: Fonts.regular,
-    color: "#3246FF",
+    color: "#5271ff",
     fontSize: 15,
   },
   homeListItem__button: {
-    backgroundColor: "#3246FF",
+    backgroundColor: "#5271ff",
     width: "40%",
     height: 40,
     borderRadius: 100,
