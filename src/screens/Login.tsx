@@ -65,7 +65,7 @@ const Login = (props) => {
     <RootContainer style={s.loginRootContainer}>
       <View>
         <Text style={s.headerText}>ยินดีต้อนรับสู่</Text>
-        <Text style={[s.headerText, { color: "#5271ff" }]}>ใกล้หมอ </Text>
+        <Text style={[s.headerText, { color: "#5271ff" }]}>Mindii</Text>
         <Text style={s.subheaderText}>
           ล็อกอินเพื่อเริ่มต้นประเมินอาการได้ทันที
         </Text>
@@ -124,7 +124,7 @@ const Login = (props) => {
               style={s.googleButtonImage}
               source={require("../../assets/images/googleLogo.png")}
             /> */}
-            <Text style={s.submitButton__text}>สร้างบัญชีใกล้หมอ</Text>
+            <Text style={s.submitButton__text}>สร้างบัญชี Mindii</Text>
           </CustomButton>
         )}
       </View>

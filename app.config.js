@@ -2,7 +2,15 @@ export default ({ config }) => ({
   ...config,
   extra: {
     OPEN_AI_API_KEY: process.env.OPEN_AI_API_KEY,
-    TESTING_THREAD: process.env.TESTING_THREAD,
-    ASSISTANT_ID: process.env.ASSISTANT_ID,
+    TESTING_THREAD_FRND: process.env.TESTING_THREAD_FRND,
+    TESTING_THREAD_DOCT: process.env.TESTING_THREAD_DOCT,
+    TESTING_THREAD_STRT: process.env.TESTING_THREAD_STRT,
+    TESTING_THREAD_FLEX: process.env.TESTING_THREAD_FLEX,
+    TESTING_THREAD_FUNY: process.env.TESTING_THREAD_FUNY,
+    ASSISTANT_ID_FRND: process.env.ASSISTANT_ID_FRND,
+    ASSISTANT_ID_DOCT: process.env.ASSISTANT_ID_DOCT,
+    ASSISTANT_ID_STRT: process.env.ASSISTANT_ID_STRT,
+    ASSISTANT_ID_FLEX: process.env.ASSISTANT_ID_FLEX,
+    ASSISTANT_ID_FUNY: process.env.ASSISTANT_ID_FUNY,
   },
 });

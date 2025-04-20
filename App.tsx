@@ -34,6 +34,11 @@ import {
 } from "./src/context/conclusionSlice";
 import MindiiMate from "./src/screens/MindiiMate";
 import Journal from "./src/screens/Journal";
+import WellnessHub from "./src/screens/WellnessHub";
+import BreathingExercise from "./src/screens/BreathingExercise";
+import MindQuestScreen from "./src/screens/MindQuest";
+import MindQuest from "./src/screens/MindQuest";
+import Story from "./src/screens/Story";
 
 const AuthenticationStack = () => {
   return (
@@ -103,7 +108,12 @@ const AuthenticatedStack = () => {
   }, []);
 
   return (
-    <Stack.Navigator initialRouteName="home">
+    <Stack.Navigator initialRouteName="หน้าหลัก">
+      <Stack.Screen
+        name="หน้าหลัก"
+        component={BottomTabs}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="home"
         component={Home}
@@ -155,13 +165,6 @@ const AuthenticatedStack = () => {
         }}
       />
       <Stack.Screen
-        name="history"
-        component={History}
-        options={{
-          headerTitle: () => <HeaderText text={"Diagnosis"} />,
-        }}
-      />
-      <Stack.Screen
         name="mate"
         component={MindiiMate}
         options={{
@@ -175,7 +178,102 @@ const AuthenticatedStack = () => {
           headerTitle: () => <HeaderText text={"Journal"} />,
         }}
       />
+      <Stack.Screen
+        name="wellnessHub"
+        component={WellnessHub}
+        options={{
+          headerTitle: () => <HeaderText text={"Wellness Hub"} />,
+        }}
+      />
+      <Stack.Screen
+        name="breathingExercise"
+        component={BreathingExercise}
+        options={{
+          headerTitle: () => <HeaderText text={"Mindfulness"} />,
+        }}
+      />
+      <Stack.Screen
+        name="mindQuest"
+        component={MindQuest}
+        options={{
+          headerTransparent: true,
+          headerTitle: "",
+          headerShadowVisible: false, // removes the default shadow
+        }}
+      />
+      <Stack.Screen
+        name="story"
+        component={Story}
+        options={{
+          headerTransparent: true,
+          headerTitle: "",
+          headerShadowVisible: false, // removes the default shadow
+        }}
+      />
     </Stack.Navigator>
+  );
+};
+
+const Tabs = createBottomTabNavigator();
+
+const BottomTabs = () => {
+  return (
+    <Tabs.Navigator
+      initialRouteName="home"
+      screenOptions={{
+        headerShown: false, // We'll control headers from stack if needed
+        tabBarActiveTintColor: "#5271ff",
+      }}
+    >
+      <Tabs.Screen
+        name="mindQuest"
+        component={MindQuest}
+        options={{
+          tabBarLabel: "Quest",
+          tabBarIcon: ({ color, size }) => (
+            <SymbolView
+              name="sparkle.magnifyingglass"
+              tintColor={color}
+              style={{ width: size, height: size }}
+            />
+          ),
+          headerShown: true,
+          headerTransparent: true,
+          headerTitle: "",
+          headerShadowVisible: false,
+        }}
+      />
+
+      <Tabs.Screen
+        name="home"
+        component={Home}
+        options={{
+          tabBarLabel: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <SymbolView
+              name="house"
+              tintColor={color}
+              style={{ width: size, height: size }}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="mate"
+        component={MindiiMate}
+        options={{
+          tabBarLabel: "MindiiMate",
+          tabBarIcon: ({ color, size }) => (
+            <SymbolView
+              name="bubble"
+              tintColor={color}
+              style={{ width: size, height: size }}
+            />
+          ),
+        }}
+      />
+    </Tabs.Navigator>
   );
 };
 
@@ -279,7 +377,9 @@ export type ScreenNames = [
   "splashscreen",
   "ai",
   "mate",
-  "journal"
+  "journal",
+  "breathingExercise",
+  "story"
 ];
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;

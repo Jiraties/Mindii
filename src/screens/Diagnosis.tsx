@@ -205,23 +205,6 @@ const Diagnosis = (props) => {
     if (nextDiagnosisPage) nextScreen("customOptions");
   };
 
-  // const createYesNoOptions = (
-  //   header: string,
-  //   nextDiagnosisPage: boolean,
-  //   subheader = ""
-  // ) => {
-  //   const yesNoOptions = [
-  //     { name: "ใช่", value: "yes" },
-  //     { name: "ไม่", value: "no" },
-  //   ];
-
-  //   createCustomOptions({
-  //     header,
-  //     subheader,
-  //     options: yesNoOptions,
-  //     nextDiagnosisPage,
-  //   });
-  // };
   const createMentalHealthQuestion = (question, nextDiagnosisPage = true) => {
     createCustomOptions({
       header: question,
@@ -303,7 +286,7 @@ const Diagnosis = (props) => {
                 {
                   text: "ยกเลิก",
                   onPress: () => {
-                    navigation.navigate("home");
+                    navigation.popToTop();
                     resetDiagnosisData();
                   },
                 },

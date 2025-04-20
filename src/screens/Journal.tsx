@@ -1,4 +1,14 @@
 import RootContainer from "../components/RootContainer";
+import CustomButton from "../components/CustomButton";
+import LottieView from "lottie-react-native";
+
+import { Fonts, Shadows } from "../constants/styles";
+import { useEffect, useState, useRef } from "react";
+import { SymbolView } from "expo-symbols";
+import Animated, {
+  useAnimatedKeyboard,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import {
   StyleSheet,
   Text,
@@ -11,15 +21,8 @@ import {
   Platform,
   Keyboard,
 } from "react-native";
-import { Fonts, Shadows } from "../constants/styles";
-import LottieView from "lottie-react-native";
-import { useEffect, useState, useRef } from "react";
-import Animated, {
-  useAnimatedKeyboard,
-  useAnimatedStyle,
-} from "react-native-reanimated";
-import CustomButton from "../components/CustomButton";
-import { SymbolView } from "expo-symbols";
+import { useDispatch } from "react-redux";
+import { mindQuestActions } from "../context/mindQuestSlice";
 
 const shuffle = (array) =>
   array
@@ -33,6 +36,7 @@ const Journal = (props) => {
   const [darkTheme, setDarkTheme] = useState(false);
   const inputRef = useRef(null);
   const keyboard = useAnimatedKeyboard();
+  const dispatch = useDispatch();
 
   const cancelButtonAnimation = useAnimatedStyle(() => ({
     transform: [{ translateY: -keyboard.height.value }],
@@ -105,7 +109,10 @@ const Journal = (props) => {
         <Animated.View style={cancelButtonAnimation}>
           <CustomButton
             style={s.modal__endButton}
-            onPress={() => setModalVisible(false)}
+            onPress={() => {
+              setModalVisible(false);
+              dispatch(mindQuestActions.completeQuest("bedtime-journal"));
+            }}
           >
             <SymbolView name="arrow.right" tintColor="#fff" />
           </CustomButton>
@@ -190,6 +197,7 @@ const s = StyleSheet.create({
     marginVertical: 20,
     borderRadius: 30,
     backgroundColor: "#5271ff",
+
     alignItems: "center",
     ...Shadows.light,
   },

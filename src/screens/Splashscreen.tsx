@@ -31,15 +31,16 @@ const Splashscreen = (props) => {
       </View>
       <View style={s.titleTextWrapper}>
         <View style={s.titleTextSubwrapper}>
-          <Text style={s.titleText}>รู้ทันโรค</Text>
-          <Text style={[s.titleText, { color: Colors.blue }]}>ง่ายๆ </Text>
+          <Text style={s.titleText}>We Listen</Text>
+          <Text style={[s.titleText, { color: Colors.blue }]}>
+            We don't Judge
+          </Text>
           {/* <Text style={s.titleText}>Easy </Text>
           <Text style={[s.titleText, { color: Colors.blue }]}>Diagnosis </Text> */}
         </View>
-        <Text style={s.titleText}>แค่ปลายนิ้ว</Text>
       </View>
       <Text style={s.subtitleText}>
-        แอปพลิเคชันใกล้หมอจะช่วยให้คุณประเมินโรคต่าง ที่อาจกระทบคุณได้
+        แอปพลิเคชันMindiiจะช่วยให้คุณประเมินโรคต่าง ที่อาจกระทบคุณได้
         พร้อมกับให้คำแนะนำเกี่ยวกับโรค และอาการแบบไม่มีค่าใช้จ่ายใดๆทั้งสิ้น
       </Text>
       {/* <Text style={s.subtitleText}>
@@ -50,7 +51,7 @@ const Splashscreen = (props) => {
         style={s.signupButton}
         onPress={() => props.navigation.navigate("signup")}
       >
-        <Text style={s.signupButton__text}>สร้างบัญชีใหล้หมอ</Text>
+        <Text style={s.signupButton__text}>สร้างบัญชี Mindii</Text>
       </CustomButton>
       <CustomButton
         style={s.loginButton}

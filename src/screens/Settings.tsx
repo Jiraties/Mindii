@@ -41,7 +41,7 @@ const Settings = (props) => {
       <ScrollView style={s.settingsList}>
         <View style={[s.settingsItem, s.account]}>
           {/* <View style={s.account__flag}>
-            <Text style={s.account__flag}>บัญชีใกล้หมอ</Text>
+            <Text style={s.account__flag}>บัญชีMindii</Text>
           </View> */}
           <Text style={s.account__name}>{userInformation.name}</Text>
           <Text style={s.account__birthday}>

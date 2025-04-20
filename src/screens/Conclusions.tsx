@@ -42,21 +42,67 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
     scoring.socialDysfunction +
     scoring.somatic;
 
-  const programs = [
+  let recommendedFeature = {
+    name: "",
+    description: "",
+    points: 100,
+  };
+
+  const highestKey = Object.keys(scoring).reduce((a, b) =>
+    scoring[a] > scoring[b] ? a : b
+  );
+
+  switch (highestKey) {
+    case "anxietyAndInsomnia":
+      recommendedFeature = {
+        name: "Mindii Mate",
+        description: "คู่หู AI ที่คุยเป็นเพื่อนช่วย Support คุณ",
+        points: 100,
+      };
+      break;
+    case "severeDepression":
+      recommendedFeature = {
+        name: "Bedtime Journal",
+        description: "การเขียน journal ก่อนนอนเพื่อลดความเครียด",
+        points: 100,
+      };
+      break;
+    case "socialDysfunction":
+      recommendedFeature = {
+        name: "Wellness Hub",
+        description: "แหล่งรวมวิดีโอและเนื้อหาเพื่อช่วยคุณฟื้นฟูใจ",
+        points: 100,
+      };
+      break;
+    case "somatic":
+      recommendedFeature = {
+        name: "Guided Breathing",
+        description: "ฝึกหายใจเพื่อลดอาการทางกาย เช่น อ่อนเพลียหรือปวดหัว",
+        points: 100,
+      };
+      break;
+  }
+
+  let programs = [
     {
       name: "Mindii Mate",
       description: "คู่หู AI ที่คุยเป็นเพื่อนช่วย Support คุณ",
-      points: 100,
+      points: 80,
+    },
+    {
+      name: "Wellness Hub",
+      description: "แหล่งรวมวิดีโอและเนื้อหาเพื่อช่วยคุณฟื้นฟูใจ",
+      points: 80,
+    },
+    {
+      name: "Guided Breathing",
+      description: "ฝึกหายใจเพื่อลดอาการทางกาย เช่น อ่อนเพลียหรือปวดหัว",
+      points: 80,
     },
     {
       name: "Bedtime Journal",
       description: "การเขียน journal ก่อนนอนเพื่อลดความเครียด",
-      points: 50,
-    },
-    {
-      name: "Stress Tracker",
-      description: "เรียนรู้การเปลี่ยนแปลงทางอารมณ์ของคุณ",
-      points: 50,
+      points: 80,
     },
   ];
 
@@ -81,8 +127,6 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
     text.description = "";
   }
 
-  console.log(totalScore);
-
   return (
     <RootContainer>
       <ScrollView style={{ overflow: "visible" }}>
@@ -92,14 +136,44 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
             <Text style={s.headerTextHighlight}>{text.header}</Text>
           </View>
 
+          <View style={s.animation__wrapper}>
+            <LottieView
+              source={require("../../assets/animations/complete.json")}
+              style={{ alignItems: "center", width: 160, height: 160 }}
+              autoPlay
+              loop={false}
+            />
+          </View>
           <Text style={s.descriptionText}>{text.description}</Text>
 
           <Text style={s.programRecommendations__text}>
-            แผนพัฒนาที่เราแนะนำสำหรับคุณ
+            Feature ที่เราแนะนำสำหรับคุณ
           </Text>
+          <View style={[s.programRecommendations]}>
+            <View style={s.programRecommendations__item}>
+              <View style={{ flex: 3 }}>
+                <Text
+                  style={[
+                    s.programRecommendations__itemHeader,
+                    { color: "#5271ff" },
+                  ]}
+                >
+                  {recommendedFeature.name}
+                </Text>
+                <Text style={[s.programRecommendations__itemDesc]}>
+                  {recommendedFeature.description}
+                </Text>
+              </View>
+
+              <View style={s.programRecommendations__score}></View>
+            </View>
+          </View>
+
+          <Text style={s.programRecommendations__text}>Feature อื่นๆ</Text>
           <View style={s.programRecommendations}>
             {programs.map((program, index) => (
               <View
+                key={index}
                 style={[
                   s.programRecommendations__item,
                   {
@@ -118,10 +192,13 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
                 </View>
 
                 <View style={s.programRecommendations__score}>
-                  <Text style={s.programRecommendations__scoreText}>
-                    +{program.points}
-                  </Text>
-                  <SymbolView name="star.fill" tintColor="#5271ff" size={30} />
+                  {program.name === recommendedFeature.name && (
+                    <SymbolView
+                      name="star.fill"
+                      tintColor="#5271ff"
+                      size={30}
+                    />
+                  )}
                 </View>
               </View>
             ))}
@@ -131,7 +208,7 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
       <CustomButton
         style={s.returnButton}
         onPress={() => {
-          if (previousScreenName === "diagnosis") navigation.navigate("home");
+          if (previousScreenName === "diagnosis") navigation.popToTop();
           else navigation.goBack();
         }}
       >
@@ -142,6 +219,13 @@ const Conclusions: React.FC<{ conclusionId: string }> = (props) => {
 };
 
 const s = StyleSheet.create({
+  animation__wrapper: {
+    borderRadius: 30,
+    height: 150,
+    backgroundColor: "#5271ff",
+    alignItems: "center",
+    ...Shadows.light,
+  },
   conclusionsRootContainer: {
     flexDirection: "column",
     gap: 20,

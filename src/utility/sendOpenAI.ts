@@ -3,9 +3,9 @@ import axios from "axios";
 import Constants from "expo-constants";
 
 const apiKey = Constants.expoConfig.extra.OPEN_AI_API_KEY;
-const assistantId = Constants.expoConfig.extra.ASSISTANT_ID;
 
-export const sendOpenAI = async (userMessage, threadId) => {
+export const sendOpenAI = async (userMessage, threadId, assistantId) => {
+  console.log("AssitantId Is:" + assistantId);
   try {
     // Step 1: Create a thread if not already created
     if (!threadId) {
@@ -115,7 +115,6 @@ export const createNewThread = async () => {
       }
     );
 
-    console.log(threadId);
     const threadId = response.data.id;
     return threadId;
   } catch (err) {

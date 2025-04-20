@@ -15,7 +15,14 @@ const SelectOptions: React.FC<{
   const header = props.optionsSettings.header;
   const subheader = props.optionsSettings.subheader;
 
-  const [checklistState, setChecklistState] = useState(props.optionsList);
+  const [isOptionSelected, setIsOptionSelected] = useState(false);
+
+  const handlePress = (option: diagnosisOption) => {
+    if (!isOptionSelected) {
+      setIsOptionSelected(true);
+      props.onOptionPress(option, header);
+    }
+  };
 
   return (
     <>
@@ -30,11 +37,15 @@ const SelectOptions: React.FC<{
       <Text style={s.headerDescriptionText}>{subheader}</Text>
 
       <View style={s.optionList}>
-        {props.optionsList.map((option, index) => {
+        {props.optionsList.map((option) => {
           return (
             <CustomButton
-              style={s.optionItem}
-              onPress={() => props.onOptionPress(option, header)}
+              style={[
+                s.optionItem,
+                isOptionSelected && { opacity: 0.5 }, // Visually dim after selection
+              ]}
+              onPress={() => handlePress(option)}
+              disabled={isOptionSelected}
               pressedStyle={{ backgroundColor: "#eee" }}
               key={option.value}
             >

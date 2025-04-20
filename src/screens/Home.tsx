@@ -61,7 +61,8 @@ const Home = (props) => {
             <Text style={s.headerTextHighlight}>{username}</Text>
           )}
         </View>
-        <ImageBackground
+
+        {/* <ImageBackground
           resizeMode="cover"
           style={[{ borderRadius: 30, overflow: "hidden" }, s.homeListItem]}
           source={require("../../assets/images/mindiiMate.png")}
@@ -91,9 +92,17 @@ const Home = (props) => {
                   tintColor="#5271ff"
                 ></SymbolView>
               </CustomButton>
-            </View>
-          </View>
-        </ImageBackground>
+              </View>
+              </View>
+              </ImageBackground> */}
+
+        <HomeListItem
+          text="ประเมินสุขภาพจิต"
+          button="เริ่มเลย!"
+          image
+          redirectTo="diagnosis"
+          warningModal
+        />
 
         <View
           style={{
@@ -107,30 +116,28 @@ const Home = (props) => {
             <View style={s.wellnessDashboardHeader}>
               <Text style={s.wellnessDashboardHeader__text}>แผนสัปดาห์แรก</Text>
             </View>
+            <PlanListItem
+              title="Guided Breathing Exercise"
+              description="ฝึกหายใจอย่างมีสติพร้อมคำแนะนำ เพื่อช่วยให้คุณรู้สึกผ่อนคลายและสงบขึ้น"
+              icon="wind"
+              redirectTo="breathingExercise"
+            />
 
             <PlanListItem
               title="Bedtime Journal"
               description="ทำความเข้าใจ กับปัจจัยที่ทำให้คุณไม่สบายใจ"
-              icon="person.crop.square"
+              icon="powersleep"
               redirectTo="journal"
             />
 
             <PlanListItem
-              title="Stress Tracking"
-              description="วัดความเปลี่ยนแปลงทางอารมณ์ของคุณเป็นกิจวัตรประจำวัน"
-              icon="light.beacon.max"
-              redirectTo="home"
+              title="Wellness Hub"
+              description="ยินดีต้อนรับสู่แหล่งคอนเท้นต์ด้าน Mindfulness"
+              icon="figure.mind.and.body"
+              redirectTo="wellnessHub"
             />
           </View>
         </View>
-
-        <HomeListItem
-          text="ประเมินสุขภาพจิต"
-          button="เริ่มเลย!"
-          image
-          redirectTo="diagnosis"
-          warningModal
-        />
 
         <View
           style={{
@@ -186,6 +193,7 @@ const s = StyleSheet.create({
     paddingTop: 20,
   },
   headerText: {
+    marginTop: 70,
     fontSize: 40,
     fontFamily: Fonts.regular,
   },
